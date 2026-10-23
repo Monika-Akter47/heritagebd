@@ -1,0 +1,10 @@
+{
+  "description": "Explore Bangladesh's rich heritage through a digital platform connecting tourists with local guides, vendors, and cultural experiences for seamless travel planning.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

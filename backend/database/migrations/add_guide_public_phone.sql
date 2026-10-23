@@ -1,0 +1,2 @@
+ALTER TABLE guides
+  ADD COLUMN phone_public TINYINT(1) NOT NULL DEFAULT 0;

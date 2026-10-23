@@ -25,11 +25,20 @@ function get_db(): PDO {
     if ($pdo === null) {
         $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4';
         try {
-            $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
-            ]);
+            ];
+            // Hosted MySQL (Aiven, PlanetScale, TiDB...) requires TLS. DB_SSL_CA_PEM holds the
+            // provider's CA certificate text, so no file needs to be shipped with the code.
+            $caPem = getenv('DB_SSL_CA_PEM');
+            if ($caPem) {
+                $caFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'heritagebd-db-ca.pem';
+                if (!is_file($caFile)) file_put_contents($caFile, str_replace('\n', "\n", $caPem));
+                $options[PDO::MYSQL_ATTR_SSL_CA] = $caFile;
+            }
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
             // Numeric offset works without MySQL's named time-zone tables being loaded.
             $pdo->exec("SET time_zone = '" . (new DateTime())->format('P') . "'");
         } catch (PDOException $e) {

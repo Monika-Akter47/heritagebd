@@ -32,18 +32,12 @@ usage, table count and the guide-completion step. Re-check them when features ch
 can't set it, although `PREORDER_TRANSITION_ROLES` reserves it for admins. Cancelling already marks the
 advance `refunded`; decide whether `cancelled → refunded` (admin) should be allowed, and add it.
 
-### 6. The local database is behind on migrations
-
-As of 2026-10-24 the `heritagebd` database on the development machine lacks **002** (commission and
-settlements; checkout and earnings fail), **003** and **006** (local foods; the new sections show an
-error). Apply them in order (see [database.md](database.md#migrations)).
-
-### 7. Food photos
+### 6. Food photos
 
 The 32 reference foods ship without photos (an emoji per type is shown). Add real photos from
 Admin → Traditional Foods.
 
-### 8. Smaller items
+### 7. Smaller items
 
 - The catch-all route `*` renders Landing instead of a 404 page.
 - Most API responses are still `any` in `src/services/api.ts`. The interfaces in `src/types` exist

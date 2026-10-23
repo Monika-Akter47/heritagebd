@@ -1,1 +1,0 @@
-﻿{"version":"0.0.1","configurations":[{"name":"web","runtimeExecutable":"cmd","runtimeArgs":["/c","npx vite --port 5198 --strictPort"],"port":5198}]}

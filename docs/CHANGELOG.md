@@ -22,6 +22,14 @@ All notable changes to HeritageBD. The format follows
   places in the same district.
 - `docs/diagrams.md`: 13 Mermaid UML diagrams. ASCII diagrams in the other docs replaced with links.
 
+### Fixed — migration 002
+
+- `002_commission_settlement.sql` read `guide_bookings.updated_at`, which doesn't exist, so it failed
+  partway on every database. It now uses `created_at` for back-filled guide settlements.
+- The development database now has 002, 003 and 006 applied. Verified there: checkout holds a 20%
+  advance (৳80 of ৳400 incl. ৳120 delivery), vendor cancellation refunds it and restores stock, and
+  the shop shows Sylhet's 4 foods and 2 products.
+
 ### Fixed — images
 
 - All 50 uploaded-image references in the local database were absolute (`http://localhost:8080/...`)

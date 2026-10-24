@@ -86,7 +86,30 @@ for the full pre-merge checklist.
   persistent directory that is **not** web-accessible. Back it up with the database.
 - Do not load `seed.sql` in production (it contains known-password accounts).
 
+**Images: what makes them work on any host**
+
+- The database stores uploaded images as relative paths (`/api/product-images/<id>`,
+  `/api/profile-images/<id>`); the frontend adds the API address when displaying them. Never store
+  `http://localhost...` URLs; if an old database has them, run `004_portable_image_paths.sql`.
+- The image files live in `heritagebd-data/uploads/products` and `.../profiles` **inside the project
+  and are committed to git**, so they deploy with the code. `.../private` (NID and licence documents)
+  is git-ignored: copy it to the server separately and never make it web-accessible.
+- On the server the API serves those files itself, so `heritagebd-data/` must sit next to `backend/`
+  (or set `HERITAGE_UPLOAD_DIR`) and be writable for new uploads.
+- The database and seed contain **no external image links**: demo photos that used to come from
+  Unsplash are local copies in `uploads/products` (migration `007_local_demo_images.sql`). Photos
+  Unsplash had deleted show a HeritageBD "Photo coming soon" placeholder
+  (`/api/product-images/a2998d77660b2504af2ab639b4268df4`); replace them from the admin pages.
+- Hard-coded images in the frontend source (`src/`, for example trip planner destinations and the
+  landing page) are still Unsplash links.
+
 **Frontend**
+
+- API address: set `VITE_API_URL` at build time when the API is on another host
+  (`VITE_API_URL=https://api.example.com npm run build`). If it is not set, a production build uses
+  the site's own origin, which suits hosting the frontend and `backend/` on one domain with `/api/*`
+  routed to `backend/index.php`. Development builds still default to `http://localhost:8080`.
+- The page title and description come from `.figma/make/site.json`.
 
 - `npm run build` and host `dist/` on any static host. Configure SPA fallback (all unknown paths →
   `index.html`) because the app uses `BrowserRouter`.

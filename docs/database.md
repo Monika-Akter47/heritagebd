@@ -78,6 +78,7 @@ includes everything. Upgrades need these in `backend/database/migrations/`:
 | `add_site_image_settings.sql` | Homepage image settings |
 | `004_portable_image_paths.sql` | Rewrites absolute upload URLs to relative `/api/...` paths |
 | `005_auth_hardening.sql` | Hashes existing tokens in place, adds `auth_attempts` and a token-expiry index. **Required** by the current backend; run once |
+| `007_local_demo_images.sql` | Points every `images.unsplash.com` image at its local copy in `uploads/products` (deleted photos → placeholder). Safe to re-run |
 | `006_local_foods.sql` | Creates `local_foods` with the 32 reference foods. Safe to re-run (`IF NOT EXISTS`, `INSERT IGNORE`) |
 
 ### Checking an existing database

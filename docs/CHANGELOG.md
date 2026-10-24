@@ -22,6 +22,27 @@ All notable changes to HeritageBD. The format follows
   places in the same district.
 - `docs/diagrams.md`: 13 Mermaid UML diagrams. ASCII diagrams in the other docs replaced with links.
 
+### Changed — demo images are local
+
+- The 40 distinct Unsplash image URLs used by the database and `seed.sql` were downloaded into
+  `heritagebd-data/uploads/products` (named by a hash of the URL) and are served by the API.
+  Migration `007_local_demo_images.sql` rewrites existing databases; `seed.sql` was updated
+  (88 links). The development database has 007 applied.
+- 9 of those URLs (5 photos) had been deleted by Unsplash and were already showing as broken images.
+  They now use a HeritageBD "Photo coming soon" placeholder that admins can replace.
+- Verified: 0 external image URLs remain in the database; all 74 distinct images it references return
+  HTTP 200 from the API; a fresh install from `schema.sql` + `seed.sql` has no external links.
+
+### Fixed — deployment
+
+- Uploaded product and profile images (61 files, about 9.5 MB) were git-ignored, so a deployment had
+  none of the images the database refers to. They are now tracked; private documents stay ignored.
+- A production build without `VITE_API_URL` pointed every API call and image at
+  `http://localhost:8080`. It now falls back to the site's own origin (development is unchanged).
+- Browser tab title was "Figma Make App"; it's now "HeritageBD – Explore Bangladesh's Heritage".
+- Audit: all 50 uploaded-image references in the database are relative and every referenced file
+  exists in the project; the other 41 were `images.unsplash.com` links (now local, see above).
+
 ### Fixed — migration 002
 
 - `002_commission_settlement.sql` read `guide_bookings.updated_at`, which doesn't exist, so it failed

@@ -7,7 +7,13 @@
  *  `php -S localhost:8080 index.php` run from the backend/ folder).
  */
 
-const API_URL = ((import.meta as any).env?.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '');
+// Without VITE_API_URL a production build talks to the site it is served from (frontend and
+// backend on one host), instead of localhost on the visitor's machine. Image URLs are built
+// from this too, so this is what makes stored /api/... image paths work after deployment.
+const API_URL = (
+  (import.meta as any).env?.VITE_API_URL
+  || ((import.meta as any).env?.DEV ? 'http://localhost:8080' : window.location.origin)
+).replace(/\/+$/, '');
 
 const TOKEN_KEY = 'heritagebd_token';
 

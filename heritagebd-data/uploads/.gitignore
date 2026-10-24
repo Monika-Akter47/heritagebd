@@ -1,2 +1,5 @@
-*
-!.gitignore
+# Product and profile images are public content referenced by the database
+# (/api/product-images/<id>, /api/profile-images/<id>), so they ship with the
+# project and deploy wherever it goes.
+# Verification documents (NID, licences) are private personal data: never commit them.
+private/

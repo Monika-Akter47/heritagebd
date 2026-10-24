@@ -31,7 +31,7 @@ Never test against a database you care about: `schema.sql` drops every table.
 
 - Edit `backend/database/schema.sql` so fresh installs get the change.
 - Add `backend/database/migrations/NNN_short_name.sql` for existing installs. Use the next number
-  (currently `007`), and make it safe to read top to bottom (`IF NOT EXISTS` where MySQL allows it).
+  (currently `008`), and make it safe to read top to bottom (`IF NOT EXISTS` where MySQL allows it).
 - List the migration in [database.md](database.md#migrations) and the changelog.
 
 ## Backend conventions

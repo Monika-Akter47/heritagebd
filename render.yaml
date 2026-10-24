@@ -2,7 +2,7 @@
 # Database: Supabase (PostgreSQL). Frontend: Vercel. See docs/deploy-vercel.md.
 services:
   - type: web
-    name: heritagebd-api          # becomes https://heritagebd-api.onrender.com if the name is free
+    name: heritagebd-api          # live at https://heritagebd-api.onrender.com (vercel.json points here)
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .              # repo root, so the committed images are copied into the image

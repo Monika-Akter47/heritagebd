@@ -8,6 +8,7 @@ React single-page app (`src/`, hosted on Vercel) talking to a framework-less PHP
 |---|---|
 | [architecture.md](architecture.md) | System overview, request lifecycle, repo layout |
 | [setup.md](setup.md) | Local development, environment variables, deployment |
+| [deploy-bn.md](deploy-bn.md) | ডিপ্লয় গাইড বাংলায় (Vercel + Render + Supabase) |
 | [deploy-vercel.md](deploy-vercel.md) | Step by step: frontend on Vercel, PHP API on Render (Docker), database on Supabase (PostgreSQL) |
 | [frontend.md](frontend.md) | Routes, global state, API client, data sources |
 | [api.md](api.md) | Full endpoint reference with auth requirements |

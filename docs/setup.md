@@ -77,6 +77,9 @@ for the full pre-merge checklist.
 
 ## 5. Deployment
 
+For Vercel (frontend) + Render (backend) + hosted MySQL, follow the step-by-step
+[deploy-vercel.md](deploy-vercel.md). The notes below apply to any host.
+
 **API**
 
 - Apache/cPanel: upload `backend/` as-is; `.htaccess` routes to `index.php` (needs `mod_rewrite`

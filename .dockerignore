@@ -1,0 +1,9 @@
+# Docker build context is the repo root (see backend/Dockerfile). Send only what
+# the API image needs: the backend code and the public uploaded images.
+*
+!backend/
+!heritagebd-data/uploads/products/
+!heritagebd-data/uploads/profiles/
+backend/tests/
+backend/README.md
+backend/Dockerfile

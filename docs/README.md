@@ -8,6 +8,7 @@ backed by MySQL/MariaDB.
 |---|---|
 | [architecture.md](architecture.md) | System overview, request lifecycle, repo layout |
 | [setup.md](setup.md) | Local development, environment variables, deployment |
+| [deploy-vercel.md](deploy-vercel.md) | Step-by-step: frontend on Vercel, PHP backend on Render (Docker), hosted MySQL |
 | [frontend.md](frontend.md) | Routes, global state, API client, data sources |
 | [api.md](api.md) | Full endpoint reference with auth requirements |
 | [database.md](database.md) | Tables, enums, migrations |

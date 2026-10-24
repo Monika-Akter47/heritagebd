@@ -7,6 +7,7 @@ reviews, chat, notifications and an admin panel.
 **Stack:** React 19 + Vite 8 + TypeScript + Tailwind 4 (frontend) · PHP 8 REST API (PDO, no framework) · MySQL / MariaDB.
 
 Full documentation lives in [`docs/`](docs/README.md), including the [changelog](docs/CHANGELOG.md).
+Deploying? See [docs/deploy-vercel.md](docs/deploy-vercel.md) (Vercel frontend + PHP backend on Render).
 
 ---
 

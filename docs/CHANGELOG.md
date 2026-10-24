@@ -22,6 +22,15 @@ All notable changes to HeritageBD. The format follows
   places in the same district.
 - `docs/diagrams.md`: 13 Mermaid UML diagrams. ASCII diagrams in the other docs replaced with links.
 
+### Fixed — Docker image had no images
+
+- `backend/Dockerfile` was built with `backend/` as context and pointed uploads at an empty folder,
+  so every image would 404 on Render. It now builds from the repo root and copies
+  `heritagebd-data/uploads/products` and `/profiles` into the image; a root `.dockerignore` sends only
+  those and `backend/`. On Render set Docker Build Context Directory to `.`. Not test-built here
+  (Docker unavailable on the dev machine).
+- New guide: [deploy-vercel.md](deploy-vercel.md).
+
 ### Changed — demo images are local
 
 - The 40 distinct Unsplash image URLs used by the database and `seed.sql` were downloaded into

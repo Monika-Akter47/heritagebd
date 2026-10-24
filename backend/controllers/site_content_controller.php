@@ -1,12 +1,14 @@
 <?php
 
 function site_homepage_images(PDO $pdo): void {
+    // Defaults are images shipped in heritagebd-data/uploads (the former Unsplash hero and map
+    // photos were deleted upstream). Admins override them from the homepage image editor.
     $defaults = [
-        'heroImage' => 'https://images.unsplash.com/photo-1601315773738-d529c1a65d08?w=1920&h=1080&fit=crop&auto=format',
-        'mapImage' => 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=800&h=600&fit=crop&auto=format',
-        'testimonialAvatar1' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&auto=format',
-        'testimonialAvatar2' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&auto=format',
-        'testimonialAvatar3' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&auto=format',
+        'heroImage' => '/api/product-images/835d69733226b8c1632d5527003e3f35',          // Lalbagh Fort
+        'mapImage' => '/api/product-images/c6ca3a2a90150458aed55de5116908d1',           // Sylhet tea gardens
+        'testimonialAvatar1' => '/api/product-images/a267387730a3ad03cde593ca8f5762c1',
+        'testimonialAvatar2' => '/api/product-images/6a1fd8b387fb84eaafdb777895c3c64c',
+        'testimonialAvatar3' => '/api/product-images/80ea735e9138eb83b035c76fe03f499c',
     ];
     $keys = [
         'homepage_hero_image' => 'heroImage',
@@ -38,17 +40,16 @@ function admin_homepage_images_update(PDO $pdo): void {
     foreach ($allowed as $field => $key) {
         if (!array_key_exists($field, $data)) continue;
         $url = $data[$field];
-        if (!is_string($url) || trim($url) === '' || strlen($url) > 500
-            || !filter_var($url, FILTER_VALIDATE_URL)
-            || !in_array(strtolower((string)parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)) {
+        if (!is_image_ref($url)) {
             json_error("A valid $field URL is required.", 422);
         }
         $updates[$key] = trim($url);
     }
     if (!$updates) json_error('Choose at least one homepage image to update.', 422);
     $stmt = $pdo->prepare(
-        'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)
-         ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
+        'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ' . (db_is_pgsql()
+            ? 'ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = CURRENT_TIMESTAMP'
+            : 'ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)')
     );
     $pdo->beginTransaction();
     try {

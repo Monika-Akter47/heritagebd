@@ -1,14 +1,14 @@
 # HeritageBD documentation
 
 HeritageBD is a heritage-tourism and local-marketplace platform for Bangladesh. It is a
-React single-page app (`src/`) talking to a framework-less PHP 8 REST API (`backend/`)
-backed by MySQL/MariaDB.
+React single-page app (`src/`, hosted on Vercel) talking to a framework-less PHP 8 REST API
+(`backend/`, on Render) backed by PostgreSQL on Supabase, or MySQL/MariaDB for local development.
 
 | Document | What it covers |
 |---|---|
 | [architecture.md](architecture.md) | System overview, request lifecycle, repo layout |
 | [setup.md](setup.md) | Local development, environment variables, deployment |
-| [deploy-vercel.md](deploy-vercel.md) | Step-by-step: frontend on Vercel, PHP backend on Render (Docker), hosted MySQL |
+| [deploy-vercel.md](deploy-vercel.md) | Step by step: frontend on Vercel, PHP API on Render (Docker), database on Supabase (PostgreSQL) |
 | [frontend.md](frontend.md) | Routes, global state, API client, data sources |
 | [api.md](api.md) | Full endpoint reference with auth requirements |
 | [database.md](database.md) | Tables, enums, migrations |

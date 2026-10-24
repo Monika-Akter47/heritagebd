@@ -1,0 +1,18 @@
+# Render Blueprint for the HeritageBD PHP API (Render → New → Blueprint → this repo).
+# Database: Supabase (PostgreSQL). Frontend: Vercel. See docs/deploy-vercel.md.
+services:
+  - type: web
+    name: heritagebd-api          # becomes https://heritagebd-api.onrender.com if the name is free
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .              # repo root, so the committed images are copied into the image
+    region: singapore             # same region as the Supabase project (ap-southeast-1)
+    plan: free
+    healthCheckPath: /api/payment-terms
+    envVars:
+      - key: DATABASE_URL         # Supabase → Connect → "Session pooler" URI, with your DB password
+        sync: false
+      - key: CORS_ORIGIN          # your Vercel URL, e.g. https://heritagebd.vercel.app (only needed without the /api rewrite)
+        sync: false
+      - key: APP_TIMEZONE
+        value: Asia/Dhaka

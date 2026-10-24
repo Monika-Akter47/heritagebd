@@ -20,7 +20,7 @@ function issue_token(PDO $pdo, string $userId): string {
 function purge_expired_auth_rows(PDO $pdo): void {
     $pdo->exec('DELETE FROM auth_tokens WHERE expires_at <= NOW()');
     $pdo->exec('DELETE FROM password_resets WHERE expires_at <= NOW() OR used = 1');
-    $pdo->exec('DELETE FROM auth_attempts WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)');
+    $pdo->prepare('DELETE FROM auth_attempts WHERE created_at < ?')->execute([date('Y-m-d H:i:s', time() - 86400)]);
 }
 
 function bearer_token(): ?string {

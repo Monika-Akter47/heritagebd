@@ -16,9 +16,9 @@ function client_ip(): string {
 function throttle_check(PDO $pdo, string $action, string $identifier, int $max): void {
     $stmt = $pdo->prepare(
         'SELECT COUNT(*) FROM auth_attempts
-         WHERE action = ? AND identifier = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)'
+         WHERE action = ? AND identifier = ? AND created_at > ?'
     );
-    $stmt->execute([$action, $identifier, THROTTLE_WINDOW_SECONDS]);
+    $stmt->execute([$action, $identifier, date('Y-m-d H:i:s', time() - THROTTLE_WINDOW_SECONDS)]);
     if ((int)$stmt->fetchColumn() >= $max) {
         header('Retry-After: ' . THROTTLE_WINDOW_SECONDS);
         json_error('Too many attempts. Please wait 15 minutes and try again.', 429);

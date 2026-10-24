@@ -36,6 +36,15 @@
   about 1 km.
 - Server errors are logged; clients get a generic message.
 
+## Supabase
+
+- Every table has Row Level Security enabled with **no policies**. Supabase's public Data API
+  (PostgREST, reachable with the project's anon key) therefore returns nothing; the PHP API connects as
+  `postgres`, which bypasses RLS. Don't add policies unless you deliberately want a table public.
+- The backend connects over TLS (`sslmode=require`; `verify-full` when `DB_SSL_CA_PEM` is set) through
+  the Session pooler.
+- Keep the database password only in Render's `DATABASE_URL`; never in the repo or the frontend.
+
 ## Input and SQL
 
 - All queries use PDO prepared statements with emulation disabled.
@@ -57,7 +66,9 @@
 - [ ] `HERITAGE_UPLOAD_DIR` persistent, not web-served, backed up.
 - [ ] Working mail transport for password reset.
 - [ ] Real payment gateway in place of the demo stub.
-- [ ] Migration `005_auth_hardening.sql` applied.
+- [ ] Migration `005_auth_hardening.sql` applied (MySQL) / `postgres/schema.sql` used (Supabase).
+- [ ] Demo accounts' `password123` changed, admin first (list in [deploy-vercel.md](deploy-vercel.md#4-after-the-first-deploy)).
+- [ ] Supabase database password reset and stored only in Render.
 - [ ] Behind a proxy or load balancer, real client IP forwarded into `REMOTE_ADDR` (rate limiting depends on it).
 - [ ] `APP_TIMEZONE` set if the business does not operate on Asia/Dhaka time.
 - [ ] PHP `display_errors=Off`, errors to log.

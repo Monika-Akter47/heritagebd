@@ -32,18 +32,35 @@ usage, table count and the guide-completion step. Re-check them when features ch
 can't set it, although `PREORDER_TRANSITION_ROLES` reserves it for admins. Cancelling already marks the
 advance `refunded`; decide whether `cancelled → refunded` (admin) should be allowed, and add it.
 
-### 6. Food photos
+### 6. Two databases to keep in step
+
+MySQL (local) and PostgreSQL (Supabase) schemas are generated from one source, but schema changes must
+still be applied to Supabase by hand, and new SQL must be portable (see
+[contributing.md](contributing.md#writing-sql-for-both-databases)). Run the smoke test on both.
+
+### 7. Demo passwords on the production database
+
+The data copied to Supabase includes demo accounts using `password123`, the admin among them. Change
+them right after deploying (list in [deploy-vercel.md](deploy-vercel.md#4-after-the-first-deploy)).
+
+### 8. Verification documents not on Render
+
+The 5 uploaded documents recorded in the database exist only in the local
+`heritagebd-data/uploads/private` (deliberately not in git). Copy them to a Render persistent disk, or
+admin downloads return 404.
+
+### 9. Food photos
 
 The 32 reference foods ship without photos (an emoji per type is shown). Add real photos from
 Admin → Traditional Foods.
 
-### 7. Smaller items
+### 10. Smaller items
 
 - The catch-all route `*` renders Landing instead of a 404 page.
 - Most API responses are still `any` in `src/services/api.ts`. The interfaces in `src/types` exist
   but aren't wired to the client.
-- The only automated test is `backend/tests/settlement_smoke.php`; there is no frontend test suite
-  and no CI.
+- Backend tests are `settlement_smoke.php` and the HTTP smoke test `api_smoke.php` (run by hand);
+  there is no frontend test suite and no CI running them automatically.
 - No migration runner or `schema_migrations` table.
 - Very large page components (`TripPlanner.tsx`, `AdminDashboard.tsx`, `AdminSections.tsx`,
   `VendorDashboard.tsx`).

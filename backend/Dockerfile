@@ -5,7 +5,10 @@
 # On Render: Dockerfile Path = backend/Dockerfile, Docker Build Context Directory = .
 FROM php:8.2-apache
 
-RUN docker-php-ext-install pdo_mysql \
+# pdo_pgsql for Supabase (PostgreSQL), pdo_mysql so the same image still runs against MySQL.
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev \
+ && docker-php-ext-install pdo_mysql pdo_pgsql \
+ && rm -rf /var/lib/apt/lists/* \
  && a2enmod rewrite headers \
  && sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 

@@ -4,7 +4,7 @@
 flowchart LR
     SPA["React 19 SPA (Vite)<br/>src/ · react-router 7<br/>Tailwind 4 · Leaflet"] -- "fetch + Bearer token" --> API["PHP 8 API · backend/<br/>index.php → controllers/<br/>helpers/ · config/"]
     API -- "{ success, data }" --> SPA
-    API -- PDO --> DB[("MySQL / MariaDB<br/>~52 tables")]
+    API -- PDO --> DB[("Supabase PostgreSQL (production)<br/>or MySQL (local XAMPP)<br/>~52 tables")]
     API -- files --> FS[("heritagebd-data/uploads/<br/>outside the web root")]
 ```
 
@@ -16,8 +16,8 @@ More diagrams (use cases, domain model, ER, sequences, state machines) are in
 | Layer | Technology |
 |---|---|
 | Frontend | React 19, React Router 7, TypeScript 5.7, Vite 8, Tailwind CSS 4, Leaflet / react-leaflet (maps), Recharts (dashboards), lucide-react (icons) |
-| Backend | Plain PHP 8 (no framework), PDO with real prepared statements (`ATTR_EMULATE_PREPARES = false`) |
-| Database | MySQL 8 / MariaDB 10.4+, `utf8mb4` |
+| Backend | Plain PHP 8 (no framework), PDO with real prepared statements; `HeritagePDO` adapts the one MySQL/PostgreSQL difference (`LIKE` → `ILIKE`) |
+| Database | **Supabase PostgreSQL 17** in production; MySQL 8 / MariaDB 10.4+ for local development. Chosen by `DATABASE_URL` / `DB_DRIVER` |
 | Tooling | Figma Make scaffold (`.figma/make/`, custom Vite plugins in `vite.config.ts`), oxfmt formatter |
 
 ## Repository layout
@@ -35,7 +35,7 @@ heritage/
 │   └── imports/pasted_text/ Product specs used while building features (not runtime code)
 ├── backend/
 │   ├── index.php            Front controller + regex route table
-│   ├── config/              database.php (PDO), cors.php
+│   ├── config/              database.php (PDO for MySQL or PostgreSQL), cors.php
 │   ├── helpers/             auth, throttle, areas (BD geography), response, notify, payments (demo stub), earnings (settlements)
 │   ├── controllers/         One file per resource, plain functions `resource_action($pdo, ...$params)`
 │   ├── database/            schema.sql, seed.sql (hand-maintained), migrations/ (002–006 + named)

@@ -29,6 +29,18 @@ function normalize_bools(array $data): array {
     return $data;
 }
 
+/**
+ * An image reference the API can store: an absolute http(s) URL, or one of our own uploads as
+ * the host-independent path the frontend sends (/api/product-images/<id>, /api/profile-images/<id>).
+ */
+function is_image_ref($value): bool {
+    if (!is_string($value) || trim($value) === '' || strlen($value) > 500) return false;
+    $value = trim($value);
+    if (preg_match('#^/api/(product|profile)-images/[a-f0-9]{32}$#', $value)) return true;
+    return filter_var($value, FILTER_VALIDATE_URL) !== false
+        && in_array(strtolower((string)parse_url($value, PHP_URL_SCHEME)), ['http', 'https'], true);
+}
+
 function require_fields(array $data, array $fields): void {
     $missing = [];
     foreach ($fields as $f) {

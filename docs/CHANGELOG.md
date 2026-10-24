@@ -3,6 +3,44 @@
 All notable changes to HeritageBD. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); dates are YYYY-MM-DD.
 
+## [Unreleased] — 2026-10-25: Supabase (PostgreSQL), Render, Vercel
+
+### Added
+
+- **PostgreSQL support** alongside MySQL. `config/database.php` reads `DATABASE_URL` (or `DB_DRIVER`)
+  and connects to Supabase over TLS; `HeritagePDO` turns `LIKE` into `ILIKE` on PostgreSQL.
+- `scripts/mysql-to-postgres.php` and `npm run db:pg`: generate `backend/database/postgres/schema.sql`
+  and `seed.sql` from the MySQL files, or convert a `mysqldump`. RLS is enabled on every table.
+- **Supabase project `heritagebd`** (Singapore) with the schema and a verified copy of the local data
+  (50 tables, 727 rows).
+- `render.yaml` (Render Blueprint); the Docker image now includes `pdo_pgsql`. `vercel.json` forwards
+  `/api/*` to Render so the frontend needs no `VITE_API_URL` and no CORS setup.
+- `backend/tests/api_smoke.php` / `npm run test:api`: 121 end-to-end HTTP checks. **They pass on both
+  MySQL and PostgreSQL**, including on a PostgreSQL copy of the real data.
+- `assetUrl()` helper in `src/services/api.ts`.
+- Dev dependencies `@electric-sql/pglite` + `pglite-socket` for a local PostgreSQL test server.
+
+### Changed
+
+- The controllers' MySQL-only SQL is now portable: date maths moved to PHP (`DATE_ADD`, `DATE_SUB`,
+  `DATE_FORMAT`, `MONTH`/`YEAR`/`CURDATE`), double-quoted literals became single-quoted, and the two
+  upserts branch per database.
+- `docs/deploy-vercel.md` rewritten for Vercel + Render + Supabase, plus updates to setup, database,
+  security, contributing, architecture and diagrams (new deployment diagram).
+
+### Fixed
+
+- **Admin and vendor image updates were rejected.** Event, story, place and homepage image endpoints
+  only accepted absolute `http(s)` URLs, but the frontend sends uploads as relative
+  `/api/product-images/<id>` paths, so "Change photo" failed with "valid URL required". A shared
+  `is_image_ref()` now accepts both.
+- **Broken homepage hero.** The default hero and map images were Unsplash photos that no longer exist.
+  The defaults (API and frontend fallback) now use project images: Lalbagh Fort and the Sylhet tea gardens.
+- **Orphan rows in the seed.** Three reviews and one pre-order referenced users that didn't exist
+  (MySQL accepted them with foreign-key checks off). The missing demo users were added to `seed.sql`
+  and the local database.
+- Migration 002 referenced a non-existent `guide_bookings.updated_at` (fixed earlier).
+
 ## [Unreleased] — 2026-10-24
 
 ### Added — local foods and products by area

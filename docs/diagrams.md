@@ -19,6 +19,7 @@ controller and table names match the source.
 | 11 | [Guide booking states](#11-guide-booking-states) | State machine |
 | 12 | [Local foods and products by area](#12-local-foods-and-products-by-area) | Sequence |
 | 13 | [Frontend component structure](#13-frontend-component-structure) | Component |
+| 14 | [Deployment](#14-deployment) | Deployment |
 
 ---
 
@@ -37,7 +38,7 @@ flowchart LR
         HLP["helpers/<br/>auth · throttle · areas<br/>earnings · payments · notify"]
         IDX --> CTRL --> HLP
     end
-    DB[("MySQL / MariaDB<br/>~52 tables")]
+    DB[("Supabase PostgreSQL<br/>(MySQL locally)<br/>~52 tables, RLS on")]
     FS[("heritagebd-data/uploads<br/>products · profiles · private")]
     PAY["Payment gateway<br/>(not connected; demo stub)"]
     MAIL["PHP mail()<br/>reset codes"]
@@ -432,4 +433,24 @@ flowchart TB
     Hook --> API["services/api.ts<br/>request · upload · ApiError"]
     App --> Ctx["context/AppContext<br/>session · cart · notifications (20 s poll)"]
     Ctx --> API
+```
+
+## 14. Deployment
+
+```mermaid
+flowchart LR
+    subgraph Vercel
+        V["Static React build<br/>vercel.json: /api/* rewrite + SPA fallback"]
+    end
+    subgraph Render["Render · Singapore"]
+        R["Docker: php:8.2-apache<br/>pdo_pgsql + pdo_mysql<br/>backend/ + committed images"]
+    end
+    subgraph Supabase["Supabase · ap-southeast-1"]
+        P[("PostgreSQL 17<br/>RLS on every table")]
+        API2["Data API (PostgREST)<br/>blocked by RLS"]
+    end
+    Browser --> V
+    V -- "/api/*" --> R
+    R -- "Session pooler :5432<br/>TLS, IPv4" --> P
+    API2 -. "no policies = no rows" .-> P
 ```

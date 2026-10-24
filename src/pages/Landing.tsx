@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, MapPin, Users, Star, ShoppingBag, Shield, Award, Compass, ChevronRight, Flame, Leaf, QrCode, Clock } from 'lucide-react';
-import { placesApi, guidesApi, productsApi, eventsApi, storiesApi, siteContentApi } from '../services/api';
+import { placesApi, guidesApi, productsApi, eventsApi, storiesApi, siteContentApi, assetUrl } from '../services/api';
 import { useApiData } from '../hooks/useApiData';
 import PlaceCard from '../components/cards/PlaceCard';
 import GuideCard from '../components/cards/GuideCard';
@@ -48,7 +48,7 @@ export default function Landing() {
         {/* Background */}
         <div className="absolute inset-0">
           <img
-            src={homepageImages?.heroImage || 'https://images.unsplash.com/photo-1601315773738-d529c1a65d08?w=1920&h=1080&fit=crop&auto=format'}
+            src={homepageImages?.heroImage || assetUrl('/api/product-images/835d69733226b8c1632d5527003e3f35')}
             alt="Bangladesh Heritage"
             className="w-full h-full object-cover"
           />
@@ -460,7 +460,7 @@ export default function Landing() {
             </div>
             <div className="relative h-80 lg:h-auto">
               <img
-                src={homepageImages?.mapImage || 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=800&h=600&fit=crop&auto=format'}
+                src={homepageImages?.mapImage || assetUrl('/api/product-images/c6ca3a2a90150458aed55de5116908d1')}
                 alt="Bangladesh Map"
                 className="w-full h-full object-cover"
               />
@@ -520,21 +520,21 @@ export default function Landing() {
             {
               name: 'Sarah Mitchell',
               country: 'United Kingdom',
-              avatar: homepageImages?.testimonialAvatar1 || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&auto=format',
+              avatar: homepageImages?.testimonialAvatar1 || assetUrl('/api/product-images/a267387730a3ad03cde593ca8f5762c1'),
               text: 'HeritageBD transformed my Bangladesh trip. My guide Arif brought Lalbagh Fort to life with stories I could never have found in a guidebook. The Jamdani saree I bought is my most treasured souvenir.',
               rating: 5,
             },
             {
               name: 'Takeshi Yamamoto',
               country: 'Japan',
-              avatar: homepageImages?.testimonialAvatar2 || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&auto=format',
+              avatar: homepageImages?.testimonialAvatar2 || assetUrl('/api/product-images/6a1fd8b387fb84eaafdb777895c3c64c'),
               text: 'The Sundarbans expedition with Nazmul was extraordinary. Spotting deer and spotbill ducks in that primeval mangrove forest — and the sunset on the bay — I will never forget it.',
               rating: 5,
             },
             {
               name: 'Amina Hassan',
               country: 'UAE',
-              avatar: homepageImages?.testimonialAvatar3 || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&auto=format',
+              avatar: homepageImages?.testimonialAvatar3 || assetUrl('/api/product-images/80ea735e9138eb83b035c76fe03f499c'),
               text: "As a Bangladeshi living abroad, HeritageBD helped me reconnect with my roots. My children now understand where they come from. The platform is beautifully designed and trustworthy.",
               rating: 5,
             },

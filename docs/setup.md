@@ -36,6 +36,10 @@ Check it with `curl http://localhost:8080/api/places`.
 
 | Variable | Default | Purpose |
 |---|---|---|
+| `DATABASE_URL` | *(unset)* | One-line connection URI. `postgresql://…` (Supabase Session pooler) selects PostgreSQL; `mysql://…` selects MySQL. Overrides the `DB_*` values below |
+| `DB_DRIVER` | `mysql` | `mysql` or `pgsql` when not using `DATABASE_URL` |
+| `DB_SSLMODE` | `require` (PostgreSQL) | PostgreSQL TLS mode; becomes `verify-full` when `DB_SSL_CA_PEM` is set; `disable` for a local test server |
+| `DB_SSL_CA_PEM` | *(unset)* | CA certificate text for verifying the database server (MySQL or PostgreSQL) |
 | `DB_HOST` | `127.0.0.1` | MySQL host |
 | `DB_PORT` | `3306` | MySQL port |
 | `DB_NAME` | `heritagebd` | Database name |
@@ -77,7 +81,7 @@ for the full pre-merge checklist.
 
 ## 5. Deployment
 
-For Vercel (frontend) + Render (backend) + hosted MySQL, follow the step-by-step
+For Vercel (frontend) + Render (backend) + Supabase (PostgreSQL), follow the step-by-step
 [deploy-vercel.md](deploy-vercel.md). The notes below apply to any host.
 
 **API**

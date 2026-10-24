@@ -87,8 +87,9 @@ function earnings_months(PDO $pdo, string $where, array $params, string $field):
     $start->modify('-11 months');
     for ($i = 0; $i < 12; $i++) {
         $month = (clone $start)->modify("+{$i} months")->format('Y-m');
-        $stmt = $pdo->prepare("SELECT COALESCE(SUM({$field}),0) FROM settlements WHERE {$where} AND DATE_FORMAT(settled_at, '%Y-%m') = ?");
-        $stmt->execute([...$params, $month]);
+        // Month range instead of DATE_FORMAT so the query runs on MySQL and PostgreSQL.
+        $stmt = $pdo->prepare("SELECT COALESCE(SUM({$field}),0) FROM settlements WHERE {$where} AND settled_at >= ? AND settled_at < ?");
+        $stmt->execute([...$params, "$month-01", date('Y-m-01', strtotime("$month-01 +1 month"))]);
         $out[] = ['month' => $month, 'amount' => (float)$stmt->fetchColumn()];
     }
     return $out;
@@ -136,8 +137,8 @@ function admin_earnings(PDO $pdo): void {
     $start->modify('-11 months');
     for ($i = 0; $i < 12; $i++) {
         $month = (clone $start)->modify("+{$i} months")->format('Y-m');
-        $stmt = $pdo->prepare("SELECT COALESCE(SUM(commission_amount),0) FROM settlements WHERE DATE_FORMAT(settled_at, '%Y-%m') = ?");
-        $stmt->execute([$month]);
+        $stmt = $pdo->prepare('SELECT COALESCE(SUM(commission_amount),0) FROM settlements WHERE settled_at >= ? AND settled_at < ?');
+        $stmt->execute(["$month-01", date('Y-m-01', strtotime("$month-01 +1 month"))]);
         $byMonth[] = ['month' => $month, 'profit' => (float)$stmt->fetchColumn()];
     }
     $topStmt = $pdo->query(

@@ -31,8 +31,9 @@ function cart_add(PDO $pdo): void {
     if ((int)$product['stock'] < 1) json_error('This product is out of stock.', 409);
 
     $pdo->prepare(
-        'INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)
-         ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)'
+        'INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?) ' . (db_is_pgsql()
+            ? 'ON CONFLICT (user_id, product_id) DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity'
+            : 'ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)')
     )->execute([$user['id'], $d['productId'], $qty]);
 
     cart_index($pdo);

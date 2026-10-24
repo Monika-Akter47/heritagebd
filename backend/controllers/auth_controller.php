@@ -42,8 +42,8 @@ function auth_register(PDO $pdo): void {
 
         if ($role === 'vendor') {
             $stmt = $pdo->prepare(
-                'INSERT INTO vendors (user_id, shop_name, shop_description, location, nid_number, trade_license, verification_status)
-                 VALUES (?, ?, ?, ?, ?, ?, "pending")'
+                "INSERT INTO vendors (user_id, shop_name, shop_description, location, nid_number, trade_license, verification_status)
+                 VALUES (?, ?, ?, ?, ?, ?, 'pending')"
             );
             $stmt->execute([
                 $id, $data['shopName'] ?? ($data['name'] . "'s Shop"), $data['shopDescription'] ?? null,
@@ -51,8 +51,8 @@ function auth_register(PDO $pdo): void {
             ]);
         } elseif ($role === 'guide') {
             $stmt = $pdo->prepare(
-                'INSERT INTO guides (user_id, bio, location, price_per_day, nid_number, guide_license, verification_status)
-                 VALUES (?, ?, ?, ?, ?, ?, "pending")'
+                "INSERT INTO guides (user_id, bio, location, price_per_day, nid_number, guide_license, verification_status)
+                 VALUES (?, ?, ?, ?, ?, ?, 'pending')"
             );
             $stmt->execute([
                 $id, $data['bio'] ?? null, $data['location'] ?? null,
@@ -166,8 +166,8 @@ function auth_forgot_password(PDO $pdo): void {
     if ($stmt->fetch()) {
         $otp = (string) random_int(100000, 999999);
         $otpHash = password_hash($otp, PASSWORD_DEFAULT);
-        $pdo->prepare('INSERT INTO password_resets (email, otp_code, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 15 MINUTE))')
-            ->execute([$email, $otpHash]);
+        $pdo->prepare('INSERT INTO password_resets (email, otp_code, expires_at) VALUES (?, ?, ?)')
+            ->execute([$email, $otpHash, date('Y-m-d H:i:s', time() + 15 * 60)]);
         $sent = mail(
             $email,
             'HeritageBD password reset code',

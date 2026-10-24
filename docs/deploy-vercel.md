@@ -1,150 +1,147 @@
-# Deploying to Vercel with the PHP backend
+# Deploying: Vercel + Render + Supabase
 
-Vercel hosts the **React frontend** only: it has no built-in PHP runtime or MySQL. The backend runs as
-a Docker container on a PHP-capable host (this guide uses **Render**; Railway, Fly.io or any VPS work
-the same way), and the database on a **hosted MySQL** (Aiven, TiDB Cloud, PlanetScale, Railway…).
+| Part | Service | What runs there | Config in this repo |
+|---|---|---|---|
+| Frontend | **Vercel** | The React build (`dist/`) | [`vercel.json`](../vercel.json) |
+| Backend | **Render** | The PHP API as a Docker container | [`render.yaml`](../render.yaml), [`backend/Dockerfile`](../backend/Dockerfile) |
+| Database | **Supabase** | PostgreSQL 17 | [`backend/database/postgres/`](../backend/database/postgres/) |
 
 ```mermaid
 flowchart LR
-    U[Visitor] --> V["Vercel<br/>React build (dist/)"]
-    V -- "/api/* (rewrite or VITE_API_URL)" --> R["Render<br/>backend/Dockerfile<br/>PHP 8.2 + Apache"]
-    R -- "TLS" --> DB[("Hosted MySQL")]
+    U[Visitor] --> V["Vercel<br/>heritagebd.vercel.app"]
+    V -- "/api/* rewrite (same origin)" --> R["Render · Singapore<br/>heritagebd-api.onrender.com<br/>PHP 8.2 + Apache"]
+    R -- "Session pooler · TLS · IPv4" --> S[("Supabase · ap-southeast-1<br/>PostgreSQL 17, RLS on")]
     R --- IMG[("/var/heritagebd-uploads<br/>images baked into the image")]
 ```
 
-Order: **database → backend → frontend**, because each step needs the address of the previous one.
+The backend speaks both MySQL (local XAMPP) and PostgreSQL (Supabase); `DATABASE_URL` decides which.
+Everything below was tested end to end against PostgreSQL: `php backend/tests/api_smoke.php` passes
+121/121 checks on both databases.
+
+Order: **Supabase → Render → Vercel**, because each step needs the address of the one before.
 
 ---
 
-## 1. Database (hosted MySQL)
+## 1. Supabase (database)
 
-1. Create a MySQL 8 database with your provider. Note the **host, port, user, password, database
-   name**, and download the **CA certificate** (TLS is required by most providers).
-2. Load the schema and data. The SQL files start with `CREATE DATABASE heritagebd; USE heritagebd;`,
-   which hosted databases usually don't allow, so strip those lines while importing:
+The project **`heritagebd`** (ref `gkjuvygmdiftzosyqcub`, region Singapore) already exists and is
+loaded: schema from `backend/database/postgres/schema.sql`, and a copy of the local XAMPP data
+(50 tables, 727 rows, row counts verified). Row Level Security is enabled on every table with no
+policies, so Supabase's public Data API can read nothing; only the PHP API (connecting as `postgres`)
+can. The Supabase linter's "RLS enabled, no policy" notices are expected.
 
-   ```bash
-   sed -E '/^(CREATE DATABASE|USE) /d' backend/database/schema.sql | mysql --ssl-ca=ca.pem -h HOST -P PORT -u USER -p DBNAME
+What you still need to do:
+
+1. Supabase dashboard → project **heritagebd** → **Project Settings → Database → Reset database
+   password**. Choose a strong password and keep it for step 2.
+2. Click **Connect** (top bar) → **Session pooler** and copy the URI. It looks like
    ```
-   ```bash
-   sed -E '/^(CREATE DATABASE|USE) /d' backend/database/seed.sql | mysql --ssl-ca=ca.pem -h HOST -P PORT -u USER -p DBNAME
+   postgresql://postgres.gkjuvygmdiftzosyqcub:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
    ```
+   Use the **Session pooler**, not "Direct connection" (IPv6 only, and Render has no IPv6) and not
+   "Transaction pooler" (port 6543, which breaks PHP's prepared statements). If the password contains
+   characters such as `@`, `:` or `/`, URL-encode them (`@` → `%40`).
 
-   - `seed.sql` creates demo accounts that all use `password123`. For a real launch, skip it or
-     change/delete those accounts immediately afterwards.
-   - **Moving your existing local data instead?** Export it and import that dump:
-     `C:\xampp\mysql\bin\mysqldump -u root --single-transaction heritagebd > heritagebd.sql`, then
-     run the same `sed … | mysql …` command on `heritagebd.sql`. Make sure migrations 002–007 are
-     applied locally first (see [database.md](database.md#migrations)).
+### Starting a fresh Supabase project instead
 
-## 2. Backend on Render (Docker)
+In the SQL editor, run `backend/database/postgres/schema.sql`, then either
+`backend/database/postgres/seed.sql` (demo data) or your own converted data:
 
-The image is defined in [`backend/Dockerfile`](../backend/Dockerfile). It is built from the
-**repository root** so the committed images in `heritagebd-data/uploads/products` and `/profiles`
-are copied in; the root [`.dockerignore`](../.dockerignore) keeps everything else (node_modules,
-src, private documents) out.
+```bash
+C:\xampp\mysql\bin\mysqldump -u root --no-create-info --complete-insert --skip-triggers heritagebd --ignore-table=heritagebd.auth_tokens --ignore-table=heritagebd.auth_attempts --ignore-table=heritagebd.password_resets > data.mysql.sql
+```
+```bash
+php scripts/mysql-to-postgres.php data data.mysql.sql > data.pg.sql
+```
 
-1. Push the repo to GitHub (already at `Monika-Akter47/heritagebd`).
-2. Render → **New → Web Service** → connect the repo.
-3. Settings:
+Run `data.pg.sql` after deleting the default rows the schema inserts
+(`DELETE FROM commission_settings; DELETE FROM local_foods;`), since the dump contains them too.
 
-   | Setting | Value |
-   |---|---|
-   | Language / Runtime | **Docker** |
-   | Dockerfile Path | `backend/Dockerfile` |
-   | Docker Build Context Directory | `.` (repo root, **not** `backend`) |
-   | Health Check Path | `/api/payment-terms` |
+## 2. Render (PHP API)
 
-4. Environment variables:
+1. Render → **New → Blueprint** → connect `Monika-Akter47/heritagebd`. Render reads
+   [`render.yaml`](../render.yaml): Docker, `backend/Dockerfile`, build context = repo root, region
+   Singapore, free plan, health check `/api/payment-terms`.
+   (Manual alternative: **New → Web Service → Docker**, Dockerfile Path `backend/Dockerfile`, Docker
+   Build Context Directory **`.`**, not `backend`.)
+2. When asked for environment variables:
 
    | Variable | Value |
    |---|---|
-   | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` | From step 1 |
-   | `DB_SSL_CA_PEM` | The CA certificate's full text. Paste it as-is, or on one line with `\n` between lines |
-   | `CORS_ORIGIN` | Your Vercel URL, e.g. `https://heritagebd.vercel.app` (no trailing slash). Not needed if you use the rewrite in step 3 option A |
-   | `APP_TIMEZONE` | `Asia/Dhaka` (default) |
+   | `DATABASE_URL` | The Session pooler URI from step 1, with your password |
+   | `CORS_ORIGIN` | Your Vercel URL (e.g. `https://heritagebd.vercel.app`). Harmless with the rewrite; required if you call Render directly |
+   | `APP_TIMEZONE` | `Asia/Dhaka` (preset) |
 
-   `HERITAGE_UPLOAD_DIR` is already set inside the image; don't override it.
+   TLS is on by default for PostgreSQL (`sslmode=require`). To also verify the server certificate,
+   download it from Supabase (Project Settings → Database → SSL) and paste its text into
+   `DB_SSL_CA_PEM`; the API then uses `verify-full`.
+3. Deploy, then check:
+   - `https://heritagebd-api.onrender.com/api/places` returns JSON with 12 places.
+   - `https://heritagebd-api.onrender.com/api/product-images/835d69733226b8c1632d5527003e3f35` shows Lalbagh Fort.
+   - `https://heritagebd-api.onrender.com/api/local-foods?area=Sylhet` returns 4 foods.
 
-5. Deploy, then check: `https://YOUR-API.onrender.com/api/places` returns JSON, and an image such as
-   `https://YOUR-API.onrender.com/api/product-images/a2998d77660b2504af2ab639b4268df4` shows the
-   HeritageBD placeholder.
+   If Render gave the service a different name, use that URL here and in step 3.
 
-**About uploads on Render:** images committed to git are inside the image and always available. Files
-uploaded through the site after deploy (new product photos, verification documents) are written to the
-container's disk, which on the **free plan is wiped on every restart or redeploy**. For real use, add a
-Render **persistent disk** mounted at `/var/heritagebd-uploads` (paid plans). With a disk mounted, the
-baked-in images are hidden by the empty disk on first boot, so copy `heritagebd-data/uploads/products`
-and `/profiles` onto the disk once (Render shell, `scp`, or upload through the admin pages). Back the
-disk up together with the database.
+**Uploads on Render's free plan.** The product and profile images committed to git are copied into
+the image and always available. Files uploaded through the site after deploy (new photos, verification
+documents) go to the container disk, which the **free plan wipes on every restart and redeploy**. For
+real use, add a paid **persistent disk** mounted at `/var/heritagebd-uploads`, then copy
+`heritagebd-data/uploads/products`, `/profiles` and `/private` onto it once (the empty disk hides the
+baked-in images). Until then, the 5 verification documents recorded in the database exist only on
+your computer in `heritagebd-data/uploads/private`, so admin downloads of them return 404 on Render.
 
-The free plan also sleeps after ~15 minutes idle; the first request afterwards takes 30–60 s.
+The free plan also sleeps after about 15 minutes idle; the first request afterwards takes 30–60 s.
 
-## 3. Frontend on Vercel
+## 3. Vercel (frontend)
 
-[`vercel.json`](../vercel.json) already sets the framework (Vite), build command, `dist` output and the
-SPA fallback, so deep links like `/places/p1` work.
+1. Vercel → **Add New → Project** → import `Monika-Akter47/heritagebd`. Root directory: repo root.
+   Framework, build command and output come from [`vercel.json`](../vercel.json).
+2. **Don't set `VITE_API_URL`.** `vercel.json` forwards `/api/*` to
+   `https://heritagebd-api.onrender.com`, and production builds call the site's own origin, so the
+   browser never talks to Render directly: no CORS, preview deployments work, images load through
+   the same rewrite.
+   If your Render URL differs, change the `destination` in `vercel.json` and push.
+3. Deploy. Deep links such as `/places/p1` work through the SPA fallback rule.
 
-1. Vercel → **Add New → Project** → import the GitHub repo. Root directory: the repo root.
-2. Connect it to the backend with **one** of these:
+(Alternative: set `VITE_API_URL=https://heritagebd-api.onrender.com` in Vercel's environment
+variables, remove the `/api` rewrite, and set `CORS_ORIGIN` on Render to your exact Vercel URL.
+Preview URLs will then be blocked by CORS.)
 
-### Option A (recommended): same-origin rewrite, no CORS
+## 4. After the first deploy
 
-Vercel forwards `/api/*` to Render, so the browser only ever talks to your Vercel domain. Images,
-logins and preview deployments all work without CORS settings, and you don't set `VITE_API_URL`
-(production builds then use the site's own origin; see `src/services/api.ts`).
-
-Edit `vercel.json`, putting the API rule **first**:
-
-```json
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-API.onrender.com/api/:path*" },
-    { "source": "/((?!assets/).*)", "destination": "/index.html" }
-  ]
-}
-```
-
-### Option B: call the API directly
-
-In Vercel → Project → **Settings → Environment Variables**, add
-`VITE_API_URL = https://YOUR-API.onrender.com` (no trailing slash) for Production (and Preview), then
-redeploy. It's read at **build** time, so changing it requires a new deployment. Set the backend's
-`CORS_ORIGIN` to your exact Vercel URL. Preview URLs (`*-git-branch.vercel.app`) differ from it and
-will be blocked by CORS; use option A if you need previews.
-
-3. Deploy. The page title "HeritageBD – Explore Bangladesh's Heritage" comes from
-   `.figma/make/site.json`.
-
-## 4. Check the live site
-
-- [ ] Home page loads, place/product images show (open DevTools → Network: image requests return 200).
-- [ ] Open `/places/p1` directly in a new tab (SPA fallback works).
-- [ ] Log in, add to cart, check out; order tracking shows the 20% advance.
-- [ ] `/shop?area=Sylhet` shows traditional foods and products.
-- [ ] Admin → upload a photo, refresh, it's still there (and remember the free-plan disk note).
-- [ ] No `localhost` in any request URL.
+- [ ] **Change the demo passwords.** These accounts came over from the local database with the public
+      password `password123`. Sign in as each one you keep and use **Account Settings → Change
+      password**, or suspend the ones you don't need from **Admin → Users**:
+      `admin@heritagebd.com` (**admin, do this first**), `tourist@heritagebd.com`, `monika@heritagebd.com`,
+      `arif@guide.com` and the other `@guide.com` guides, `rahima@muslinhouse.com`, `fatema@example.com`,
+      `rina@example.com`, `karim@example.com`, `spice@example.com`, `muslin@example.com`,
+      `sundarbans@example.com`, `ctg@example.com` (if present), the `…@rajshahicraft.com`,
+      `…@nokshikatha.com`, `…@sylhetitea.com` vendors, and the reviewer accounts
+      `sarah/tanvir/emily/rafiq.reviewer@example.com`, `nusrat@example.com`.
+- [ ] Run the smoke test against the live API **only if you're happy for it to create test data**
+      (an order, booking, pre-order, trip, message):
+      `php backend/tests/api_smoke.php https://heritagebd-api.onrender.com`.
+      It signs in with the demo passwords, so run it before changing them, or not at all.
+- [ ] Open the site: images load (DevTools → Network shows 200s), `/shop?area=Sylhet` shows foods,
+      checkout shows the 20% advance, Admin → Earnings loads.
 
 ## Troubleshooting
 
 | Symptom | Cause / fix |
 |---|---|
-| All API calls go to `http://localhost:8080` | Built in development mode, or an old build. Redeploy; production builds never use localhost |
-| "Failed to fetch" / CORS error in console | Option B without the right `CORS_ORIGIN`, or calling from a preview URL. Use option A, or fix `CORS_ORIGIN` |
-| `Database connection failed` | Wrong `DB_*` values, missing `DB_SSL_CA_PEM`, or the provider's IP allow-list blocks Render. Check Render logs |
-| Images 404, API works | Image built with context `backend` instead of `.`, or a persistent disk mounted without copying the images onto it |
-| Uploaded photos vanish after a while | Render free-plan disk is ephemeral; add a persistent disk |
-| 404 on refreshing a page like `/shop` | `vercel.json` rewrite missing or the API rule placed after the SPA rule |
+| `Database connection failed` (Render logs show the reason) | Wrong password in `DATABASE_URL`; Direct-connection URI used instead of Session pooler; special characters in the password not URL-encoded |
+| `prepared statement "pdo_stmt_…" does not exist` | Transaction pooler (port 6543) used. Switch to the Session pooler (5432) |
+| Login returns 500 | Schema incomplete on the database. Run `postgres/schema.sql` |
+| Images 404 but the API works | Render built with context `backend` instead of `.`; or a persistent disk is mounted without the images copied onto it |
+| `/api/...` returns the website's HTML | The `/api` rewrite must come **before** the SPA rule in `vercel.json` |
+| CORS error in the browser console | Calling Render directly without `CORS_ORIGIN`; use the rewrite instead |
 | First request very slow | Render free plan waking from sleep |
-| Login returns 500 | Migrations not applied on the hosted database (needs `auth_attempts` from 005); import a full dump or apply migrations |
-| Password-reset email never arrives | The container has no mail transport for PHP `mail()`; configure SMTP before relying on it |
+| Uploaded photos vanish | Free-plan disk is ephemeral; add a persistent disk |
+| Password-reset email never arrives | The container has no mail transport for PHP `mail()`; configure SMTP first |
 
-## Not covered by this setup
+## Keeping MySQL and PostgreSQL in step
 
-- **Payments** are still simulated (`PAYMENTS_DEMO_MODE`); no money moves.
-- **Vercel-only PHP** (community `vercel-php` runtime) is possible but unsuitable here: serverless
-  functions have no persistent disk for uploads.
+`backend/database/schema.sql` and `seed.sql` (MySQL) are the source of truth. After changing them,
+regenerate the PostgreSQL versions with `npm run db:pg` (runs `scripts/mysql-to-postgres.php`). For an
+existing Supabase database, write the change as SQL and apply it in the Supabase SQL editor. Write new
+queries in SQL both databases accept (see [contributing.md](contributing.md#writing-sql-for-both-databases)).

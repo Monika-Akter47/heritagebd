@@ -4,10 +4,12 @@ A digital heritage-tourism and marketplace platform for Bangladesh: heritage pla
 bookings, a local-products marketplace, the **"Ready When You Arrive"** pre-order/pickup feature, trip planner,
 reviews, chat, notifications and an admin panel.
 
-**Stack:** React 19 + Vite 8 + TypeScript + Tailwind 4 (frontend) · PHP 8 REST API (PDO, no framework) · MySQL / MariaDB.
+**Stack:** React 19 + Vite 8 + TypeScript + Tailwind 4 (frontend) · PHP 8 REST API (PDO, no framework) ·
+PostgreSQL on **Supabase** in production, MySQL / MariaDB (XAMPP) for local development.
 
-Full documentation lives in [`docs/`](docs/README.md), including the [changelog](docs/CHANGELOG.md).
-Deploying? See [docs/deploy-vercel.md](docs/deploy-vercel.md) (Vercel frontend + PHP backend on Render).
+**Hosting:** frontend on **Vercel**, PHP API on **Render** (Docker), database on **Supabase**. Step by step:
+[docs/deploy-vercel.md](docs/deploy-vercel.md). Full documentation lives in [`docs/`](docs/README.md),
+including the [changelog](docs/CHANGELOG.md).
 
 ---
 

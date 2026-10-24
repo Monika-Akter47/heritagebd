@@ -44,9 +44,12 @@ function admin_stats(PDO $pdo): void {
         ),
         'totalPreorders'     => $q('SELECT COUNT(*) c FROM preorders'),
         'monthly'            => admin_monthly_series($pdo),
-        'revenueThisMonth'   => (float)($pdo->query(
-            "SELECT COALESCE(SUM(total_amount),0) s FROM orders WHERE status != 'cancelled' AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())"
-        )->fetch()['s']),
+        'revenueThisMonth'   => (function () use ($pdo) {
+            // Month range computed in PHP so the query is the same on MySQL and PostgreSQL.
+            $stmt = $pdo->prepare("SELECT COALESCE(SUM(total_amount),0) s FROM orders WHERE status != 'cancelled' AND created_at >= ? AND created_at < ?");
+            $stmt->execute([date('Y-m-01 00:00:00'), date('Y-m-01 00:00:00', strtotime('first day of next month'))]);
+            return (float)$stmt->fetch()['s'];
+        })(),
     ]);
 }
 
@@ -223,8 +226,7 @@ function admin_event_update(PDO $pdo, string $id): void {
     $admin = require_auth($pdo); require_role($admin, ['admin']);
     $d = body();
     require_fields($d, ['image']);
-    if (!is_string($d['image']) || trim($d['image']) === '' || strlen($d['image']) > 500
-        || !filter_var($d['image'], FILTER_VALIDATE_URL)) json_error('A valid event image URL is required.', 422);
+    if (!is_image_ref($d['image'])) json_error('A valid event image URL is required.', 422);
     $stmt = $pdo->prepare('UPDATE events SET image = ? WHERE id = ?');
     $stmt->execute([trim($d['image']), $id]);
     if (!$stmt->rowCount()) {
@@ -258,8 +260,7 @@ function admin_story_update(PDO $pdo, string $id): void {
     $admin = require_auth($pdo); require_role($admin, ['admin']);
     $d = body();
     require_fields($d, ['image']);
-    if (!is_string($d['image']) || trim($d['image']) === '' || strlen($d['image']) > 500
-        || !filter_var($d['image'], FILTER_VALIDATE_URL)) json_error('A valid story image URL is required.', 422);
+    if (!is_image_ref($d['image'])) json_error('A valid story image URL is required.', 422);
     $stmt = $pdo->prepare('UPDATE stories SET image = ? WHERE id = ?');
     $stmt->execute([trim($d['image']), $id]);
     if (!$stmt->rowCount()) {

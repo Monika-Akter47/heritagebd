@@ -140,8 +140,7 @@ function places_update(PDO $pdo, string $id): void {
     }
     if ($replaceImages) {
         foreach ($d['images'] as $url) {
-            if (!is_string($url) || trim($url) === '' || strlen($url) > 500
-                || !filter_var($url, FILTER_VALIDATE_URL)) {
+            if (!is_image_ref($url)) {
                 json_error('Each place image must be a valid URL.', 422);
             }
         }

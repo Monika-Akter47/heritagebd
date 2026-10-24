@@ -17,6 +17,11 @@ const API_URL = (
 
 const TOKEN_KEY = 'heritagebd_token';
 
+/** Absolute URL for an image the API serves, e.g. assetUrl('/api/product-images/<id>'). */
+export function assetUrl(path: string): string {
+  return `${API_URL}${path}`;
+}
+
 function normalizeImagePaths(value: unknown, direction: 'client' | 'database'): unknown {
   if (typeof value === 'string') {
     let path: string;

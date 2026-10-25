@@ -24,7 +24,7 @@ Order: **Supabase → Render → Vercel**, because each step needs the address o
 
 ## 1. Supabase (database)
 
-The project **`heritagebd`** (ref `gkjuvygmdiftzosyqcub`, region Singapore) already exists and is
+The project **`heritagebd`** (ref `sbhnmsrbvampinpgggvl`, region Singapore) already exists and is
 loaded: schema from `backend/database/postgres/schema.sql`, and a copy of the local XAMPP data
 (50 tables, 727 rows, row counts verified). Row Level Security is enabled on every table with no
 policies, so Supabase's public Data API can read nothing; only the PHP API (connecting as `postgres`)
@@ -36,7 +36,7 @@ What you still need to do:
    password**. Choose a strong password and keep it for step 2.
 2. Click **Connect** (top bar) → **Session pooler** and copy the URI. It looks like
    ```
-   postgresql://postgres.gkjuvygmdiftzosyqcub:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+   postgresql://postgres.sbhnmsrbvampinpgggvl:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
    ```
    Use the **Session pooler**, not "Direct connection" (IPv6 only, and Render has no IPv6) and not
    "Transaction pooler" (port 6543, which breaks PHP's prepared statements). If the password contains
@@ -68,7 +68,7 @@ Run `data.pg.sql` after deleting the default rows the schema inserts
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_URL` | The Session pooler URI from step 1 **without the password**, e.g. `postgresql://postgres.gkjuvygmdiftzosyqcub@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres` |
+   | `DATABASE_URL` | The Session pooler URI from step 1 **without the password**, e.g. `postgresql://postgres.sbhnmsrbvampinpgggvl@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres` |
    | `DB_PASS` | Your Supabase database password exactly as typed. Keeping it separate means characters such as `@ # / :` need no URL-encoding |
    | `CORS_ORIGIN` | Your Vercel URL (e.g. `https://heritagebd.vercel.app`). Harmless with the rewrite; required if you call Render directly |
    | `APP_TIMEZONE` | `Asia/Dhaka` (preset) |

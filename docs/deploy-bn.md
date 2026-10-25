@@ -20,7 +20,7 @@ English version: [deploy-vercel.md](deploy-vercel.md)
 2. **Project Settings → Database → Reset database password** এ যান। একটি শক্ত পাসওয়ার্ড দিন এবং কোথাও লিখে রাখুন।
 3. উপরের **Connect** বাটনে ক্লিক করুন → **Session pooler** বেছে নিন → লিংকটি কপি করুন। দেখতে এমন হবে:
    ```
-   postgresql://postgres.gkjuvygmdiftzosyqcub:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+   postgresql://postgres.sbhnmsrbvampinpgggvl:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
    ```
    `[YOUR-PASSWORD]` এর জায়গায় আপনার নতুন পাসওয়ার্ড বসান।
 
@@ -39,7 +39,7 @@ English version: [deploy-vercel.md](deploy-vercel.md)
 
    | নাম | মান |
    |---|---|
-   | `DATABASE_URL` | ধাপ ১ এর Session pooler লিংক, **পাসওয়ার্ড ছাড়া** (যেমন `postgresql://postgres.gkjuvygmdiftzosyqcub@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres`) |
+   | `DATABASE_URL` | ধাপ ১ এর Session pooler লিংক, **পাসওয়ার্ড ছাড়া** (যেমন `postgresql://postgres.sbhnmsrbvampinpgggvl@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres`) |
    | `DB_PASS` | আপনার Supabase ডাটাবেস পাসওয়ার্ড, হুবহু যেমন আছে। আলাদা রাখলে `@ # / :` এর মতো চিহ্ন বদলাতে হয় না |
    | `CORS_ORIGIN` | আপনার Vercel ঠিকানা, যেমন `https://heritagebd.vercel.app` (না জানলে পরে দিলেও চলবে) |
    | `APP_TIMEZONE` | `Asia/Dhaka` (আগে থেকেই দেওয়া থাকে) |

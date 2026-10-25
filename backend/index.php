@@ -18,8 +18,6 @@ foreach (glob(__DIR__ . '/controllers/*.php') as $file) {
     require_once $file;
 }
 
-$pdo = get_db();
-
 // ---- Determine path (strip query string + base folder) --------------------
 $uri  = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
@@ -28,6 +26,13 @@ if ($base !== '' && strpos($uri, $base) === 0) {
 }
 $uri    = '/' . trim($uri, '/');
 $method = $_SERVER['REQUEST_METHOD'];
+
+// Liveness check for the host (Render's health check). Answers before touching the database,
+// so a wrong DATABASE_URL shows up as a clear JSON error on real routes instead of a service
+// that never becomes healthy and never receives traffic.
+if ($uri === '/api/health') json_ok(['status' => 'ok', 'driver' => DB_DRIVER]);
+
+$pdo = get_db();
 
 // ---- Route table -------------------------------------------------------
 // Each entry: [METHOD, regex pattern, handler, param names in order]

@@ -25,7 +25,9 @@ function env_or(string $key, string $default): string {
     define('DB_PORT', isset($parts['port']) ? (string)$parts['port'] : env_or('DB_PORT', DB_DRIVER === 'pgsql' ? '5432' : '3306'));
     define('DB_NAME', isset($parts['path']) && trim($parts['path'], '/') !== '' ? trim($parts['path'], '/') : env_or('DB_NAME', DB_DRIVER === 'pgsql' ? 'postgres' : 'heritagebd'));
     define('DB_USER', isset($parts['user']) ? urldecode($parts['user']) : env_or('DB_USER', DB_DRIVER === 'pgsql' ? 'postgres' : 'root'));
-    define('DB_PASS', isset($parts['pass']) ? urldecode($parts['pass']) : env_or('DB_PASS', ''));
+    // DB_PASS wins over a password inside DATABASE_URL, so passwords with characters such as
+    // @ # / : need no URL-encoding: put the URI without a password, and the password in DB_PASS.
+    define('DB_PASS', env_or('DB_PASS', '') !== '' ? env_or('DB_PASS', '') : (isset($parts['pass']) ? urldecode($parts['pass']) : ''));
 })();
 
 // PHP's date() and the database's NOW() must agree, or "today" checks (booking dates, token

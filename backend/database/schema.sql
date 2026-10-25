@@ -160,6 +160,7 @@ CREATE TABLE guides (
 
 DROP TABLE IF EXISTS guide_languages;
 CREATE TABLE guide_languages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   guide_id VARCHAR(40) NOT NULL,
   language VARCHAR(60) NOT NULL,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE
@@ -167,6 +168,7 @@ CREATE TABLE guide_languages (
 
 DROP TABLE IF EXISTS guide_specializations;
 CREATE TABLE guide_specializations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   guide_id VARCHAR(40) NOT NULL,
   specialization VARCHAR(100) NOT NULL,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE
@@ -174,6 +176,7 @@ CREATE TABLE guide_specializations (
 
 DROP TABLE IF EXISTS guide_certifications;
 CREATE TABLE guide_certifications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   guide_id VARCHAR(40) NOT NULL,
   certification VARCHAR(150) NOT NULL,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE
@@ -181,6 +184,7 @@ CREATE TABLE guide_certifications (
 
 DROP TABLE IF EXISTS guide_cover_areas;
 CREATE TABLE guide_cover_areas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   guide_id VARCHAR(40) NOT NULL,
   area VARCHAR(100) NOT NULL,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE
@@ -247,6 +251,7 @@ CREATE TABLE place_images (
 
 DROP TABLE IF EXISTS place_tags;
 CREATE TABLE place_tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   place_id VARCHAR(40) NOT NULL,
   tag      VARCHAR(60) NOT NULL,
   FOREIGN KEY (place_id) REFERENCES heritage_places(id) ON DELETE CASCADE
@@ -254,6 +259,7 @@ CREATE TABLE place_tags (
 
 DROP TABLE IF EXISTS place_nearby;
 CREATE TABLE place_nearby (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   place_id      VARCHAR(40) NOT NULL,
   nearby_name   VARCHAR(200) NOT NULL,
   FOREIGN KEY (place_id) REFERENCES heritage_places(id) ON DELETE CASCADE
@@ -301,6 +307,7 @@ CREATE TABLE product_images (
 
 DROP TABLE IF EXISTS product_tags;
 CREATE TABLE product_tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   product_id VARCHAR(40) NOT NULL,
   tag        VARCHAR(60) NOT NULL,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
@@ -325,6 +332,7 @@ CREATE TABLE product_time_slots (
 
 DROP TABLE IF EXISTS product_near_destinations;
 CREATE TABLE product_near_destinations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   product_id VARCHAR(40) NOT NULL,
   place_id   VARCHAR(40) NOT NULL,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
@@ -461,6 +469,7 @@ CREATE TABLE guide_bookings (
 
 DROP TABLE IF EXISTS guide_booking_destinations;
 CREATE TABLE guide_booking_destinations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   booking_id VARCHAR(40) NOT NULL,
   place_name VARCHAR(200) NOT NULL,
   FOREIGN KEY (booking_id) REFERENCES guide_bookings(id) ON DELETE CASCADE
@@ -512,6 +521,7 @@ CREATE TABLE event_images (
 
 DROP TABLE IF EXISTS event_tags;
 CREATE TABLE event_tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   event_id VARCHAR(40) NOT NULL,
   tag      VARCHAR(60) NOT NULL,
   FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
@@ -540,6 +550,7 @@ CREATE TABLE stories (
 
 DROP TABLE IF EXISTS story_tags;
 CREATE TABLE story_tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   story_id VARCHAR(40) NOT NULL,
   tag      VARCHAR(60) NOT NULL,
   FOREIGN KEY (story_id) REFERENCES stories(id) ON DELETE CASCADE
@@ -608,6 +619,7 @@ CREATE TABLE trip_plans (
 
 DROP TABLE IF EXISTS trip_destinations;
 CREATE TABLE trip_destinations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   trip_id     VARCHAR(40) NOT NULL,
   destination VARCHAR(200) NOT NULL,
   FOREIGN KEY (trip_id) REFERENCES trip_plans(id) ON DELETE CASCADE

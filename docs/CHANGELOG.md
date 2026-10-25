@@ -30,6 +30,21 @@ All notable changes to HeritageBD. The format follows
 
 ### Fixed
 
+- **Render never came online / Vercel showed 502.** A Supabase password containing `@` or `#`
+  breaks a `postgresql://` URI, and the old health check (`/api/payment-terms`) needed the database,
+  so the service never became healthy. Now: `DB_PASS` (overrides any password in `DATABASE_URL`, no
+  URL-encoding needed) and a database-free `/api/health` health check.
+- **Images no longer depend on the API being awake.** The committed images are copied into the
+  frontend build (`scripts/build-image-manifest.mjs`, runs as `prebuild`) and served by Vercel from
+  `/uploads/...`; `src/services/api.ts` uses them via `imageManifest.json` and falls back to the
+  API for later uploads. (Loading them from GitHub needs a public repo; set `VITE_IMAGE_BASE_URL`.)
+- **Supabase performance advisor:** indexed all 42 unindexed foreign keys and gave the 12 link tables
+  (tags, areas, destinations) an `id` primary key. Applied to the `heritagebd` project; fresh installs
+  get it from `postgres/schema.sql` (the converter now indexes foreign keys) and MySQL from
+  migration `008`. Remaining advisor notes are informational: unused indexes (no traffic yet) and
+  RLS-with-no-policies (intentional).
+- **Vercel build failed** (`ERR_PNPM_OUTDATED_LOCKFILE`): `pnpm-lock.yaml` now includes the PGlite
+  dev dependencies.
 - **Admin and vendor image updates were rejected.** Event, story, place and homepage image endpoints
   only accepted absolute `http(s)` URLs, but the frontend sends uploads as relative
   `/api/product-images/<id>` paths, so "Change photo" failed with "valid URL required". A shared

@@ -38,3 +38,6 @@ desktop.ini
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Generated before each build from heritagebd-data/uploads (scripts/build-image-manifest.mjs)
+public/uploads/

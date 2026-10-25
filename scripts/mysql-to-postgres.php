@@ -121,7 +121,7 @@ function convert_create_table(string $stmt, array &$after, array &$tables, array
         ? preg_replace('/\)\s*ENGINE\s*=.*$/is', '', $body)
         : preg_replace('/\)\s*$/s', '', rtrim($body));
 
-    $lines = [];
+    $lines = []; $fkColumns = []; $indexedLead = [];
     foreach (preg_split('/\n/', $body) as $line) {
         $trim = trim($line);
         if ($trim === '') continue;
@@ -133,6 +133,7 @@ function convert_create_table(string $stmt, array &$after, array &$tables, array
         if (preg_match('/^FULLTEXT\s+(KEY|INDEX)/i', $def)) continue;
         if (preg_match('/^(?:KEY|INDEX)\s+(\w+)\s*\(([^)]+)\)$/i', $def, $k)) {
             $after[] = "CREATE INDEX IF NOT EXISTS {$table}_{$k[1]} ON {$table} ({$k[2]});";
+            $indexedLead[] = trim(explode(',', $k[2])[0]);
             continue;
         }
         if (preg_match('/^UNIQUE\s+(?:KEY|INDEX)\s+(\w+)\s*\(([^)]+)\)$/i', $def, $k)) {
@@ -152,8 +153,24 @@ function convert_create_table(string $stmt, array &$after, array &$tables, array
         $def = preg_replace('/\bDATETIME\b/i', 'TIMESTAMP', $def);
         $def = preg_replace('/\b(LONG|MEDIUM)TEXT\b/i', 'TEXT', $def);
         $def = preg_replace('/\s+(CHARACTER SET|COLLATE)\s+\w+/i', '', $def);
-        if (preg_match('/\bREFERENCES\b/i', $def)) $def .= ' DEFERRABLE INITIALLY DEFERRED';
+        if (preg_match('/\bREFERENCES\b/i', $def)) {
+            $def .= ' DEFERRABLE INITIALLY DEFERRED';
+            // PostgreSQL (unlike InnoDB) doesn't index foreign-key columns automatically; without
+            // one, joins and ON DELETE CASCADE scan the child table (Supabase lint 0001).
+            if (preg_match('/FOREIGN KEY\s*\((\w+)\)/i', $def, $fk)) $fkColumns[] = $fk[1];
+        }
         $lines[] = ['def' => "  $def", 'comment' => $comment];
+    }
+    // A primary key, unique constraint or index already covers its leading column; only index
+    // foreign-key columns that nothing covers yet.
+    foreach ($lines as $l) {
+        if (!is_array($l)) continue;
+        if (preg_match('/^\s*(\w+)\s.*\b(PRIMARY KEY|UNIQUE)\b/i', $l['def'], $p)
+            && !in_array(strtoupper($p[1]), ['PRIMARY', 'CONSTRAINT', 'UNIQUE'], true)) $indexedLead[] = $p[1];
+        if (preg_match('/^\s*(?:CONSTRAINT\s+\w+\s+)?(?:PRIMARY KEY|UNIQUE)\s*\((\w+)/i', $l['def'], $p)) $indexedLead[] = $p[1];
+    }
+    foreach (array_unique($fkColumns) as $col) {
+        if (!in_array($col, $indexedLead, true)) $after[] = "CREATE INDEX IF NOT EXISTS {$table}_{$col}_fk_idx ON {$table} ({$col});";
     }
     // Re-join with commas only between definitions (removed KEY lines can leave dangling commas).
     $defs = array_keys(array_filter($lines, 'is_array'));

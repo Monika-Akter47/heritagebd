@@ -61,14 +61,15 @@ Run `data.pg.sql` after deleting the default rows the schema inserts
 
 1. Render → **New → Blueprint** → connect `Monika-Akter47/heritagebd`. Render reads
    [`render.yaml`](../render.yaml): Docker, `backend/Dockerfile`, build context = repo root, region
-   Singapore, free plan, health check `/api/payment-terms`.
+   Singapore, free plan, health check `/api/health` (needs no database, so a wrong `DATABASE_URL` shows as a JSON error instead of a service that never comes online).
    (Manual alternative: **New → Web Service → Docker**, Dockerfile Path `backend/Dockerfile`, Docker
    Build Context Directory **`.`**, not `backend`.)
 2. When asked for environment variables:
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_URL` | The Session pooler URI from step 1, with your password |
+   | `DATABASE_URL` | The Session pooler URI from step 1 **without the password**, e.g. `postgresql://postgres.gkjuvygmdiftzosyqcub@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres` |
+   | `DB_PASS` | Your Supabase database password exactly as typed. Keeping it separate means characters such as `@ # / :` need no URL-encoding |
    | `CORS_ORIGIN` | Your Vercel URL (e.g. `https://heritagebd.vercel.app`). Harmless with the rewrite; required if you call Render directly |
    | `APP_TIMEZONE` | `Asia/Dhaka` (preset) |
 

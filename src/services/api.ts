@@ -7,6 +7,8 @@
  *  `php -S localhost:8080 index.php` run from the backend/ folder).
  */
 
+import imageManifest from '../data/imageManifest.json';
+
 // Without VITE_API_URL a production build talks to the site it is served from (frontend and
 // backend on one host), instead of localhost on the visitor's machine. Image URLs are built
 // from this too, so this is what makes stored /api/... image paths work after deployment.
@@ -17,25 +19,47 @@ const API_URL = (
 
 const TOKEN_KEY = 'heritagebd_token';
 
-/** Absolute URL for an image the API serves, e.g. assetUrl('/api/product-images/<id>'). */
+// Images committed to the repo are published with the frontend (scripts/build-image-manifest.mjs
+// copies them to public/uploads), so they load from the site itself even while the API is asleep
+// or down. imageManifest.json lists them; anything not in it, such as photos uploaded after
+// deploy, still comes from the API. VITE_IMAGE_BASE_URL can point at another copy of
+// heritagebd-data/uploads (e.g. raw.githubusercontent.com/<owner>/<repo>/main/heritagebd-data/uploads
+// for a public repo), or be "none" to always use the API.
+const IMAGE_BASE_URL = (
+  (import.meta as any).env?.VITE_IMAGE_BASE_URL
+  ?? `${(import.meta as any).env?.BASE_URL ?? '/'}uploads`
+).replace(/\/+$/, '');
+const imageFiles: Record<string, string> = imageManifest;
+
+/** Public URL for an uploaded image path such as '/api/product-images/<id>'. */
 export function assetUrl(path: string): string {
+  const match = path.match(/^\/api\/(product|profile)-images\/([a-f0-9]{32})/i);
+  if (match && IMAGE_BASE_URL !== 'none') {
+    const dir = match[1].toLowerCase() === 'product' ? 'products' : 'profiles';
+    const file = imageFiles[`${dir}/${match[2].toLowerCase()}`];
+    if (file) return `${IMAGE_BASE_URL}/${dir}/${file}`;
+  }
   return `${API_URL}${path}`;
 }
 
 function normalizeImagePaths(value: unknown, direction: 'client' | 'database'): unknown {
   if (typeof value === 'string') {
     let path: string;
-    let suffix = '';
     try {
       const parsed = new URL(value, `${API_URL}/`);
-      const match = parsed.pathname.match(/\/api\/(product-images|profile-images)\/([a-f0-9]{32})$/i);
-      if (!match) return value;
-      path = `/api/${match[1]}/${match[2]}`;
-      suffix = `${parsed.search}${parsed.hash}`;
+      // Accept both the API form and the GitHub form, so images edited in the admin pages are
+      // saved back as the host-independent /api/... path.
+      const api = parsed.pathname.match(/\/api\/(product-images|profile-images)\/([a-f0-9]{32})$/i);
+      const repo = parsed.pathname.match(/\/(products|profiles)\/([a-f0-9]{32})\.(?:jpe?g|png|webp)$/i);
+      if (api) path = `/api/${api[1]}/${api[2]}`;
+      else if (repo && IMAGE_BASE_URL !== 'none'
+        && new URL(value, window.location.href).href.startsWith(new URL(`${IMAGE_BASE_URL}/`, window.location.href).href)) {
+        path = `/api/${repo[1] === 'products' ? 'product' : 'profile'}-images/${repo[2]}`;
+      } else return value;
     } catch {
       return value;
     }
-    return direction === 'database' ? `${path}${suffix}` : `${API_URL}${path}${suffix}`;
+    return direction === 'database' ? path : assetUrl(path);
   }
   if (Array.isArray(value)) {
     return value.map(item => normalizeImagePaths(item, direction));

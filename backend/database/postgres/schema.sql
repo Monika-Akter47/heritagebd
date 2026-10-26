@@ -100,6 +100,17 @@ CREATE TABLE user_documents (
 );
 CREATE INDEX IF NOT EXISTS user_documents_idx_user_documents_user_created ON user_documents (user_id, created_at);
 
+-- Uploaded file bytes. The API host's disk is wiped on every deploy, so the database is the durable copy.
+DROP TABLE IF EXISTS stored_files CASCADE;
+CREATE TABLE stored_files (
+  kind       VARCHAR(20) NOT NULL,
+  name       VARCHAR(80) NOT NULL,
+  mime_type  VARCHAR(100) NOT NULL,
+  data       BYTEA NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (kind, name)
+);
+
 DROP TABLE IF EXISTS tourist_saved_places CASCADE;
 CREATE TABLE tourist_saved_places (
   user_id  VARCHAR(40) NOT NULL,
@@ -793,6 +804,7 @@ ALTER TABLE auth_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE auth_attempts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE password_resets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stored_files ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tourist_saved_places ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vendors ENABLE ROW LEVEL SECURITY;
 ALTER TABLE guides ENABLE ROW LEVEL SECURITY;

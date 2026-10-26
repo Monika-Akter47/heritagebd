@@ -63,6 +63,23 @@ final class ContentUploadTest extends ApiTestCase
         $this->assertStatus(200, $this->call('GET', '/admin/documents', null, $this->login(self::ADMIN)));
     }
 
+    /** TC-129 | FR-01 | Integration | Error guessing | P1 | + */
+    public function test_TC_129_documents_survive_the_server_disk_being_wiped(): void
+    {
+        [$vendor, $user] = $this->register('vendor', ['shopName' => 'Wiped Disk Shop']);
+        $this->upload('/documents', base64_decode(self::PNG), 'image/png', 'nid.png', $vendor, ['documentType' => 'identity']);
+        array_map('unlink', glob(dirname(__DIR__, 2) . '/coverage/uploads/private/*') ?: []);   // what a redeploy does
+        $admin = $this->login(self::ADMIN);
+
+        $doc = array_values(array_filter($this->call('GET', '/admin/documents', null, $admin)['data'], fn($d) => $d['userId'] === $user['id']))[0];
+        $this->assertTrue($doc['fileAvailable']);
+        $ch = curl_init(self::api() . "/admin/documents/{$doc['id']}/download");
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_HTTPHEADER => ["Authorization: Bearer $admin"]]);
+        $body = curl_exec($ch);
+        $this->assertSame(200, (int)curl_getinfo($ch, CURLINFO_HTTP_CODE));
+        $this->assertSame(base64_decode(self::PNG), $body);
+    }
+
     /** TC-121 | FR-06 | Integration | EP | P2 | + */
     public function test_TC_121_vendor_completes_shop_profile(): void
     {

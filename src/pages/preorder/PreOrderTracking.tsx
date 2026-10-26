@@ -4,6 +4,7 @@ import { MapPin, Clock, QrCode, Phone, CheckCircle, Circle, Loader, AlertCircle,
 import { preordersApi } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import { preOrderStatusConfig } from '../../data/preorderData';
+import { methodLabel } from '../../components/ui/PaymentProofFields';
 import type { PreOrder, PreOrderStatus } from '../../types';
 
 const TIMELINE_STEPS: { key: PreOrderStatus; label: string; desc: string }[] = [
@@ -29,6 +30,22 @@ export default function PreOrderTracking() {
     [orderId],
   );
   const [cancelling, setCancelling] = useState(false);
+  const [confirmingReceipt, setConfirmingReceipt] = useState(false);
+  const [receiptError, setReceiptError] = useState('');
+
+  async function handleConfirmReceipt() {
+    if (!order) return;
+    setConfirmingReceipt(true);
+    setReceiptError('');
+    try {
+      await preordersApi.update(order.id, { status: 'completed' });
+      await refetch();
+    } catch (e: any) {
+      setReceiptError(e?.message || 'Could not confirm receipt. Please try again.');
+    } finally {
+      setConfirmingReceipt(false);
+    }
+  }
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -146,10 +163,20 @@ export default function PreOrderTracking() {
                   : Number(order.remainingAmount)).toLocaleString()}
               </p>
               {finalPaymentRecorded && order.pickupPaymentMethod && (
-                <p className="mt-0.5 capitalize text-green-700">{order.pickupPaymentMethod}</p>
+                <p className="mt-0.5 text-green-700">{methodLabel(order.pickupPaymentMethod)}</p>
               )}
             </div>
           </div>
+          {(order.advancePaymentMethod || order.pickupTransactionId) && (
+            <div className="mt-3 space-y-0.5 text-xs" style={{ color: 'var(--color-text-muted)' }}>
+              {order.advancePaymentMethod && (
+                <p>Advance paid by {methodLabel(order.advancePaymentMethod)}{order.advancePayerPhone ? ` from ${order.advancePayerPhone}` : ''}{order.advanceTransactionId ? ` · TrxID ${order.advanceTransactionId}` : ''}</p>
+              )}
+              {order.pickupTransactionId && (
+                <p>Pickup payment by {methodLabel(order.pickupPaymentMethod)}{order.pickupPayerPhone ? ` from ${order.pickupPayerPhone}` : ''} · TrxID {order.pickupTransactionId}</p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Timeline */}
@@ -201,6 +228,28 @@ export default function PreOrderTracking() {
 
         {/* Action buttons */}
         <div className="space-y-3">
+          {order.status === 'picked_up' && (
+            <div className="rounded-2xl p-4" style={{ background: '#E6F4EF' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Did you receive your order?</p>
+              <p className="mt-1 text-xs" style={{ color: 'var(--color-text-muted)' }}>
+                Confirm once you have the product in hand. This completes the order and releases the vendor's payment.
+              </p>
+              {receiptError && <p role="alert" className="mt-2 text-xs text-red-600">{receiptError}</p>}
+              <button
+                onClick={handleConfirmReceipt}
+                disabled={confirmingReceipt}
+                className="mt-3 w-full rounded-xl py-3 text-sm font-bold text-white disabled:opacity-50"
+                style={{ background: 'var(--color-primary)' }}
+              >
+                {confirmingReceipt ? 'Confirming…' : 'Yes, I Received My Order'}
+              </button>
+            </div>
+          )}
+          {order.status === 'completed' && (
+            <p className="rounded-2xl p-4 text-center text-sm font-semibold" style={{ background: '#E6F4EF', color: 'var(--color-primary)' }}>
+              <CheckCircle size={16} className="mr-1 inline" /> Order received and completed. Thank you!
+            </p>
+          )}
           {currentStep >= 4 && currentStep < 5 && (
             <div className="p-4 rounded-2xl text-center" style={{ background: '#E6F4EF' }}>
               <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>Preparing your order…</p>

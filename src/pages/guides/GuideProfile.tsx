@@ -7,6 +7,7 @@ import Badge from '../../components/ui/Badge';
 import StarRating from '../../components/ui/StarRating';
 import ReviewCard from '../../components/cards/ReviewCard';
 import Modal from '../../components/ui/Modal';
+import PaymentProofFields, { emptyPaymentProof, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 import { useApp } from '../../context/AppContext';
 import type { TourType } from '../../types';
 
@@ -26,6 +27,7 @@ export default function GuideProfile() {
   const [bookingError, setBookingError] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'nagad' | 'card'>('bkash');
+  const [paymentProof, setPaymentProof] = useState<PaymentProof>(emptyPaymentProof);
   const [createdBooking, setCreatedBooking] = useState<any>(null);
   const [sent, setSent] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
@@ -98,6 +100,11 @@ export default function GuideProfile() {
       setBookingError('Choose a tour and both dates to continue.');
       return;
     }
+    const proofError = validatePaymentProof(paymentMethod, paymentProof);
+    if (proofError) {
+      setBookingError(proofError);
+      return;
+    }
     setBookingLoading(true);
     setBookingError('');
     try {
@@ -109,6 +116,8 @@ export default function GuideProfile() {
         message: bookingMessage.trim(),
         groupSize: 1,
         paymentMethod,
+        advancePayerPhone: paymentProof.phone,
+        advanceTransactionId: paymentProof.transactionId,
       });
       setCreatedBooking(booking);
       setSent(true);
@@ -143,7 +152,7 @@ export default function GuideProfile() {
           </div>
           <div className="pb-2 flex-1">
             <div className="flex items-center gap-3 flex-wrap mb-1">
-              <h1 className="text-3xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>{guide.name}</h1>
+              <h1 className="text-3xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>{guide.name}</h1>
               {guide.verified && (
                 <div className="flex items-center gap-1 text-[#006A4E] bg-[#006A4E]/10 px-3 py-1 rounded-full text-sm font-medium">
                   <CheckCircle size={14} />
@@ -194,7 +203,7 @@ export default function GuideProfile() {
           ].map(stat => (
             <div key={stat.label} className="bg-white rounded-2xl p-4 border border-[var(--color-border)] text-center">
               <stat.icon size={20} className="text-[#006A4E] mx-auto mb-1" />
-              <div className="text-2xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>{stat.value}</div>
+              <div className="text-2xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</div>
               <div className="text-xs text-[var(--color-text-muted)]">{stat.label}</div>
             </div>
           ))}
@@ -220,7 +229,7 @@ export default function GuideProfile() {
             {activeTab === 'About' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-bold text-lg mb-3" style={{ fontFamily: 'Fraunces, serif' }}>About</h3>
+                  <h3 className="font-bold text-lg mb-3" style={{ fontFamily: 'var(--font-display)' }}>About</h3>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">{guide.bio || 'This guide has not added a biography yet.'}</p>
                 </div>
                 <div>
@@ -265,7 +274,7 @@ export default function GuideProfile() {
                 {guide.tourTypes.map((tour: TourType, i: number) => (
                   <div key={i} className="bg-white border border-[var(--color-border)] rounded-2xl p-6">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-bold text-base" style={{ fontFamily: 'Fraunces, serif' }}>{tour.name}</h3>
+                      <h3 className="font-bold text-base" style={{ fontFamily: 'var(--font-display)' }}>{tour.name}</h3>
                       <div className="text-right">
                         <div className="font-bold text-[#006A4E] text-lg">৳{tour.price.toLocaleString()}</div>
                         <div className="text-xs text-[var(--color-text-muted)]">{tour.duration}</div>
@@ -317,8 +326,8 @@ export default function GuideProfile() {
           {/* Sidebar CTA */}
           <div className="space-y-6">
             <div className="bg-[#006A4E] rounded-2xl p-6 text-white sticky top-24">
-              <h3 className="font-bold text-xl mb-1" style={{ fontFamily: 'Fraunces, serif' }}>Book {guide.name.split(' ')[0]}</h3>
-              <div className="text-3xl font-bold text-[#D4A017] my-3" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h3 className="font-bold text-xl mb-1" style={{ fontFamily: 'var(--font-display)' }}>Book {guide.name.split(' ')[0]}</h3>
+              <div className="text-3xl font-bold text-[#D4A017] my-3" style={{ fontFamily: 'var(--font-display)' }}>
                 {guide.pricePerDay > 0 ? <>৳{guide.pricePerDay.toLocaleString()}<span className="text-base font-normal text-white/70">/day</span></> : <span className="text-base font-normal text-white/70">Pricing not added</span>}
               </div>
               {!canBook ? (
@@ -387,7 +396,7 @@ export default function GuideProfile() {
             </p>
             {paymentTermsError && <p role="alert" className="text-sm text-red-600">Could not load payment terms: {paymentTermsError}</p>}
             {paymentTerms && <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
-              Pay {paymentTerms.guide_booking}% online advance now. The remaining balance is paid directly to the guide in cash after the tour. Online payment is currently a demo simulation; no real payment gateway is connected.
+              Pay {paymentTerms.guide_booking}% online advance now. The remaining balance is paid directly to the guide after the tour; either of you marks it paid. No payment gateway is connected yet: the admin checks your number and TrxID against the wallet statement.
             </p>}
             <label className="block text-sm font-semibold">Online advance method
               <select value={paymentMethod} onChange={event => setPaymentMethod(event.target.value as 'bkash' | 'nagad' | 'card')}
@@ -397,6 +406,7 @@ export default function GuideProfile() {
                 <option value="card">Card</option>
               </select>
             </label>
+            <PaymentProofFields method={paymentMethod} value={paymentProof} onChange={setPaymentProof} />
             <label className="block text-sm font-semibold">
               Tour service
               <select required value={selectedTour} onChange={e => setSelectedTour(e.target.value)}

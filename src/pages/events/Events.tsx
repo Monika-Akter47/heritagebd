@@ -40,7 +40,7 @@ export default function Events() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 max-w-7xl mx-auto">
             <Badge variant="gold" className="mb-3">Featured Event</Badge>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-display)' }}>
               {featured.name}
             </h1>
             <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">

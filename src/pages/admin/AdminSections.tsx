@@ -13,7 +13,7 @@ function Panel({ title, children, action }: { title: string; children: React.Rea
   return (
     <div className="bg-white rounded-2xl border border-[var(--color-border)] overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)]">
-        <h3 className="font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{title}</h3>
+        <h3 className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>{title}</h3>
         {action}
       </div>
       {children}

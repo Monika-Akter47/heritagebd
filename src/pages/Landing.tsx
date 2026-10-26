@@ -63,7 +63,7 @@ export default function Landing() {
               Bangladesh Heritage Tourism Platform
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6" style={{ fontFamily: 'var(--font-display)' }}>
               Discover the{' '}
               <span className="italic text-[#D4A017]">Soul</span>{' '}
               of Bangladesh
@@ -113,7 +113,7 @@ export default function Landing() {
             { label: 'Happy Travelers', value: '50K+' },
           ].map(stat => (
             <div key={stat.label} className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-white text-right">
-              <div className="font-bold text-2xl" style={{ fontFamily: 'Fraunces, serif' }}>{stat.value}</div>
+              <div className="font-bold text-2xl" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</div>
               <div className="text-white/60 text-xs">{stat.label}</div>
             </div>
           ))}
@@ -132,7 +132,7 @@ export default function Landing() {
             ].map(stat => (
               <div key={stat.label} className="flex flex-col items-center gap-2">
                 <stat.icon size={24} className="text-[#D4A017]" />
-                <div className="text-3xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{stat.value}</div>
+                <div className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</div>
                 <div className="text-white/70 text-sm">{stat.label}</div>
               </div>
             ))}
@@ -149,7 +149,7 @@ export default function Landing() {
                 <Flame size={18} className="text-[#F42A41]" />
                 <span className="text-[#F42A41] text-sm font-bold uppercase tracking-widest">Limited Time</span>
               </div>
-              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
                 Today's Offers
               </h2>
             </div>
@@ -203,7 +203,7 @@ export default function Landing() {
                 <Leaf size={18} style={{ color: 'var(--color-primary)' }} />
                 <span className="text-sm font-bold uppercase tracking-widest" style={{ color: 'var(--color-primary)' }}>From verified local vendors</span>
               </div>
-              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
                 Artisan Picks
               </h2>
             </div>
@@ -249,7 +249,7 @@ export default function Landing() {
               <div className="inline-flex items-center gap-2 mb-3 px-3 py-1.5 rounded-full text-sm font-bold" style={{ background: 'rgba(0,106,78,0.3)', color: '#4ade80' }}>
                 🟢 Ready to Pick
               </div>
-              <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-3xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-display)' }}>
                 Order Ahead, Pick Up Fresh
               </h2>
               <p className="text-white/60 mb-6 max-w-lg">
@@ -289,7 +289,7 @@ export default function Landing() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Discover</p>
-            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
               Featured Heritage Places
             </h2>
           </div>
@@ -310,7 +310,7 @@ export default function Landing() {
           <div className="flex items-end justify-between mb-10">
             <div>
               <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Expert Guides</p>
-              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
                 Verified Tour Guides
               </h2>
             </div>
@@ -331,7 +331,7 @@ export default function Landing() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Marketplace</p>
-            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
               Authentic Bengali Products
             </h2>
             <p className="text-[var(--color-text-muted)] mt-2 max-w-lg">
@@ -355,7 +355,7 @@ export default function Landing() {
           <div className="flex items-end justify-between mb-10">
             <div>
               <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">What's On</p>
-              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
                 Upcoming Events
               </h2>
             </div>
@@ -376,7 +376,7 @@ export default function Landing() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Heritage Stories</p>
-            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
               Discover Bangladesh
             </h2>
           </div>
@@ -404,7 +404,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <p className="text-[#D4A017] text-sm font-semibold uppercase tracking-widest mb-2">Why Choose Us</p>
-            <h2 className="text-4xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Why HeritageBD?</h2>
+            <h2 className="text-4xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>Why HeritageBD?</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -433,7 +433,7 @@ export default function Landing() {
                 <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4">
                   <feature.icon size={24} className="text-[#D4A017]" />
                 </div>
-                <h3 className="font-bold text-lg mb-2" style={{ fontFamily: 'Fraunces, serif' }}>{feature.title}</h3>
+                <h3 className="font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-display)' }}>{feature.title}</h3>
                 <p className="text-white/70 text-sm leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -447,7 +447,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="p-12 flex flex-col justify-center">
               <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Interactive Map</p>
-              <h2 className="text-4xl font-bold text-[var(--color-text)] mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h2 className="text-4xl font-bold text-[var(--color-text)] mb-4" style={{ fontFamily: 'var(--font-display)' }}>
                 Explore Bangladesh on the Map
               </h2>
               <p className="text-[var(--color-text-muted)] leading-relaxed mb-8">
@@ -482,7 +482,7 @@ export default function Landing() {
             <div className="relative rounded-3xl overflow-hidden bg-[#006A4E] p-10 text-white">
               <div className="relative z-10">
                 <div className="text-4xl mb-4">🧭</div>
-                <h3 className="text-3xl font-bold mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Become a Guide</h3>
+                <h3 className="text-3xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>Become a Guide</h3>
                 <p className="text-white/70 mb-6 leading-relaxed">
                   Share your passion for Bangladesh's heritage. Earn income doing what you love — guiding curious travelers through history and culture.
                 </p>
@@ -494,7 +494,7 @@ export default function Landing() {
             <div className="relative rounded-3xl overflow-hidden bg-[#D4A017] p-10 text-white">
               <div className="relative z-10">
                 <div className="text-4xl mb-4">🏺</div>
-                <h3 className="text-3xl font-bold mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Sell Your Crafts</h3>
+                <h3 className="text-3xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>Sell Your Crafts</h3>
                 <p className="text-white/80 mb-6 leading-relaxed">
                   Artisans, weavers, and producers — bring your authentic Bengali products to thousands of heritage enthusiasts worldwide.
                 </p>
@@ -511,7 +511,7 @@ export default function Landing() {
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
           <p className="text-[#006A4E] text-sm font-semibold uppercase tracking-widest mb-2">Testimonials</p>
-          <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h2 className="text-4xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>
             What Travelers Say
           </h2>
         </div>

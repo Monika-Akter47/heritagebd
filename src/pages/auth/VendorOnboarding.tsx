@@ -183,11 +183,11 @@ export default function VendorOnboarding() {
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </div>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Vendor Onboarding</h1>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Vendor Onboarding</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Complete all steps to activate your seller account</p>
         </div>
 
@@ -205,7 +205,7 @@ export default function VendorOnboarding() {
           {/* Step 0: Personal Info */}
           {step === 0 && (
             <div className="space-y-4">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Personal Information</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Personal Information</h2>
               <ProfileImagePicker currentUrl={currentUser?.avatar} onFileSelected={setProfilePhotoFile} />
               {[
                 { label: 'Full Name', value: currentUser?.name || '' },
@@ -227,7 +227,7 @@ export default function VendorOnboarding() {
           {/* Step 1: Business Info */}
           {step === 1 && (
             <div className="space-y-4">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Business Information</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Business Information</h2>
               <div>
                 <label className="block text-sm font-semibold mb-1.5" style={{ color: 'var(--color-text)' }}>Shop Name</label>
                 <input type="text" value={form.shopName} onChange={e => setField('shopName', e.target.value)} placeholder="Your shop or business name" className={inputCls} />
@@ -266,7 +266,7 @@ export default function VendorOnboarding() {
           {/* Step 2: Documents */}
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Upload Documents</h2>
+              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Upload Documents</h2>
               <p className="text-sm mb-5" style={{ color: 'var(--color-text-muted)' }}>
                 Upload clear PDF, JPG, or PNG copies (up to 10 MB each). These documents are private and visible only to the verification team.
               </p>
@@ -301,7 +301,7 @@ export default function VendorOnboarding() {
           {/* Step 3: Shop Setup */}
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Shop Setup</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Shop Setup</h2>
 
               <label className="block cursor-pointer">
                 <span className="mb-2 block text-sm font-semibold" style={{ color: 'var(--color-text)' }}>Shop Logo</span>
@@ -382,7 +382,7 @@ export default function VendorOnboarding() {
           {/* Step 4: Review & Submit */}
           {step === 4 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Review & Submit</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Review & Submit</h2>
               {[
                 { section: 'Personal Information', items: [['Full Name', currentUser?.name || ''], ['Email', currentUser?.email || ''], ['Phone', currentUser?.phone || 'Not provided'], ['NID', form.nidNumber || 'Not provided']] },
                 { section: 'Business Information', items: [['Shop Name', form.shopName], ['Business Type', form.businessType], ['District', form.location], ['Address', form.businessAddress], ['Description', form.shopDescription]] },

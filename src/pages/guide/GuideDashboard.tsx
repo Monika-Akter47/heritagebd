@@ -4,10 +4,110 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import Badge from '../../components/ui/Badge';
 import { useApp } from '../../context/AppContext';
 import { Link } from 'react-router-dom';
-import { bookingsApi, earningsApi, guidesApi, tripsApi } from '../../services/api';
+import { bookingsApi, earningsApi, guidePaymentsApi, guidesApi, tripsApi, type GuidePayment } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
+import PaymentProofFields, { emptyPaymentProof, methodLabel, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 
 const TODAY = () => new Date().toISOString().slice(0, 10);
+
+/**
+ * The booking balance (total minus the online advance) is paid to the guide directly. Once the tour
+ * is finished the guide records receiving it, or confirms the payment the tourist reported; only then
+ * does it count as cash received in the earnings summary.
+ */
+function BookingPaymentPanel({ booking, payment, onChanged }: {
+  booking: any; payment?: GuidePayment; onChanged: () => Promise<unknown>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [method, setMethod] = useState<'cash' | 'bkash' | 'nagad'>('cash');
+  const [proof, setProof] = useState<PaymentProof>(emptyPaymentProof);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const balance = Number(booking.balanceAmount || 0);
+
+  async function run(action: () => Promise<unknown>) {
+    setBusy(true); setError('');
+    try {
+      await action();
+      setOpen(false);
+      await onChanged();
+    } catch (e: any) {
+      setError(e?.message || 'Could not save the payment.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function record() {
+    const proofError = validatePaymentProof(method, proof);
+    if (proofError) { setError(proofError); return; }
+    void run(() => guidePaymentsApi.record(booking.id, method, { payerPhone: proof.phone, reference: proof.transactionId }));
+  }
+
+  const details = payment
+    ? `${methodLabel(payment.method)}${payment.payerPhone ? ` from ${payment.payerPhone}` : ''}${payment.reference ? ` · TrxID ${payment.reference}` : ''}`
+    : '';
+
+  if (payment?.status === 'confirmed') {
+    return (
+      <p className="mt-2 flex items-center gap-1 text-sm font-semibold text-[#006A4E]">
+        <CheckCircle size={14} /> ৳{Number(payment.amount).toLocaleString()} received · {details}
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-3 text-sm">
+      {payment?.status === 'reported' ? (
+        <>
+          <p className="font-semibold">{booking.touristName || 'The tourist'} reported paying ৳{Number(payment.amount).toLocaleString()}</p>
+          <p className="text-xs text-[var(--color-text-muted)]">{details}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button disabled={busy} onClick={() => void run(() => guidePaymentsApi.confirm(payment.id))}
+              className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+              {busy ? 'Saving…' : 'Confirm Received'}
+            </button>
+            {!open && (
+              <button onClick={() => setOpen(true)} className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs">
+                Record different details
+              </button>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p><span className="font-semibold">Balance to collect: ৳{balance.toLocaleString()}</span>
+            <span className="block text-xs text-[var(--color-text-muted)]">Not marked paid yet. Record it when the tourist pays you.</span></p>
+          {!open && (
+            <button onClick={() => setOpen(true)} className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white">
+              Mark Payment Received
+            </button>
+          )}
+        </div>
+      )}
+      {open && (
+        <div className="mt-3 space-y-3">
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="How the tourist paid">
+            {(['cash', 'bkash', 'nagad'] as const).map(m => (
+              <button key={m} type="button" role="radio" aria-checked={method === m} onClick={() => { setMethod(m); setError(''); }}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-semibold ${method === m ? 'border-[#006A4E] bg-[#006A4E]/10 text-[#006A4E]' : 'border-[var(--color-border)] bg-white text-[var(--color-text-muted)]'}`}>
+                {methodLabel(m)}
+              </button>
+            ))}
+          </div>
+          <PaymentProofFields method={method} value={proof} onChange={setProof} perspective="receiver" />
+          <div className="flex gap-2">
+            <button disabled={busy} onClick={record} className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+              {busy ? 'Saving…' : `Received ৳${(payment ? Number(payment.amount) : balance).toLocaleString()}`}
+            </button>
+            <button onClick={() => { setOpen(false); setError(''); }} className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs">Cancel</button>
+          </div>
+        </div>
+      )}
+      {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
 
 const fmtDate = (b: any) =>
   b.startDate === b.endDate
@@ -33,6 +133,11 @@ export default function GuideDashboard() {
   const { data: sharedPlans, loading: plansLoading, error: plansError, refetch: refetchPlans } = useApiData(
     () => (isGuide ? tripsApi.list() : Promise.resolve([])), [] as any[], [currentUser?.id]
   );
+  const { data: guidePayments, refetch: refetchPayments } = useApiData(
+    () => (isGuide ? guidePaymentsApi.list() : Promise.resolve([])), [] as GuidePayment[], [currentUser?.id]
+  );
+  const paymentByBooking = new Map(guidePayments.map(p => [p.bookingId, p]));
+  const refreshPayments = () => Promise.all([refetchPayments(), refetchEarnings()]);
   useEffect(() => {
     if (!isGuide) return;
     const timer = window.setInterval(() => {
@@ -40,10 +145,11 @@ export default function GuideDashboard() {
         refetchBookings();
         refetchPlans();
         refetchEarnings();
+        refetchPayments();
       }
     }, 20000);
     return () => window.clearInterval(timer);
-  }, [isGuide, refetchBookings, refetchPlans, refetchEarnings]);
+  }, [isGuide, refetchBookings, refetchPlans, refetchEarnings, refetchPayments]);
 
   const isAvailable = !!profile?.isAvailable;
   const locationSharing = !!profile?.isLocationSharing;
@@ -123,7 +229,7 @@ export default function GuideDashboard() {
         {/* Header */}
         <div className="flex items-start justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'Fraunces, serif' }}>Guide Dashboard</h1>
+            <h1 className="text-3xl font-bold text-[var(--color-text)]" style={{ fontFamily: 'var(--font-display)' }}>Guide Dashboard</h1>
             <p className="text-[var(--color-text-muted)]">Welcome back, {currentUser.name.split(' ')[0]}</p>
           </div>
           <div id="availability" className="flex gap-4">
@@ -168,7 +274,8 @@ export default function GuideDashboard() {
             { label: 'Earnings This Month', value: earningsLoading ? '…' : `৳${thisMonthEarnings.toLocaleString()}`, icon: DollarSign, color: '#D4A017' },
             { label: 'Total Partner Earnings', value: earningsLoading ? '…' : `৳${lifetimeEarnings.toLocaleString()}`, icon: DollarSign, color: '#006A4E' },
             { label: 'Platform Advance', value: earningsLoading ? '…' : `৳${Number(earnings?.totals?.paidViaPlatform || 0).toLocaleString()}`, icon: DollarSign, color: '#2563EB' },
-            { label: 'Cash Balance', value: earningsLoading ? '…' : `৳${Number(earnings?.totals?.collectedCash || 0).toLocaleString()}`, icon: DollarSign, color: '#7C3AED' },
+            { label: 'Cash Received', value: earningsLoading ? '…' : `৳${Number(earnings?.totals?.cashConfirmed || 0).toLocaleString()}`, icon: CheckCircle, color: '#7C3AED' },
+            { label: 'Cash to Collect', value: earningsLoading ? '…' : `৳${Number(earnings?.totals?.cashAwaiting || 0).toLocaleString()}`, icon: Clock, color: '#F42A41' },
             { label: 'Pending Release', value: earningsLoading ? '…' : `৳${Number(earnings?.totals?.pendingRelease || 0).toLocaleString()}`, icon: Clock, color: '#D4A017' },
             { label: 'Rating', value: profile?.reviewCount ? `${profile.rating} ★ (${profile.reviewCount})` : 'No reviews yet', icon: Star, color: '#F42A41' },
             { label: 'Upcoming Tours', value: upcoming.length, icon: Users, color: '#006A4E' },
@@ -178,7 +285,7 @@ export default function GuideDashboard() {
                 <span className="text-xs font-semibold text-[var(--color-text-muted)] uppercase">{stat.label}</span>
                 <stat.icon size={18} style={{ color: stat.color }} />
               </div>
-              <p className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: stat.color }}>{stat.value}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: stat.color }}>{stat.value}</p>
             </div>
           ))}
         </div>
@@ -205,7 +312,7 @@ export default function GuideDashboard() {
 
         {/* Earnings Chart */}
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] mb-8">
-          <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Earnings Trend</h3>
+          <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Earnings Trend</h3>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={earningsData}>
               <defs>
@@ -266,7 +373,10 @@ export default function GuideDashboard() {
                     <p className="mt-1 text-xs text-[var(--color-text-muted)]">
                       Advance: ৳{Number(req.advanceAmount || 0).toLocaleString()} · Cash balance: ৳{Number(req.balanceAmount || 0).toLocaleString()}
                     </p>
-                    {req.status === 'completed' && <p className="mt-2 text-sm font-semibold text-[#006A4E]">Settlement recorded. Check your earnings summary for platform advance and cash balance.</p>}
+                    {req.status === 'completed' && <p className="mt-2 text-sm font-semibold text-[#006A4E]">Settlement recorded. The platform advance share is in your earnings.</p>}
+                    {['awaiting_confirmation', 'completed'].includes(req.status) && (
+                      <BookingPaymentPanel booking={req} payment={paymentByBooking.get(req.id)} onChanged={refreshPayments} />
+                    )}
                   </div>
                   {req.status === 'pending' && (
                     <div className="flex gap-2">
@@ -294,7 +404,7 @@ export default function GuideDashboard() {
 
         <section id="plans" className="mt-8 space-y-4">
           <div>
-            <h2 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Tourist trip plans shared with you</h2>
+            <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>Tourist trip plans shared with you</h2>
             <p className="text-sm text-[var(--color-text-muted)]">Review shared itineraries, respond to the tourist, and mark the tour finished so the tourist can confirm completion.</p>
           </div>
           {plansLoading && <p className="text-sm text-[var(--color-text-muted)]">Loading shared plans…</p>}

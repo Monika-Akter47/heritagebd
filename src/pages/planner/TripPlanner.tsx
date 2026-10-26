@@ -247,7 +247,7 @@ function GuideBookingModal({ guide, destination, location, route, preferredDate,
               <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: '#E6F4EF' }}>
                 <CheckCircle size={28} style={{ color: 'var(--color-primary)' }} />
               </div>
-              <p className="font-bold mb-1" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Booking request sent</p>
+              <p className="font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Booking request sent</p>
               <p className="text-sm mb-5" style={{ color: 'var(--color-text-muted)' }}>
                 {guide.name} received your trip plan and can review your request for {destination}. Track its status in your tourist profile.
               </p>
@@ -367,7 +367,7 @@ function GeneratedItinerary({
               <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#D4A017] text-white">{destination.type}</span>
               <span className="text-xs text-white/70">✨ AI-generated itinerary</span>
             </div>
-            <h2 className="text-white font-bold text-xl" style={{ fontFamily: 'Fraunces, serif' }}>{destination.name}</h2>
+            <h2 className="text-white font-bold text-xl" style={{ fontFamily: 'var(--font-display)' }}>{destination.name}</h2>
             <p className="text-white/70 text-xs">📍 {destination.location}</p>
           </div>
         </div>
@@ -501,7 +501,7 @@ function GeneratedItinerary({
                 <div key={guide.id} className="flex flex-wrap items-center gap-4 p-4">
                   <img src={guide.profileImage || guide.avatar} alt={guide.name} className="h-14 w-14 rounded-full object-cover" />
                   <div className="min-w-[160px] flex-1">
-                    <p className="font-bold" style={{ color: 'var(--color-text)', fontFamily: 'Fraunces, serif' }}>{guide.name}</p>
+                    <p className="font-bold" style={{ color: 'var(--color-text)', fontFamily: 'var(--font-display)' }}>{guide.name}</p>
                     <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
                       {placeMatch ? `Covers ${destination.location}` : guide.location}
                       {guide.languages?.length ? ` · ${guide.languages.slice(0, 2).join(', ')}` : ''}
@@ -761,7 +761,7 @@ export default function TripPlanner() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
         <Compass size={64} className="mb-6 opacity-20" style={{ color: 'var(--color-primary)' }} />
-        <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif' }}>Plan Your Heritage Journey</h2>
+        <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)' }}>Plan Your Heritage Journey</h2>
         <p className="mb-6" style={{ color: 'var(--color-text-muted)' }}>Sign in to create and save personalised trip plans</p>
         <Link to="/login" className="bg-[#006A4E] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#004D38] transition-colors">Sign In</Link>
       </div>
@@ -786,7 +786,7 @@ export default function TripPlanner() {
         {/* Page header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Trip Planner</h1>
+            <h1 className="text-4xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Trip Planner</h1>
             <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Plan your perfect heritage journey from your location</p>
           </div>
           {saved && (
@@ -996,7 +996,7 @@ export default function TripPlanner() {
                     <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#E6F4EF' }}>
                       <Compass size={30} style={{ color: 'var(--color-primary)' }} />
                     </div>
-                    <h3 className="font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Your Route Will Appear Here</h3>
+                    <h3 className="font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Your Route Will Appear Here</h3>
                     <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
                       Fill in your details and click <strong>Generate My Route Plan</strong> to get a personalised itinerary with stops, costs, and Ready to Pick products along the way.
                     </p>
@@ -1078,7 +1078,7 @@ export default function TripPlanner() {
                   <div>
                     <div className="flex items-start justify-between mb-6">
                       <div>
-                        <h2 className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{selectedTrip.name}</h2>
+                        <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{selectedTrip.name}</h2>
                         <div className="flex items-center gap-2 text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>
                           <Calendar size={14} />
                           {new Date(selectedTrip.startDate).toLocaleDateString('en-BD', { day: 'numeric', month: 'long' })} –{' '}

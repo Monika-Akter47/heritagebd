@@ -11,7 +11,7 @@ export default function SessionExpired() {
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
             <span className="text-white font-bold text-sm">H</span>
           </div>
-          <span className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+          <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
             Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
           </span>
         </Link>
@@ -20,7 +20,7 @@ export default function SessionExpired() {
           <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: '#FFFBEB' }}>
             <Clock size={40} style={{ color: '#D97706' }} />
           </div>
-          <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+          <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
             Session Expired
           </h1>
           <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>

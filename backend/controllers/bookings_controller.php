@@ -14,6 +14,8 @@ function booking_hydrate(PDO $pdo, array $row): array {
         'advancePercent' => (float)$row['advance_percent'], 'commissionPercent' => (float)$row['commission_percent'],
         'advanceAmount' => (float)$row['advance_amount'], 'balanceAmount' => (float)$row['balance_amount'],
         'advanceStatus' => $row['advance_status'],
+        'advancePaymentMethod' => $row['advance_payment_method'] ?? null,
+        'advancePayerPhone' => $row['advance_payer_phone'] ?? null, 'advanceTransactionId' => $row['advance_transaction_id'] ?? null,
         'groupSize' => (int)$row['group_size'], 'createdAt' => $row['created_at'],
         'destinations' => array_column($dest->fetchAll(), 'place_name'),
     ];
@@ -72,6 +74,8 @@ function bookings_create(PDO $pdo): void {
             $pdo->rollBack();
             json_error('Choose bKash, Nagad, or card for the online advance payment.', 422);
         }
+        // Optional here: trip-planner bookings send no payment details.
+        [$advancePhone, $advanceTxn] = payment_proof($d, $paymentMethod, 'advance', false);
         $overlap = $pdo->prepare(
             "SELECT 1 FROM guide_bookings
              WHERE guide_id = ? AND status IN ('pending','accepted','awaiting_confirmation')
@@ -88,12 +92,14 @@ function bookings_create(PDO $pdo): void {
         $id = id_with_prefix('bk');
         $pdo->prepare(
             'INSERT INTO guide_bookings (id, guide_id, tourist_id, tour_type, start_date, end_date, message, total_price, group_size,
-                                         advance_percent, commission_percent, advance_amount, balance_amount, advance_status)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                                         advance_percent, commission_percent, advance_amount, balance_amount, advance_status,
+                                         advance_payment_method, advance_payer_phone, advance_transaction_id)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
         )->execute([
             $id, $d['guideId'], $user['id'], trim((string)$d['tourType']), $d['startDate'], $d['endDate'],
             $d['message'] ?? null, $tourPrice, max(1, (int)($d['groupSize'] ?? 1)),
             $setting['advancePercent'], $setting['commissionPercent'], $split['advance'] / 100, $split['cash'] / 100, 'held',
+            $paymentMethod, $advancePhone, $advanceTxn,
         ]);
         foreach ((array)($d['destinations'] ?? []) as $dest) {
             $pdo->prepare('INSERT INTO guide_booking_destinations (booking_id, place_name) VALUES (?, ?)')->execute([$id, $dest]);

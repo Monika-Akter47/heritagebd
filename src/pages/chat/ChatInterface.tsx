@@ -83,7 +83,7 @@ export default function ChatInterface() {
       {/* Conversation list */}
       <div className="w-80 shrink-0 bg-white border-r border-[var(--color-border)] flex flex-col">
         <div className="p-4 border-b border-[var(--color-border)]">
-          <h2 className="font-bold text-lg mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Messages</h2>
+          <h2 className="font-bold text-lg mb-3" style={{ fontFamily: 'var(--font-display)' }}>Messages</h2>
           <div className="relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
             <input

@@ -90,7 +90,7 @@ export default function ProductDetail() {
                 </span>
               )}
             </p>
-            <h1 className="text-3xl font-bold text-[var(--color-text)] mb-3" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h1 className="text-3xl font-bold text-[var(--color-text)] mb-3" style={{ fontFamily: 'var(--font-display)' }}>
               {product.name}
             </h1>
 
@@ -105,7 +105,7 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-end gap-3 mb-6">
-              <span className="text-4xl font-bold text-[#006A4E]" style={{ fontFamily: 'Fraunces, serif' }}>
+              <span className="text-4xl font-bold text-[#006A4E]" style={{ fontFamily: 'var(--font-display)' }}>
                 ৳{product.price.toLocaleString()}
               </span>
               {product.originalPrice && (
@@ -221,7 +221,7 @@ export default function ProductDetail() {
         {/* Reviews */}
         {reviews.length > 0 && (
           <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Customer Reviews</h2>
+            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>Customer Reviews</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviews.map(r => <ReviewCard key={r.id} review={r} />)}
             </div>
@@ -230,7 +230,7 @@ export default function ProductDetail() {
 
         {shopReviews.length > 0 && (
           <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
               Reviews for {product.vendor.shopName}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,7 +242,7 @@ export default function ProductDetail() {
         {/* Related */}
         {related.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Related Products</h2>
+            <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>Related Products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {related.map(p => <ProductCard key={p.id} product={p} />)}
             </div>

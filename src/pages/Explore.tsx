@@ -69,7 +69,7 @@ export default function Explore() {
       {/* Header */}
       <div className="bg-[#006A4E] py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
             Explore Bangladesh
           </h1>
           <p className="text-white/70 mb-8">Discover heritage places, expert guides, authentic products, and upcoming events</p>

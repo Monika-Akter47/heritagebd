@@ -81,7 +81,7 @@ export default function Shop() {
       <div className="bg-gradient-to-r from-[#D4A017] to-[#b88a10] py-14 px-4 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <Badge variant="green" className="mb-4">Authentic Bangladesh</Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>
             Heritage Marketplace
           </h1>
           <p className="text-white/80 mb-8">Shop directly from certified artisans, weavers, and GI-registered producers</p>

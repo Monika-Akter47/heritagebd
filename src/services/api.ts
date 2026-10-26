@@ -326,11 +326,32 @@ export const bookingsApi = {
   update: (id: string, status: string) => put(`/bookings/${id}`, { status }),
 };
 
+export interface GuidePayment {
+  id: string;
+  bookingId: string;
+  guideId: string;
+  touristId: string;
+  guideName: string;
+  touristName: string;
+  tourType: string;
+  startDate: string;
+  endDate: string;
+  amount: number;
+  method: 'cash' | 'bkash' | 'nagad';
+  reference: string | null;
+  payerPhone: string | null;
+  recordedBy: 'tourist' | 'guide';
+  status: 'reported' | 'confirmed';
+  reportedAt: string;
+  confirmedAt: string | null;
+}
+
 export const guidePaymentsApi = {
-  list: () => get('/guide-payments'),
-  report: (bookingId: string, method: 'cash' | 'bkash' | 'nagad', reference?: string) =>
-    post('/guide-payments', { bookingId, method, reference }),
-  confirm: (id: string) => put(`/guide-payments/${id}/confirm`, {}),
+  list: () => get<GuidePayment[]>('/guide-payments'),
+  /** Tourist: report paying the balance. Guide: record receiving it (confirmed at once). */
+  record: (bookingId: string, method: 'cash' | 'bkash' | 'nagad', proof: { payerPhone?: string; reference?: string } = {}) =>
+    post<GuidePayment>('/guide-payments', { bookingId, method, ...proof }),
+  confirm: (id: string) => put<GuidePayment>(`/guide-payments/${id}/confirm`, {}),
 };
 
 export interface PaymentTerms {
@@ -348,7 +369,11 @@ export const paymentTermsApi = {
 
 export const earningsApi = {
   me: () => get<{
-    totals: { totalEarning: number; paidViaPlatform: number; collectedCash: number; pendingRelease: number };
+    totals: {
+      totalEarning: number; paidViaPlatform: number; collectedCash: number; pendingRelease: number;
+      /** Cash share actually received (guides: confirmed guide payments) vs. still to be received. */
+      cashConfirmed: number; cashAwaiting: number;
+    };
     settlements: any[];
     byMonth: { month: string; amount: number }[];
   }>('/earnings/me'),
@@ -449,9 +474,32 @@ export const chatApi = {
 // ---------------------------------------------------------------------------
 // Admin
 // ---------------------------------------------------------------------------
+export type PaymentFlow = 'order' | 'preorder' | 'guide_booking';
+
+export interface AdminPayments {
+  totals: {
+    advanceCollected: number; advanceHeld: number; advanceReleased: number; advanceRefunded: number;
+    balanceCollected: number; balanceAwaitingConfirmation: number; commissionEarned: number;
+    /** bKash/Nagad advances recorded without a payer number or TrxID. */
+    walletMissingProof: number;
+  };
+  advances: {
+    flow: PaymentFlow; ref: string; recordId: string; createdAt: string; status: string;
+    customerName: string; customerPhone: string | null; partnerName: string | null;
+    total: number; advance: number; method: string | null; payerPhone: string | null; transactionId: string | null;
+    advanceStatus: 'held' | 'released' | 'refunded';
+  }[];
+  balances: {
+    flow: Exclude<PaymentFlow, 'order'>; ref: string; recordId: string; paidAt: string;
+    customerName: string; partnerName: string | null; amount: number; method: string | null;
+    payerPhone: string | null; transactionId: string | null; status: 'reported' | 'confirmed'; recordedBy: string;
+  }[];
+}
+
 export const adminApi = {
   stats: () => get('/admin/stats'),
   earnings: () => get('/admin/earnings'),
+  payments: () => get<AdminPayments>('/admin/payments'),
   commissionSettings: () => get('/admin/commission-settings'),
   updateCommissionSettings: (settings: { flow: string; advancePercent: number; commissionPercent: number }[]) =>
     put('/admin/commission-settings', { settings }),

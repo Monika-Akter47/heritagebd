@@ -91,7 +91,7 @@ export default function VerificationStatus() {
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </Link>
@@ -107,7 +107,7 @@ export default function VerificationStatus() {
               style={{ background: cfg.badge.bg, color: cfg.badge.color }}>
               {cfg.badge.label}
             </span>
-            <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               {cfg.title}
             </h1>
             <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{cfg.subtitle}</p>

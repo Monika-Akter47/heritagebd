@@ -55,7 +55,28 @@ function earnings_me(PDO $pdo): void {
             $pending += $split['released'] / 100;
         }
     }
-    $rows = $pdo->prepare('SELECT * FROM settlements WHERE partner_id = ? ORDER BY settled_at DESC LIMIT 20');
+    // Settlement counts the booking balance as cash the guide collects; it is only "received" once a
+    // guide payment for that booking is confirmed (recorded by the guide, or the tourist's report confirmed).
+    $cashConfirmed = (float)$totals['collected_cash'];
+    $cashAwaiting = 0.0;
+    if ($partnerRole === 'guide') {
+        $cash = $pdo->prepare(
+            "SELECT COALESCE(SUM(CASE WHEN gp.status = 'confirmed' THEN s.partner_cash ELSE 0 END),0) confirmed,
+                    COALESCE(SUM(CASE WHEN gp.status = 'confirmed' THEN 0 ELSE s.partner_cash END),0) awaiting
+             FROM settlements s LEFT JOIN guide_payments gp ON gp.booking_id = s.source_id
+             WHERE s.partner_id = ? AND s.flow = 'guide_booking'"
+        );
+        $cash->execute([$partnerId]);
+        $cashRow = $cash->fetch();
+        $cashConfirmed = (float)$cashRow['confirmed'];
+        $cashAwaiting = (float)$cashRow['awaiting'];
+    }
+    $rows = $pdo->prepare(
+        "SELECT s.*, gp.status AS cash_status, gp.method AS cash_method
+         FROM settlements s
+         LEFT JOIN guide_payments gp ON s.flow = 'guide_booking' AND gp.booking_id = s.source_id
+         WHERE s.partner_id = ? ORDER BY s.settled_at DESC LIMIT 20"
+    );
     $rows->execute([$partnerId]);
     $months = earnings_months($pdo, 'partner_id = ?', [$partnerId], 'partner_total');
     json_ok([
@@ -64,6 +85,8 @@ function earnings_me(PDO $pdo): void {
             'paidViaPlatform' => (float)$totals['paid_via_platform'],
             'collectedCash' => (float)$totals['collected_cash'],
             'pendingRelease' => $pending,
+            'cashConfirmed' => $cashConfirmed,
+            'cashAwaiting' => $cashAwaiting,
         ],
         'settlements' => array_map('settlement_hydrate', $rows->fetchAll()),
         'byMonth' => $months,
@@ -78,6 +101,8 @@ function settlement_hydrate(array $row): array {
         'commissionAmount' => (float)$row['commission_amount'], 'partnerReleased' => (float)$row['partner_released'],
         'partnerCash' => (float)$row['partner_cash'], 'partnerTotal' => (float)$row['partner_total'],
         'settledAt' => $row['settled_at'],
+        // Guide bookings only: 'confirmed', 'reported', or null while no payment is recorded.
+        'cashStatus' => $row['cash_status'] ?? null, 'cashMethod' => $row['cash_method'] ?? null,
     ];
 }
 
@@ -205,4 +230,89 @@ function commission_settings_update(PDO $pdo): void {
         throw $e;
     }
     commission_settings_index($pdo);
+}
+
+/**
+ * GET /admin/payments — every payment the platform has taken or recorded, for reconciliation:
+ *   advances: the online advance of each order, pre-order and guide booking (held → released or refunded);
+ *   balances: the remainder paid to the partner — pre-order pickup payments and guide cash payments.
+ * Wallet rows carry the payer number and TrxID so they can be matched against the bKash/Nagad statement.
+ */
+function admin_payments(PDO $pdo): void {
+    $user = require_auth($pdo);
+    require_role($user, ['admin']);
+
+    $advances = $pdo->query(
+        "SELECT * FROM (
+           SELECT 'order' AS flow, o.id AS ref, o.id AS record_id, o.created_at, o.status,
+                  u.name AS customer_name, u.phone AS customer_phone,
+                  (SELECT v.shop_name FROM order_items oi JOIN products p ON p.id = oi.product_id
+                     JOIN vendors v ON v.user_id = p.vendor_id WHERE oi.order_id = o.id LIMIT 1) AS partner_name,
+                  o.total_amount AS total, o.advance_amount AS advance, o.payment_method AS method,
+                  o.advance_payer_phone AS payer_phone, o.advance_transaction_id AS transaction_id, o.advance_status
+           FROM orders o JOIN users u ON u.id = o.user_id
+           UNION ALL
+           SELECT 'preorder', po.order_number, po.id, po.created_at, po.status,
+                  u.name, u.phone, v.shop_name,
+                  po.total_amount, po.advance_paid, po.advance_payment_method,
+                  po.advance_payer_phone, po.advance_transaction_id, po.advance_status
+           FROM preorders po JOIN users u ON u.id = po.tourist_id JOIN vendors v ON v.user_id = po.vendor_id
+           UNION ALL
+           SELECT 'guide_booking', b.id, b.id, b.created_at, b.status,
+                  u.name, u.phone, g.name,
+                  b.total_price, b.advance_amount, b.advance_payment_method,
+                  b.advance_payer_phone, b.advance_transaction_id, b.advance_status
+           FROM guide_bookings b JOIN users u ON u.id = b.tourist_id JOIN users g ON g.id = b.guide_id
+         ) advances ORDER BY created_at DESC LIMIT 500"
+    )->fetchAll();
+
+    $balances = $pdo->query(
+        "SELECT * FROM (
+           SELECT 'preorder' AS flow, po.order_number AS ref, po.id AS record_id, po.updated_at AS paid_at,
+                  u.name AS customer_name, v.shop_name AS partner_name,
+                  po.total_amount - po.advance_paid AS amount, po.pickup_payment_method AS method,
+                  po.pickup_payer_phone AS payer_phone, po.pickup_transaction_id AS transaction_id,
+                  'confirmed' AS status, 'vendor' AS recorded_by
+           FROM preorders po JOIN users u ON u.id = po.tourist_id JOIN vendors v ON v.user_id = po.vendor_id
+           WHERE po.status IN ('picked_up','completed')
+           UNION ALL
+           SELECT 'guide_booking', gp.booking_id, gp.id, COALESCE(gp.confirmed_at, gp.reported_at),
+                  u.name, g.name, gp.amount, gp.method, gp.payer_phone, gp.reference, gp.status, gp.recorded_by
+           FROM guide_payments gp JOIN guide_bookings b ON b.id = gp.booking_id
+             JOIN users u ON u.id = b.tourist_id JOIN users g ON g.id = b.guide_id
+         ) balances ORDER BY paid_at DESC LIMIT 500"
+    )->fetchAll();
+
+    $totals = ['advanceCollected' => 0.0, 'advanceHeld' => 0.0, 'advanceReleased' => 0.0, 'advanceRefunded' => 0.0,
+               'balanceCollected' => 0.0, 'balanceAwaitingConfirmation' => 0.0, 'walletMissingProof' => 0];
+    foreach ($advances as $row) {
+        $amount = (float)$row['advance'];
+        $totals['advanceCollected'] += $amount;
+        $key = ['held' => 'advanceHeld', 'released' => 'advanceReleased', 'refunded' => 'advanceRefunded'][$row['advance_status']] ?? null;
+        if ($key) $totals[$key] += $amount;
+        if (in_array($row['method'], ['bkash', 'nagad'], true) && (!$row['payer_phone'] || !$row['transaction_id'])) {
+            $totals['walletMissingProof']++;
+        }
+    }
+    foreach ($balances as $row) {
+        $totals[$row['status'] === 'confirmed' ? 'balanceCollected' : 'balanceAwaitingConfirmation'] += (float)$row['amount'];
+    }
+    $totals['commissionEarned'] = (float)$pdo->query('SELECT COALESCE(SUM(commission_amount),0) FROM settlements')->fetchColumn();
+
+    json_ok([
+        'totals' => $totals,
+        'advances' => array_map(fn($r) => [
+            'flow' => $r['flow'], 'ref' => $r['ref'], 'recordId' => $r['record_id'], 'createdAt' => $r['created_at'],
+            'status' => $r['status'], 'customerName' => $r['customer_name'], 'customerPhone' => $r['customer_phone'],
+            'partnerName' => $r['partner_name'], 'total' => (float)$r['total'], 'advance' => (float)$r['advance'],
+            'method' => $r['method'], 'payerPhone' => $r['payer_phone'], 'transactionId' => $r['transaction_id'],
+            'advanceStatus' => $r['advance_status'],
+        ], $advances),
+        'balances' => array_map(fn($r) => [
+            'flow' => $r['flow'], 'ref' => $r['ref'], 'recordId' => $r['record_id'], 'paidAt' => $r['paid_at'],
+            'customerName' => $r['customer_name'], 'partnerName' => $r['partner_name'], 'amount' => (float)$r['amount'],
+            'method' => $r['method'], 'payerPhone' => $r['payer_phone'], 'transactionId' => $r['transaction_id'],
+            'status' => $r['status'], 'recordedBy' => $r['recorded_by'],
+        ], $balances),
+    ]);
 }

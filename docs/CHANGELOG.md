@@ -3,7 +3,40 @@
 All notable changes to HeritageBD. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); dates are YYYY-MM-DD.
 
-## [Unreleased] — 2026-10-25: Supabase (PostgreSQL), Render, Vercel
+## [Unreleased] — 2026-10-26: Payment records, guide cash, Bengali text
+
+### Added
+
+- **Payment proof for bKash/Nagad.** Until a gateway is connected, wallet payments are made with
+  "Send Money"; the payer's number and TrxID are now collected and stored (migration
+  `009_payment_details.sql`): pre-order advance (required), marketplace order and guide booking advance
+  (collected by the checkout forms, optional in the API so trip-planner bookings still work), and the
+  remaining pre-order payment at pickup. Shared form: `src/components/ui/PaymentProofFields.tsx`;
+  server validation: `payment_proof()` in `backend/helpers/payments.php`.
+- **Admin › Payments & Advances** (`GET /api/admin/payments`): every online advance (held / released /
+  refunded) and every balance paid to a partner (pre-order pickup, guide cash) with method, payer number
+  and TrxID, totals, search and filters. Flags wallet payments without proof.
+- **Pre-order receipt:** the tourist can confirm "I received my order" once it is handed over, which
+  completes the pre-order and settles the advance (the vendor can still complete it too).
+- **Guide balance payments in the UI.** The guide can mark the balance received (cash, bKash, Nagad)
+  or confirm what the tourist reported; the tourist can mark it paid from their profile. The guide
+  dashboard shows **Cash Received** and **Cash to Collect** (`cashConfirmed` / `cashAwaiting` in
+  `GET /api/earnings/me`) instead of counting all cash as collected.
+- Noto Sans Bengali / Noto Serif Bengali as fallback fonts (`--font-sans`, `--font-display`), so Bengali
+  names and ৳ render the same on every device.
+
+### Fixed
+
+- **Garbled Bengali text** ("αª¼αªù…") in place names, local foods, products, stories and events: the
+  XAMPP dump had been written through the Windows console (code page 437). 79 values were decoded back to
+  UTF-8 on Supabase. Dump with `--result-file` (see `docs/deploy-vercel.md`), not `>` in PowerShell.
+- Reporting a guide payment failed on PostgreSQL (`"reported"` was a double-quoted literal).
+- Guide payments recorded the full tour price; they now record the booking balance (total − advance),
+  which is what the guide actually collects.
+- The vendor's pickup-payment step used `window.prompt`; it is now an inline form.
+- Admin › Ready to Pick Orders: the status filter did nothing; it filters now and shows payment details.
+
+## 2026-10-25: Supabase (PostgreSQL), Render, Vercel
 
 ### Added
 

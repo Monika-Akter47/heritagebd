@@ -61,7 +61,7 @@ export default function GuideVerification() {
           <Link to="/admin" className="flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-sm">
             <ArrowLeft size={16} /> Admin
           </Link>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Guide Verification</h1>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>Guide Verification</h1>
         </div>
 
         {/* Filter tabs */}
@@ -106,7 +106,7 @@ export default function GuideVerification() {
                   <img src={selectedGuide.profileImage} alt={selectedGuide.name} className="w-20 h-20 rounded-2xl object-cover" />
                   <div className="flex-1">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <h2 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{selectedGuide.name}</h2>
+                      <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{selectedGuide.name}</h2>
                       <Badge variant={statusVariant(selectedGuide.verificationStatus)}>
                         {selectedGuide.verificationStatus}
                       </Badge>

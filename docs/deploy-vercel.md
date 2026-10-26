@@ -48,7 +48,7 @@ In the SQL editor, run `backend/database/postgres/schema.sql`, then either
 `backend/database/postgres/seed.sql` (demo data) or your own converted data:
 
 ```bash
-C:\xampp\mysql\bin\mysqldump -u root --no-create-info --complete-insert --skip-triggers heritagebd --ignore-table=heritagebd.auth_tokens --ignore-table=heritagebd.auth_attempts --ignore-table=heritagebd.password_resets > data.mysql.sql
+C:\xampp\mysql\bin\mysqldump -u root --default-character-set=utf8mb4 --no-create-info --complete-insert --skip-triggers heritagebd --ignore-table=heritagebd.auth_tokens --ignore-table=heritagebd.auth_attempts --ignore-table=heritagebd.password_resets --result-file=data.mysql.sql
 ```
 ```bash
 php scripts/mysql-to-postgres.php data data.mysql.sql > data.pg.sql

@@ -63,7 +63,7 @@ export default function PlaceDetail() {
           <div className="flex gap-2 mb-4">
             <Badge variant="green">{place.category}</Badge>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-1" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
             {place.name}
           </h1>
           {place.nameLocal && <p className="text-white/70 text-lg">{place.nameLocal}</p>}
@@ -117,15 +117,15 @@ export default function PlaceDetail() {
             {activeTab === 'Overview' && (
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>About</h2>
+                  <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>About</h2>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">{place.description}</p>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Historical Background</h3>
+                  <h3 className="text-xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>Historical Background</h3>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">{place.historicalBackground}</p>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Significance</h3>
+                  <h3 className="text-xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>Significance</h3>
                   <p className="text-[var(--color-text-muted)] leading-relaxed">{place.significance}</p>
                 </div>
                 {place.tags.length > 0 && (
@@ -153,7 +153,7 @@ export default function PlaceDetail() {
               <div className="space-y-6">
                 <div className="bg-[var(--color-surface-2)] rounded-2xl p-6 flex items-center gap-8">
                   <div className="text-center">
-                    <div className="text-5xl font-bold text-[#006A4E]" style={{ fontFamily: 'Fraunces, serif' }}>{place.rating.toFixed(1)}</div>
+                    <div className="text-5xl font-bold text-[#006A4E]" style={{ fontFamily: 'var(--font-display)' }}>{place.rating.toFixed(1)}</div>
                     <StarRating rating={place.rating} size="md" />
                     <div className="text-sm text-[var(--color-text-muted)] mt-1">{place.reviewCount} reviews</div>
                   </div>
@@ -168,7 +168,7 @@ export default function PlaceDetail() {
 
             {activeTab === 'Guides' && (
               <div>
-                <h3 className="text-xl font-bold mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Available Guides for this Area</h3>
+                <h3 className="text-xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>Available Guides for this Area</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {nearbyGuides.map(guide => <GuideCard key={guide.id} guide={guide} />)}
                 </div>
@@ -218,7 +218,7 @@ export default function PlaceDetail() {
 
                 {/* Products grid */}
                 <div>
-                  <h4 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+                  <h4 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
                     Products You Can Pre-Order Near {place.name}
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -276,7 +276,7 @@ export default function PlaceDetail() {
           <div className="space-y-6">
             {/* Visit Info */}
             <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] shadow-sm">
-              <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Visitor Information</h3>
+              <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Visitor Information</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <Clock size={16} className="text-[#006A4E] mt-0.5 shrink-0" />
@@ -311,7 +311,7 @@ export default function PlaceDetail() {
 
             {/* CTAs */}
             <div className="bg-[#006A4E] rounded-2xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Ready to Visit?</h3>
+              <h3 className="font-bold text-lg mb-3" style={{ fontFamily: 'var(--font-display)' }}>Ready to Visit?</h3>
               <p className="text-white/70 text-sm mb-4">Find an expert guide to make the most of your visit.</p>
               <div className="space-y-3">
                 <Link to="/guides" className="block w-full bg-white text-[#006A4E] text-center py-3 rounded-xl font-semibold text-sm hover:bg-[#D4A017] hover:text-white transition-colors">
@@ -326,7 +326,7 @@ export default function PlaceDetail() {
             {/* Nearby Attractions */}
             {place.nearbyAttractions.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                <h3 className="font-bold text-base mb-3" style={{ fontFamily: 'Fraunces, serif' }}>Nearby Attractions</h3>
+                <h3 className="font-bold text-base mb-3" style={{ fontFamily: 'var(--font-display)' }}>Nearby Attractions</h3>
                 <ul className="space-y-2">
                   {place.nearbyAttractions.map((attraction: string) => (
                     <li key={attraction} className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">

@@ -35,7 +35,7 @@ export default function StoryDetail() {
         <div className="absolute bottom-8 left-0 right-0 px-4">
           <div className="max-w-3xl mx-auto">
             <Badge variant="gold" className="mb-4">{story.category}</Badge>
-            <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
               {story.title}
             </h1>
             <div className="flex items-center gap-6 text-white/70 text-sm flex-wrap">
@@ -95,7 +95,7 @@ export default function StoryDetail() {
       {/* Related */}
       {related.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-[var(--color-border)]">
-          <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Fraunces, serif' }}>More Stories</h2>
+          <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)' }}>More Stories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {related.map((s: any) => <StoryCard key={s.id} story={s} />)}
           </div>

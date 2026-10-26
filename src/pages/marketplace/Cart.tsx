@@ -10,7 +10,7 @@ export default function Cart() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center">
         <ShoppingBag size={64} className="text-[#006A4E]/20 mb-6" />
-        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2" style={{ fontFamily: 'Fraunces, serif' }}>
+        <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2" style={{ fontFamily: 'var(--font-display)' }}>
           Your cart is empty
         </h2>
         <p className="text-[var(--color-text-muted)] mb-8">Discover authentic Bengali products and add them to your cart</p>
@@ -27,7 +27,7 @@ export default function Cart() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-8" style={{ fontFamily: 'Fraunces, serif' }}>
+        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-8" style={{ fontFamily: 'var(--font-display)' }}>
           Shopping Cart ({cart.reduce((s, i) => s + i.quantity, 0)} items)
         </h1>
 
@@ -71,7 +71,7 @@ export default function Cart() {
           {/* Summary */}
           <div>
             <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] sticky top-24">
-              <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Order Summary</h3>
+              <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Order Summary</h3>
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-[var(--color-text-muted)]">Subtotal</span>

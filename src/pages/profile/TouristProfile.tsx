@@ -2,9 +2,79 @@ import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { User, ShoppingBag, Star, Heart, Settings, Package, MapPin, FileText } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { authApi, tripsApi, ordersApi, preordersApi, bookingsApi, reviewsApi, documentsApi, placesApi } from '../../services/api';
+import { authApi, tripsApi, ordersApi, preordersApi, bookingsApi, reviewsApi, documentsApi, placesApi, guidePaymentsApi, type GuidePayment } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import PaymentProofFields, { emptyPaymentProof, methodLabel, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
+
+/** Tourist side of the guide's balance payment: mark it paid, then the guide confirms receipt. */
+function GuideBalancePayment({ booking, payment, onChanged }: { booking: any; payment?: GuidePayment; onChanged: () => Promise<unknown> }) {
+  const [open, setOpen] = useState(false);
+  const [method, setMethod] = useState<'cash' | 'bkash' | 'nagad'>('cash');
+  const [proof, setProof] = useState<PaymentProof>(emptyPaymentProof);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const balance = Number(booking.balanceAmount || 0);
+
+  if (payment?.status === 'confirmed') {
+    return (
+      <p className="mt-3 text-sm font-semibold text-[#006A4E]">
+        ✓ {booking.guideName || 'The guide'} confirmed receiving ৳{Number(payment.amount).toLocaleString()} ({methodLabel(payment.method)}).
+      </p>
+    );
+  }
+
+  async function submit() {
+    const proofError = validatePaymentProof(method, proof);
+    if (proofError) { setError(proofError); return; }
+    setBusy(true); setError('');
+    try {
+      await guidePaymentsApi.record(booking.id, method, { payerPhone: proof.phone, reference: proof.transactionId });
+      setOpen(false);
+      await onChanged();
+    } catch (e: any) {
+      setError(e?.message || 'Could not record the payment.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 border-t border-[var(--color-border)] pt-4 text-sm">
+      {payment?.status === 'reported' ? (
+        <p className="text-[var(--color-text-muted)]">
+          You marked ৳{Number(payment.amount).toLocaleString()} as paid ({methodLabel(payment.method)}). Waiting for the guide to confirm.
+          {!open && <button onClick={() => setOpen(true)} className="ml-2 text-[#006A4E] hover:underline">Edit</button>}
+        </p>
+      ) : !open && (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p>Balance for the guide: <strong>৳{balance.toLocaleString()}</strong> <span className="text-xs text-[var(--color-text-muted)]">(the advance was paid online)</span></p>
+          <button onClick={() => setOpen(true)} className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white">Mark as Paid</button>
+        </div>
+      )}
+      {open && (
+        <div className="mt-3 space-y-3">
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="How you paid the guide">
+            {(['cash', 'bkash', 'nagad'] as const).map(m => (
+              <button key={m} type="button" role="radio" aria-checked={method === m} onClick={() => { setMethod(m); setError(''); }}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-semibold ${method === m ? 'border-[#006A4E] bg-[#006A4E]/10 text-[#006A4E]' : 'border-[var(--color-border)] text-[var(--color-text-muted)]'}`}>
+                {methodLabel(m)}
+              </button>
+            ))}
+          </div>
+          <PaymentProofFields method={method} value={proof} onChange={setProof} amount={balance} />
+          <div className="flex gap-2">
+            <button disabled={busy} onClick={submit} className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+              {busy ? 'Saving…' : `I Paid ৳${balance.toLocaleString()}`}
+            </button>
+            <button onClick={() => { setOpen(false); setError(''); }} className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs">Cancel</button>
+          </div>
+        </div>
+      )}
+      {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
 
 const TABS = [
   { id: 'trips', label: 'My Trips', icon: MapPin },
@@ -56,6 +126,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
   const { data: ordersData, error: ordersError } = useApiData(() => ordersApi.list(), [] as any[]);
   const { data: preOrdersData, error: preOrdersError } = useApiData(() => preordersApi.list(), [] as any[]);
   const { data: bookingsData, error: bookingsError, refetch: refetchGuideBookings } = useApiData(() => bookingsApi.list(), [] as any[]);
+  const { data: guidePayments, refetch: refetchGuidePayments } = useApiData(() => guidePaymentsApi.list(), [] as GuidePayment[]);
   const { data: reviewsData, error: reviewsError, refetch: refetchReviews } = useApiData(() => reviewsApi.mine(), [] as any[]);
   const { data: documentsData, loading: documentsLoading, error: documentsLoadError, refetch: refetchDocuments } = useApiData(() => documentsApi.list(), [] as any[]);
   const { data: savedPlacesData, error: savedPlacesError } = useApiData(() => placesApi.saved(), [] as any[]);
@@ -162,7 +233,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
             )}
           </div>
           <div className="text-white">
-            <h1 className="text-3xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{currentUser.name}</h1>
+            <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{currentUser.name}</h1>
             <p className="text-white/70 mt-1">{currentUser.email}</p>
             <div className="flex gap-2 mt-2">
               <Badge variant="gold">Heritage Explorer</Badge>
@@ -189,7 +260,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
           ].map(stat => (
             <div key={stat.label} className="bg-white rounded-2xl p-4 border border-[var(--color-border)] text-center">
               <stat.icon size={20} className="text-[#006A4E] mx-auto mb-2" />
-              <p className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{stat.value}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
               <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
             </div>
           ))}
@@ -315,7 +386,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
                         {booking.status === 'awaiting_confirmation' && (
                           <button
                             onClick={async () => {
-                              if (!window.confirm('Confirm the tour is complete and you paid the remaining balance to the guide in cash?')) return;
+                              if (!window.confirm('Confirm the tour is complete? This releases the advance to the guide.')) return;
                               try {
                                 await bookingsApi.update(booking.id, 'completed');
                                 await refetchGuideBookings();
@@ -326,7 +397,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
                             }}
                             className="text-sm font-semibold text-[#006A4E] hover:underline"
                           >
-                            Confirm tour completed & balance paid
+                            Confirm tour completed
                           </button>
                         )}
                         {booking.status === 'completed' && !myReviews.some((review: any) => review.targetType === 'guide' && review.targetId === booking.guideId) && (
@@ -339,10 +410,12 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
                         )}
                       </div>
                     </div>
-                      {booking.status === 'completed' && (
-                        <p className="mt-4 border-t border-[var(--color-border)] pt-4 text-sm font-semibold text-[#006A4E]">
-                          Tour completion and cash balance confirmed. The platform advance settlement is recorded.
-                        </p>
+                      {['awaiting_confirmation', 'completed'].includes(booking.status) && (
+                        <GuideBalancePayment
+                          booking={booking}
+                          payment={guidePayments.find(p => p.bookingId === booking.id)}
+                          onChanged={refetchGuidePayments}
+                        />
                       )}
                     </div>
                   ))}

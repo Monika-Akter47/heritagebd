@@ -1,5 +1,13 @@
 <?php
 
+// The balance of a guide booking (total minus the online advance) is paid to the guide directly,
+// usually in cash at the end of the tour. Either side can record it:
+//   - the tourist reports it ('reported'), and the guide confirms receipt ('confirmed');
+//   - or the guide records it directly, which counts as confirmed at once.
+// Only confirmed payments count as "cash received" in the guide's earnings.
+
+const GUIDE_PAYMENT_BOOKING_STATUSES = ['awaiting_confirmation', 'completed'];
+
 function guide_payment_hydrate(array $row): array {
     return [
         'id' => $row['id'],
@@ -14,6 +22,8 @@ function guide_payment_hydrate(array $row): array {
         'amount' => (float)$row['amount'],
         'method' => $row['method'],
         'reference' => $row['reference'],
+        'payerPhone' => $row['payer_phone'] ?? null,
+        'recordedBy' => $row['recorded_by'] ?? 'tourist',
         'status' => $row['status'],
         'reportedAt' => $row['reported_at'],
         'confirmedAt' => $row['confirmed_at'],
@@ -45,31 +55,36 @@ function guide_payments_index(PDO $pdo): void {
     json_ok(array_map('guide_payment_hydrate', $stmt->fetchAll()));
 }
 
+/** POST /guide-payments — the tourist reports the payment, or the guide records it as received. */
 function guide_payments_report(PDO $pdo): void {
     $user = require_auth($pdo);
-    require_role($user, ['tourist']);
+    require_role($user, ['tourist', 'guide']);
+    $byGuide = $user['role'] === 'guide';
     $d = body();
     require_fields($d, ['bookingId', 'method']);
     if (!is_string($d['bookingId']) || !is_string($d['method'])
         || !in_array($d['method'], ['cash', 'bkash', 'nagad'], true)) {
         json_error('Choose cash, bKash, or Nagad for this payment.', 422);
     }
-    if (isset($d['reference']) && (!is_string($d['reference']) || mb_strlen(trim($d['reference'])) > 120)) {
-        json_error('Payment reference must be 120 characters or fewer.', 422);
-    }
+    // Wallet payments need the sender number and TrxID so the other side can check them.
+    [$payerPhone, $reference] = payment_proof(
+        ['payPayerPhone' => $d['payerPhone'] ?? '', 'payTransactionId' => $d['reference'] ?? ''],
+        $d['method'], 'pay'
+    );
 
     $pdo->beginTransaction();
     try {
         $bookingStmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE id = ? FOR UPDATE');
         $bookingStmt->execute([$d['bookingId']]);
         $booking = $bookingStmt->fetch();
-        if (!$booking || $booking['tourist_id'] !== $user['id']) {
+        $owner = $byGuide ? $booking['guide_id'] ?? null : $booking['tourist_id'] ?? null;
+        if (!$booking || $owner !== $user['id']) {
             $pdo->rollBack();
             json_error('Guide booking not found.', 404);
         }
-        if ($booking['status'] !== 'completed') {
+        if (!in_array($booking['status'], GUIDE_PAYMENT_BOOKING_STATUSES, true)) {
             $pdo->rollBack();
-            json_error('Payment can be reported after the tour is marked completed.', 409);
+            json_error('Payment can be recorded once the tour is marked finished.', 409);
         }
 
         $paymentStmt = $pdo->prepare('SELECT * FROM guide_payments WHERE booking_id = ? FOR UPDATE');
@@ -77,24 +92,27 @@ function guide_payments_report(PDO $pdo): void {
         $payment = $paymentStmt->fetch();
         if ($payment && $payment['status'] === 'confirmed') {
             $pdo->rollBack();
-            json_error('The guide has already confirmed full payment for this booking.', 409);
+            json_error('The guide has already confirmed this payment.', 409);
         }
 
+        $status = $byGuide ? 'confirmed' : 'reported';
+        $recordedBy = $byGuide ? 'guide' : 'tourist';
+        $confirmedAt = $byGuide ? date('Y-m-d H:i:s') : null;
         if ($payment) {
             $pdo->prepare(
-                "UPDATE guide_payments
-                 SET method = ?, reference = ?, status = 'reported', reported_at = NOW(), confirmed_at = NULL
-                 WHERE id = ?"
-            )->execute([$d['method'], trim((string)($d['reference'] ?? '')) ?: null, $payment['id']]);
+                'UPDATE guide_payments
+                 SET method = ?, reference = ?, payer_phone = ?, status = ?, recorded_by = ?, reported_at = NOW(), confirmed_at = ?
+                 WHERE id = ?'
+            )->execute([$d['method'], $reference, $payerPhone, $status, $recordedBy, $confirmedAt, $payment['id']]);
             $paymentId = $payment['id'];
         } else {
             $paymentId = id_with_prefix('gp');
             $pdo->prepare(
-                'INSERT INTO guide_payments (id, booking_id, amount, method, reference, status, reported_at)
-                 VALUES (?, ?, ?, ?, ?, "reported", NOW())'
+                'INSERT INTO guide_payments (id, booking_id, amount, method, reference, payer_phone, status, recorded_by, reported_at, confirmed_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)'
             )->execute([
-                $paymentId, $booking['id'], $booking['total_price'], $d['method'],
-                trim((string)($d['reference'] ?? '')) ?: null,
+                $paymentId, $booking['id'], $booking['balance_amount'], $d['method'], $reference, $payerPhone,
+                $status, $recordedBy, $confirmedAt,
             ]);
         }
         $pdo->commit();
@@ -103,10 +121,15 @@ function guide_payments_report(PDO $pdo): void {
         throw $e;
     }
 
-    notify($pdo, $booking['guide_id'], 'Tour payment reported',
-        $user['name'] . ' reported full payment of ৳' . number_format((float)$booking['total_price'], 2)
-            . ' for a completed tour. Please confirm receipt.',
-        'booking', '/guide-dashboard#bookings');
+    $amount = '৳' . number_format((float)$booking['balance_amount'], 2);
+    if ($byGuide) {
+        notify($pdo, $booking['tourist_id'], 'Guide recorded your payment',
+            $user['name'] . " recorded receiving {$amount} ({$d['method']}) for your tour.", 'booking', '/profile');
+    } else {
+        notify($pdo, $booking['guide_id'], 'Tour payment reported',
+            $user['name'] . " reported paying {$amount} ({$d['method']}) for a finished tour. Please confirm receipt.",
+            'booking', '/guide-dashboard#bookings');
+    }
 
     $stmt = $pdo->prepare(guide_payment_select_sql() . ' WHERE p.id = ?');
     $stmt->execute([$paymentId]);
@@ -119,9 +142,8 @@ function guide_payments_confirm(PDO $pdo, string $id): void {
 
     $pdo->beginTransaction();
     try {
-        $stmt = $pdo->prepare(
-            guide_payment_select_sql() . ' WHERE p.id = ? FOR UPDATE'
-        );
+        $stmt = $pdo->prepare('SELECT p.*, b.guide_id, b.tourist_id FROM guide_payments p
+                               JOIN guide_bookings b ON b.id = p.booking_id WHERE p.id = ? FOR UPDATE');
         $stmt->execute([$id]);
         $payment = $stmt->fetch();
         if (!$payment || $payment['guide_id'] !== $user['id']) {
@@ -141,7 +163,7 @@ function guide_payments_confirm(PDO $pdo, string $id): void {
     }
 
     notify($pdo, $payment['tourist_id'], 'Guide confirmed payment',
-        $user['name'] . ' confirmed receipt of your full tour payment of ৳' . number_format((float)$payment['amount'], 2) . '.',
+        $user['name'] . ' confirmed receiving your tour payment of ৳' . number_format((float)$payment['amount'], 2) . '.',
         'booking', '/profile');
 
     $stmt = $pdo->prepare(guide_payment_select_sql() . ' WHERE p.id = ?');

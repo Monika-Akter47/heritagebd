@@ -59,7 +59,7 @@ export default function Navbar() {
               <div className="w-8 h-8 rounded-lg bg-[#006A4E] flex items-center justify-center">
                 <span className="text-white font-bold text-sm">H</span>
               </div>
-              <span className="font-bold text-lg text-[var(--color-text)] hidden sm:block" style={{ fontFamily: 'Fraunces, serif' }}>
+              <span className="font-bold text-lg text-[var(--color-text)] hidden sm:block" style={{ fontFamily: 'var(--font-display)' }}>
                 Heritage<span className="text-[#006A4E]">BD</span>
               </span>
             </Link>

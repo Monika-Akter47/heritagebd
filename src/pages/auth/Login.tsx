@@ -95,16 +95,16 @@ export default function Login() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <span className="text-white font-bold text-lg" style={{ fontFamily: 'Fraunces, serif' }}>H</span>
+              <span className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-display)' }}>H</span>
             </div>
-            <span className="text-white font-bold text-xl" style={{ fontFamily: 'Fraunces, serif' }}>
+            <span className="text-white font-bold text-xl" style={{ fontFamily: 'var(--font-display)' }}>
               Heritage<span style={{ color: '#D4A017' }}>BD</span>
             </span>
           </Link>
 
           {/* Centre message */}
           <div className="text-white">
-            <h2 className="text-4xl font-bold mb-4 leading-tight" style={{ fontFamily: 'Fraunces, serif' }}>
+            <h2 className="text-4xl font-bold mb-4 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
               Discover.<br />Experience.<br /><span style={{ color: '#D4A017' }}>Preserve.</span>
             </h2>
             <p className="text-white/70 text-base leading-relaxed max-w-sm">
@@ -129,7 +129,7 @@ export default function Login() {
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </div>
@@ -154,7 +154,7 @@ export default function Login() {
             </div>
           )}
 
-          <h2 className="text-3xl font-bold mb-1" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+          <h2 className="text-3xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
             Welcome back
           </h2>
           <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>

@@ -83,7 +83,7 @@ export default function MapPage() {
       {/* Sidebar */}
       <div className="w-80 shrink-0 bg-white border-r border-[var(--color-border)] overflow-y-auto flex flex-col">
         <div className="p-5 border-b border-[var(--color-border)]">
-          <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'Fraunces, serif' }}>Explore on Map</h2>
+          <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-display)' }}>Explore on Map</h2>
           <p className="text-[var(--color-text-muted)] text-sm">Click a marker to learn more</p>
         </div>
 
@@ -117,7 +117,7 @@ export default function MapPage() {
         {selected ? (
           <div className="p-5">
             <div className="flex items-start justify-between mb-3">
-              <h3 className="font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{selected.name}</h3>
+              <h3 className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>{selected.name}</h3>
               <button onClick={() => setSelected(null)} className="p-1 rounded-lg hover:bg-gray-100">
                 <X size={16} />
               </button>

@@ -138,7 +138,7 @@ export default function AccountSettings() {
   return (
     <div className="min-h-screen py-8 px-4" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+        <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
           Account Settings
         </h1>
         <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Manage your security, privacy, and notification preferences</p>

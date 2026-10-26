@@ -154,7 +154,7 @@ export default function TourPlanner() {
       <div className="sticky top-0 z-10 bg-white border-b" style={{ borderColor: 'var(--color-border)' }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <h1 className="text-xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Tour Planner
             </h1>
             <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>Create, save, and share tour routes</p>
@@ -404,7 +404,7 @@ export default function TourPlanner() {
               <div key={plan.id} className="bg-white rounded-2xl border p-5" style={{ borderColor: 'var(--color-border)' }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className="font-bold text-base mb-1" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>{plan.name}</h3>
+                    <h3 className="font-bold text-base mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>{plan.name}</h3>
                     <p className="text-xs mb-3" style={{ color: 'var(--color-text-muted)' }}>
                       {plan.startDate} · Starts at {plan.destinations?.[0] || 'Unspecified'} · {Math.max(0, (plan.destinations?.length || 1) - 1)} stops
                     </p>
@@ -443,7 +443,7 @@ export default function TourPlanner() {
               <div className="bg-white rounded-2xl border p-6" style={{ borderColor: 'var(--color-border)' }}>
                 <div className="mb-5">
                   <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">Saved route preview · {activeTour.startDate}</p>
-                  <h2 className="mt-1 text-xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>{activeTour.name}</h2>
+                  <h2 className="mt-1 text-xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{activeTour.name}</h2>
                 </div>
                 <ol className="space-y-3">
                   {[activeTour.start, ...activeTour.stops].filter(Boolean).map((place: string, index: number) => (

@@ -165,7 +165,7 @@ export default function OrderTracking() {
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] mb-6">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-xl font-bold mb-1" style={{ fontFamily: 'Fraunces, serif' }}>Order #{order.id}</h1>
+              <h1 className="text-xl font-bold mb-1" style={{ fontFamily: 'var(--font-display)' }}>Order #{order.id}</h1>
               <p className="text-sm text-[var(--color-text-muted)]">
                 Placed on {new Date(order.createdAt).toLocaleDateString('en-BD', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
@@ -187,7 +187,7 @@ export default function OrderTracking() {
 
         {/* Timeline */}
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] mb-6">
-          <h2 className="font-bold text-lg mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Order Status</h2>
+          <h2 className="font-bold text-lg mb-6" style={{ fontFamily: 'var(--font-display)' }}>Order Status</h2>
           <div className="relative">
             <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200" />
             <div className="space-y-6">
@@ -245,7 +245,7 @@ export default function OrderTracking() {
 
         {/* Items */}
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] mb-6">
-          <h2 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Items Ordered</h2>
+          <h2 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Items Ordered</h2>
           <div className="space-y-4">
             {order.items.map(item => (
               <div key={item.product.id} className="flex gap-4">
@@ -266,7 +266,7 @@ export default function OrderTracking() {
 
         {/* Delivery Address */}
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-          <h2 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Delivery Address</h2>
+          <h2 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Delivery Address</h2>
           <div className="flex items-start gap-3">
             <MapPin size={18} className="text-[#006A4E] mt-0.5 shrink-0" />
             <div className="text-sm">
@@ -280,7 +280,7 @@ export default function OrderTracking() {
 
           {currentUser?.role === 'tourist' && ['delivered', 'completed'].includes(order.status) && orderVendors.length > 0 && (
             <section className="mt-6 bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-              <h2 className="font-bold text-lg mb-2" style={{ fontFamily: 'Fraunces, serif' }}>Review the Shop</h2>
+              <h2 className="font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-display)' }}>Review the Shop</h2>
               <p className="text-sm text-[var(--color-text-muted)] mb-4">Your order was delivered. Share your experience to help other tourists.</p>
               <div className="space-y-4">
                 {orderVendors.map((vendor: any) => {

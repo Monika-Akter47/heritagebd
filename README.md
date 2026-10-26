@@ -11,6 +11,44 @@ PostgreSQL on **Supabase** in production, MySQL / MariaDB (XAMPP) for local deve
 [docs/deploy-vercel.md](docs/deploy-vercel.md). Full documentation lives in [`docs/`](docs/README.md),
 including the [changelog](docs/CHANGELOG.md).
 
+## Links
+
+### Live deployment
+
+| Link | What it is |
+|---|---|
+| [heritagebd-flax.vercel.app](https://heritagebd-flax.vercel.app) | The live website (React frontend on Vercel). Requests to `/api/*` are proxied to the Render API, so the browser only talks to this one domain. |
+| [heritagebd-api.onrender.com/api/health](https://heritagebd-api.onrender.com/api/health) | API health check. Answers without touching the database. The free Render plan sleeps when idle, so the first request can take about 50 seconds. |
+| [heritagebd-api.onrender.com/api/places](https://heritagebd-api.onrender.com/api/places) | Example public endpoint (heritage places). Returns JSON from the Supabase database. |
+
+### Source and dashboards
+
+| Link | What it is |
+|---|---|
+| [github.com/Monika-Akter47/heritagebd](https://github.com/Monika-Akter47/heritagebd) | This repository. Pushes to `main` redeploy the frontend on Vercel. |
+| [Vercel project](https://vercel.com/monk25/heritagebd) | Frontend hosting: deployments, build logs and domain settings (team `monk25`; sign-in required). |
+| [Render dashboard](https://dashboard.render.com) | Hosts the PHP API service `heritagebd-api` (Docker). Environment variables `DATABASE_URL`, `DB_PASS`, `CORS_ORIGIN` and `APP_TIMEZONE` live here. |
+| [Supabase project](https://supabase.com/dashboard/project/sbhnmsrbvampinpgggvl) | PostgreSQL database `heritage-site` (region ap-southeast-1). Sign-in required. |
+
+### Documentation
+
+| Link | What it covers |
+|---|---|
+| [docs/README.md](docs/README.md) | Documentation index. |
+| [docs/setup.md](docs/setup.md) | Local development setup (XAMPP, PHP API, frontend). |
+| [docs/deploy-vercel.md](docs/deploy-vercel.md) | Deploying with Supabase, Render and Vercel, in that order. |
+| [docs/deploy-bn.md](docs/deploy-bn.md) | The same deployment guide in Bengali. |
+| [docs/architecture.md](docs/architecture.md) | How the frontend, API and database fit together. |
+| [docs/frontend.md](docs/frontend.md) | Frontend structure, routing and state. |
+| [docs/api.md](docs/api.md) | REST API reference. |
+| [docs/database.md](docs/database.md) | Schema, migrations and the MySQL to PostgreSQL conversion. |
+| [docs/workflows.md](docs/workflows.md) | Orders, pre-orders, guide bookings and settlements, step by step. |
+| [docs/security.md](docs/security.md) | Authentication, rate limiting, uploads and data protection. |
+| [docs/diagrams.md](docs/diagrams.md) | Architecture and flow diagrams. |
+| [docs/contributing.md](docs/contributing.md) | Conventions, including writing SQL that runs on both databases. |
+| [docs/known-issues.md](docs/known-issues.md) | Open issues and gaps. |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md) | History of changes. |
+
 ---
 
 ## 1. Requirements (Windows + VS Code + XAMPP)

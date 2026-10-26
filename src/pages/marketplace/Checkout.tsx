@@ -4,6 +4,7 @@ import { CheckCircle, ChevronRight, CreditCard, Phone, Package } from 'lucide-re
 import { useApp } from '../../context/AppContext';
 import { ordersApi, paymentTermsApi, type PaymentTerms } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
+import PaymentProofFields, { emptyPaymentProof, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 
 const STEPS = ['Shipping', 'Payment', 'Review', 'Confirmation'];
 
@@ -21,6 +22,8 @@ export default function Checkout() {
     name: '', phone: '', address: '', city: '', district: '', division: 'Dhaka', postalCode: ''
   });
   const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'nagad' | 'card'>('bkash');
+  const [paymentProof, setPaymentProof] = useState<PaymentProof>(emptyPaymentProof);
+  const [paymentError, setPaymentError] = useState('');
   const { data: paymentTerms, loading: termsLoading, error: termsError } = useApiData(
     () => paymentTermsApi.get(),
     null as PaymentTerms | null,
@@ -44,6 +47,8 @@ export default function Checkout() {
       const result = await ordersApi.create({
         shippingAddress: address,
         paymentMethod,
+        advancePayerPhone: paymentProof.phone,
+        advanceTransactionId: paymentProof.transactionId,
       });
       const createdOrders = result.orders ?? [];
       if (!createdOrders.length) throw new Error('The server did not return a created order.');
@@ -63,7 +68,7 @@ export default function Checkout() {
         <div className="w-20 h-20 rounded-full bg-[#006A4E]/10 flex items-center justify-center mb-6">
           <CheckCircle size={40} className="text-[#006A4E]" />
         </div>
-        <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif' }}>Order Confirmed!</h1>
+        <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)' }}>Order Confirmed!</h1>
         <p className="text-[var(--color-text-muted)] mb-2">Thank you for your purchase.</p>
         <p className="font-bold text-[#006A4E] text-lg mb-8">Order #{orderNumber}</p>
         <p className="text-[var(--color-text-muted)] text-sm mb-8 max-w-sm">
@@ -84,7 +89,7 @@ export default function Checkout() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-8" style={{ fontFamily: 'Fraunces, serif' }}>Checkout</h1>
+        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-8" style={{ fontFamily: 'var(--font-display)' }}>Checkout</h1>
 
         {/* Step indicator */}
         <div className="flex items-center mb-10">
@@ -105,7 +110,7 @@ export default function Checkout() {
           <div className="lg:col-span-2">
             {step === 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Shipping Address</h2>
+                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'var(--font-display)' }}>Shipping Address</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { key: 'name', label: 'Full Name', placeholder: 'Your full name' },
@@ -148,7 +153,7 @@ export default function Checkout() {
 
             {step === 1 && (
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Payment Method</h2>
+                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'var(--font-display)' }}>Payment Method</h2>
                 <div className="space-y-3">
                   {[
                     { id: 'bkash' as const, label: 'bKash', icon: Phone, desc: 'Pay the advance online; remaining balance is cash on delivery', color: '#E2136E' },
@@ -186,12 +191,20 @@ export default function Checkout() {
                     <p className="mt-1 text-xs">After you confirm delivery, the advance is split: ৳{formatMoney(platformShare)} ({commissionPercent}%) to the platform and ৳{formatMoney(vendorShare)} ({advancePercent - commissionPercent}%) to the vendor.</p>
                   </div>
                 )}
-                <p className="mt-2 text-xs text-amber-800">Online advance is currently simulated in demo mode. No real payment gateway is connected.</p>
+                <div className="mt-4">
+                  <PaymentProofFields method={paymentMethod} value={paymentProof} onChange={p => { setPaymentProof(p); setPaymentError(''); }} amount={advanceAmount} />
+                </div>
+                {paymentError && <p role="alert" className="mt-2 text-sm text-red-600">{paymentError}</p>}
+                <p className="mt-2 text-xs text-amber-800">No payment gateway is connected yet: the admin checks your number and TrxID against the wallet statement. Card payments are simulated.</p>
                 <div className="flex gap-3 mt-6">
                   <button onClick={() => setStep(0)} className="px-5 py-3 border border-[var(--color-border)] rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors">
                     Back
                   </button>
-                  <button onClick={() => setStep(2)} disabled={!paymentTerms || termsLoading || !!termsError} className="flex items-center gap-2 bg-[#006A4E] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#004D38] transition-colors disabled:opacity-50">
+                  <button onClick={() => {
+                    const proofError = validatePaymentProof(paymentMethod, paymentProof);
+                    if (proofError) { setPaymentError(proofError); return; }
+                    setStep(2);
+                  }} disabled={!paymentTerms || termsLoading || !!termsError} className="flex items-center gap-2 bg-[#006A4E] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#004D38] transition-colors disabled:opacity-50">
                     Review Order <ChevronRight size={16} />
                   </button>
                 </div>
@@ -200,7 +213,7 @@ export default function Checkout() {
 
             {step === 2 && (
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'Fraunces, serif' }}>Review Your Order</h2>
+                <h2 className="font-bold text-xl mb-6" style={{ fontFamily: 'var(--font-display)' }}>Review Your Order</h2>
                 <div className="space-y-4 mb-6">
                   {cart.map(item => (
                     <div key={item.product.id} className="flex gap-3">
@@ -249,7 +262,7 @@ export default function Checkout() {
 
           {/* Summary sidebar */}
           <div className="bg-white rounded-2xl p-5 border border-[var(--color-border)] h-fit sticky top-24">
-            <h3 className="font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Order Summary</h3>
+            <h3 className="font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Order Summary</h3>
             <div className="space-y-2 text-sm mb-4">
               {cart.slice(0, 3).map(item => (
                 <div key={item.product.id} className="flex justify-between">

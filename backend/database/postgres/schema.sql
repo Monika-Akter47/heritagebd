@@ -371,6 +371,8 @@ CREATE TABLE orders (
   payment_method VARCHAR(40) NOT NULL CHECK (payment_method IN ('bkash','nagad','card','cod')),
   tracking_number    VARCHAR(60) NULL,
   estimated_delivery DATE NULL,
+  advance_payer_phone VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
   created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
@@ -429,6 +431,10 @@ CREATE TABLE preorders (
   notes                 TEXT NULL,
   cancellation_reason   VARCHAR(255) NULL,
   refund_amount         DECIMAL(10,2) NULL,
+  advance_payer_phone   VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
+  pickup_payer_phone    VARCHAR(20) NULL,
+  pickup_transaction_id VARCHAR(40) NULL,
   created_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -459,6 +465,9 @@ CREATE TABLE guide_bookings (
   balance_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
   advance_status VARCHAR(40) NOT NULL DEFAULT 'held' CHECK (advance_status IN ('held','released','refunded')),
   group_size   INT NOT NULL DEFAULT 1,
+  advance_payment_method VARCHAR(20) NULL,
+  advance_payer_phone VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
   created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
   FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
@@ -484,6 +493,8 @@ CREATE TABLE guide_payments (
   status VARCHAR(40) NOT NULL DEFAULT 'reported' CHECK (status IN ('reported','confirmed')),
   reported_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   confirmed_at TIMESTAMP NULL,
+  payer_phone VARCHAR(20) NULL,
+  recorded_by VARCHAR(20) NOT NULL DEFAULT 'tourist',
   FOREIGN KEY (booking_id) REFERENCES guide_bookings(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
 );
 

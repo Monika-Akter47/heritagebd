@@ -41,6 +41,7 @@ $routes = [
     ['GET',  '#^/api/payment-terms$#',                'payment_terms_show'],
     ['GET',  '#^/api/earnings/me$#',                  'earnings_me'],
     ['GET',  '#^/api/admin/earnings$#',               'admin_earnings'],
+    ['GET',  '#^/api/admin/payments$#',               'admin_payments'],
     ['GET',  '#^/api/admin/commission-settings$#',    'commission_settings_index'],
     ['PUT',  '#^/api/admin/commission-settings$#',    'commission_settings_update'],
     ['GET',  '#^/api/site-content/homepage-images$#', 'site_homepage_images'],

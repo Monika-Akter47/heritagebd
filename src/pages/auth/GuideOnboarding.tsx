@@ -289,11 +289,11 @@ export default function GuideOnboarding() {
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold text-sm">H</span>
             </div>
-            <span className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </div>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Guide Verification</h1>
+          <h1 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Guide Verification</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Complete your profile to become a verified guide</p>
         </div>
 
@@ -311,7 +311,7 @@ export default function GuideOnboarding() {
           {/* Step 0: Personal */}
           {step === 0 && (
             <div className="space-y-4">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Personal Information</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Personal Information</h2>
               <div className="flex items-center gap-5 mb-5">
                 <div>
                   <p className="font-semibold text-sm" style={{ color: 'var(--color-text)' }}>Profile Photo</p>
@@ -342,7 +342,7 @@ export default function GuideOnboarding() {
           {/* Step 1: Professional */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Professional Information</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Professional Information</h2>
               <div>
                 <label className="block text-sm font-semibold mb-1.5" style={{ color: 'var(--color-text)' }}>Years of Experience</label>
                 <input type="number" min="0" max="50" placeholder="e.g. 5" value={yearsExperience} onChange={e => setYearsExperience(e.target.value)} className={inputCls} />
@@ -386,7 +386,7 @@ export default function GuideOnboarding() {
           {/* Step 2: Documents */}
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Identity Verification</h2>
+              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Identity Verification</h2>
               <p className="text-sm mb-5" style={{ color: 'var(--color-text-muted)' }}>
                 Document verification is mandatory for all guides. Your information is securely handled.
               </p>
@@ -413,7 +413,7 @@ export default function GuideOnboarding() {
           {/* Step 3: Availability */}
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Availability</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Availability</h2>
               <div>
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Available Days</label>
                 <div className="flex flex-wrap gap-2">
@@ -469,7 +469,7 @@ export default function GuideOnboarding() {
           {/* Step 4: Location Permission */}
           {step === 4 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Location & Privacy</h2>
+              <h2 className="font-bold text-xl mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Location & Privacy</h2>
               <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
                 HeritageBD shows your approximate location on the map <strong>only when you manually enable "Available for Tour"</strong>. Your exact location is never permanently tracked.
               </p>
@@ -553,7 +553,7 @@ export default function GuideOnboarding() {
           {/* Step 5: Review */}
           {step === 5 && (
             <div className="space-y-5">
-              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Review & Submit</h2>
+              <h2 className="font-bold text-xl mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Review & Submit</h2>
               {[
                 { section: 'Personal Information', items: [['Name', currentUser?.name || ''], ['Email', currentUser?.email || ''], ['Phone', currentUser?.phone || 'Not provided']] },
                 { section: 'Professional', items: [['Experience', `${yearsExperience || '0'} years`], ['Location', location], ['Languages', langs.join(', ')], ['Specializations', specs.join(', ')], ['Tour Areas', areas.join(', ')], ['Pricing', `৳${pricePerDay}/day · ৳${halfDayPrice}/half-day`], ['About', bio || 'Not provided']] },

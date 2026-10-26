@@ -11,6 +11,10 @@ Last reviewed 2026-10-24. Items fixed in the same review are listed at the botto
 settlement logic is real and tested, but no money moves. Integrate bKash/Nagad/card, store the gateway
 transaction ID, handle failures and refunds, then set the flag to `false`.
 
+Meanwhile bKash/Nagad payments are manual ("Send Money"): the payer's number and TrxID are stored and
+listed in Admin › Payments & Advances, but nothing checks them automatically. The admin has to match
+them against the wallet statement, and there is no "verified" flag or rejection flow yet.
+
 ### 2. Token lives in localStorage for 30 days
 
 Any injected script can read it. Shorter expiry with refresh rotation, or an `HttpOnly` cookie, would
@@ -42,6 +46,9 @@ still be applied to Supabase by hand, and new SQL must be portable (see
 
 The data copied to Supabase includes demo accounts using `password123`, the admin among them. Change
 them right after deploying (list in [deploy-vercel.md](deploy-vercel.md#4-after-the-first-deploy)).
+Checked on 2026-10-26 against the `heritage-site` database: the admin and 27 of 32 other accounts
+(10 of 11 guides, 10 of 13 vendors, 7 of 8 tourists) still accept `password123`. **The public site is
+exposed until the admin password is changed.**
 
 ### 8. Verification documents not on Render
 

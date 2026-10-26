@@ -40,6 +40,7 @@ function order_hydrate(PDO $pdo, array $row, ?string $vendorId = null): array {
             'city' => $row['ship_city'], 'district' => $row['ship_district'], 'division' => $row['ship_division'],
             'postalCode' => $row['ship_postal_code'],
         ],
+        'advancePayerPhone' => $row['advance_payer_phone'] ?? null, 'advanceTransactionId' => $row['advance_transaction_id'] ?? null,
         'paymentMethod' => $row['payment_method'], 'createdAt' => $row['created_at'], 'updatedAt' => $row['updated_at'],
         'estimatedDelivery' => $row['estimated_delivery'], 'trackingNumber' => $row['tracking_number'],
     ];
@@ -69,6 +70,7 @@ function orders_create(PDO $pdo): void {
     if (!in_array($d['paymentMethod'], ['bkash', 'nagad', 'card'], true)) {
         json_error('Choose bKash, Nagad, or card for the online advance payment.', 422);
     }
+    [$advancePhone, $advanceTxn] = payment_proof($d, $d['paymentMethod'], 'advance', false);
     $addr = $d['shippingAddress'];
     if (!is_array($addr)) json_error('Shipping address must include name, phone, address, city, district and division.', 422);
     foreach (['name', 'phone', 'address', 'city', 'district', 'division'] as $f) {
@@ -119,13 +121,14 @@ function orders_create(PDO $pdo): void {
             $pdo->prepare(
                 'INSERT INTO orders (id, user_id, status, total_amount, delivery_fee, ship_name, ship_phone, ship_address, ship_city,
                                       ship_district, ship_division, ship_postal_code, payment_method, estimated_delivery,
-                                      advance_percent, commission_percent, advance_amount, cod_amount, advance_status)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NULL,?,?,?,?,?)'
+                                      advance_percent, commission_percent, advance_amount, cod_amount, advance_status,
+                                      advance_payer_phone, advance_transaction_id)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NULL,?,?,?,?,?,?,?)'
             )->execute([
                 $id, $user['id'], 'placed', $total, $deliveryFee, $addr['name'], $addr['phone'], $addr['address'], $addr['city'],
                 $addr['district'], $addr['division'], $addr['postalCode'] ?? null, $d['paymentMethod'],
                 $setting['advancePercent'], $setting['commissionPercent'], $split['advance'] / 100,
-                $split['cash'] / 100, 'held',
+                $split['cash'] / 100, 'held', $advancePhone, $advanceTxn,
             ]);
             foreach ($lines as $line) {
                 $pdo->prepare('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?,?,?,?)')

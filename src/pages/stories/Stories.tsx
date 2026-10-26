@@ -22,7 +22,7 @@ export default function Stories() {
       {/* Header */}
       <div className="bg-[#1A1A2E] py-16 px-4 text-center">
         <p className="text-[#D4A017] text-sm font-semibold uppercase tracking-widest mb-2">Stories</p>
-        <h1 className="text-4xl sm:text-5xl font-bold text-white" style={{ fontFamily: 'Fraunces, serif' }}>
+        <h1 className="text-4xl sm:text-5xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
           Heritage Digest
         </h1>
         <p className="text-white/60 mt-3">Stories, guides, and insights from the heart of Bangladesh</p>

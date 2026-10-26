@@ -109,7 +109,7 @@ export default function ForgotPassword() {
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold">H</span>
             </div>
-            <span className="font-bold text-xl" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </Link>
@@ -125,7 +125,7 @@ export default function ForgotPassword() {
               <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: '#E6F4EF' }}>
                 <Mail size={26} style={{ color: 'var(--color-primary)' }} />
               </div>
-              <h2 className="text-2xl font-bold text-center mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+              <h2 className="text-2xl font-bold text-center mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
                 Forgot your password?
               </h2>
               <p className="text-sm text-center mb-6" style={{ color: 'var(--color-text-muted)' }}>
@@ -156,7 +156,7 @@ export default function ForgotPassword() {
               </button>
               <div className="text-center mb-6">
                 <div className="text-4xl mb-3">📱</div>
-                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Enter verification code</h2>
+                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Enter verification code</h2>
                 <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
                   We sent a 6-digit code to <strong style={{ color: 'var(--color-text)' }}>{contact}</strong>
                 </p>
@@ -182,7 +182,7 @@ export default function ForgotPassword() {
           {/* ── Step: reset ── */}
           {step === 'reset' && (
             <>
-              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Create new password</h2>
+              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Create new password</h2>
               <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Your new password must be different from previous passwords.</p>
 
               <div className="space-y-4">
@@ -254,7 +254,7 @@ export default function ForgotPassword() {
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: '#E6F4EF' }}>
                 <CheckCircle size={36} style={{ color: 'var(--color-primary)' }} />
               </div>
-              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Password changed!</h2>
+              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Password changed!</h2>
               <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>
                 Your password has been successfully changed. You can now sign in with your new password.
               </p>

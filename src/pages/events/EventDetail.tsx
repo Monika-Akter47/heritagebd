@@ -49,7 +49,7 @@ export default function EventDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 py-8 text-white sm:px-6">
           <Badge variant="gold" className="mb-3">{event.category}</Badge>
-          <h1 className="text-4xl font-bold sm:text-5xl" style={{ fontFamily: "Fraunces, serif" }}>
+          <h1 className="text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             {event.name}
           </h1>
         </div>
@@ -60,7 +60,7 @@ export default function EventDetail() {
           <Link to="/events" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#006A4E] hover:underline">
             <ArrowLeft size={16} /> All events
           </Link>
-          <h2 className="mb-3 mt-5 text-2xl font-bold" style={{ fontFamily: "Fraunces, serif" }}>
+          <h2 className="mb-3 mt-5 text-2xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>
             About this event
           </h2>
           <p className="whitespace-pre-line leading-7 text-[var(--color-text-muted)]">

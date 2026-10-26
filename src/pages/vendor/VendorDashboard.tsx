@@ -6,6 +6,7 @@ import { productsApi, ordersApi, preordersApi, productImagesApi, earningsApi } f
 import { useApiData } from '../../hooks/useApiData';
 import { preOrderStatusConfig } from '../../data/preorderData';
 import Badge from '../../components/ui/Badge';
+import PaymentProofFields, { emptyPaymentProof, methodLabel, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 import { useApp } from '../../context/AppContext';
 import type { Order, PreOrder, Product } from '../../types';
 
@@ -80,24 +81,43 @@ export default function VendorDashboard() {
     }
   }
 
+  // Remaining payment at pickup: the vendor records how it was paid (and, for bKash/Nagad, the
+  // customer's number and TrxID) before handing the order over.
+  const [collectingId, setCollectingId] = useState<string | null>(null);
+  const [collectMethod, setCollectMethod] = useState<'cash' | 'bkash' | 'nagad' | 'card'>('cash');
+  const [collectProof, setCollectProof] = useState<PaymentProof>(emptyPaymentProof);
+  const [collectError, setCollectError] = useState('');
+
+  function openCollect(order: PreOrder) {
+    setCollectingId(order.id);
+    setCollectMethod('cash');
+    setCollectProof(emptyPaymentProof);
+    setCollectError('');
+  }
+
   async function handleCollectPayment(order: PreOrder) {
-    const method = window.prompt('Confirm the method used to collect the remaining payment (bkash, nagad, card, cash):', 'cash');
-    if (!method) return;
-    const paymentMethod = method.trim().toLowerCase();
-    if (!['bkash', 'nagad', 'card', 'cash'].includes(paymentMethod)) {
-      alert('Choose bKash, Nagad, card, or cash as the payment method.');
+    const proofError = validatePaymentProof(collectMethod, collectProof);
+    if (proofError) {
+      setCollectError(proofError);
       return;
     }
     setUpdatingId(order.id);
+    setCollectError('');
     try {
       if (order.status === 'qr_verified') {
         await preordersApi.update(order.id, { status: 'pickup_payment_pending' });
       }
-      await preordersApi.update(order.id, { status: 'picked_up', pickupPaymentMethod: paymentMethod });
+      await preordersApi.update(order.id, {
+        status: 'picked_up',
+        pickupPaymentMethod: collectMethod,
+        pickupPayerPhone: collectProof.phone,
+        pickupTransactionId: collectProof.transactionId,
+      });
+      setCollectingId(null);
       await refetchPreOrders();
     } catch (e: any) {
       await refetchPreOrders();
-      alert(e?.message || 'Could not record the payment and hand over the order.');
+      setCollectError(e?.message || 'Could not record the payment and hand over the order.');
     } finally {
       setUpdatingId(null);
     }
@@ -231,7 +251,7 @@ export default function VendorDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Vendor Dashboard</h1>
+            <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>Vendor Dashboard</h1>
             <p className="text-[var(--color-text-muted)]">Manage your products and orders</p>
           </div>
           <button onClick={() => openForm()} className="flex items-center gap-2 bg-[#006A4E] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#004D38] transition-colors">
@@ -254,7 +274,7 @@ export default function VendorDashboard() {
         {editing && (
           <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => !saving && setEditing(null)}>
             <div className="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>{editing.id ? 'Edit Product' : 'Add Product'}</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>{editing.id ? 'Edit Product' : 'Add Product'}</h2>
               <div className="space-y-3 text-sm">
                 <input className="w-full px-3 py-2.5 rounded-xl border" placeholder="Product name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
                 <textarea className="w-full px-3 py-2.5 rounded-xl border" rows={3} placeholder="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
@@ -345,14 +365,14 @@ export default function VendorDashboard() {
                 <span className="text-xs font-semibold text-[var(--color-text-muted)] uppercase">{stat.label}</span>
                 <stat.icon size={18} style={{ color: stat.color }} />
               </div>
-              <p className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: stat.color }}>{stat.value}</p>
+              <p className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: stat.color }}>{stat.value}</p>
             </div>
           ))}
         </div>
 
         {/* Revenue Chart */}
         <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] mb-8">
-          <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Partner Earnings Trend</h3>
+          <h3 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-display)' }}>Partner Earnings Trend</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={(earnings?.byMonth ?? []).map((item: any) => ({
               month: new Date(`${item.month}-01T00:00:00`).toLocaleString('en', { month: 'short' }),
@@ -644,26 +664,27 @@ export default function VendorDashboard() {
                           >
                             <QrCode size={15} /> Verify QR Code
                           </button>
-                        ) : order.status === 'qr_verified' || order.status === 'pickup_payment_pending' ? (
+                        ) : (order.status === 'qr_verified' || order.status === 'pickup_payment_pending') && collectingId !== order.id ? (
                           <button
                             disabled={updatingId === order.id}
-                            onClick={() => handleCollectPayment(order)}
+                            onClick={() => openCollect(order)}
                             className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-50"
                             style={{ background: '#059669' }}
                           >
-                            {order.status === 'pickup_payment_pending'
-                              ? `Confirm ৳${Number(order.remainingAmount).toLocaleString()} Paid & Hand Over`
-                              : `Collect ৳${Number(order.remainingAmount).toLocaleString()} & Hand Over`}
+                            {`Receive ৳${Number(order.remainingAmount).toLocaleString()} & Hand Over`}
                           </button>
                         ) : order.status === 'picked_up' ? (
-                          <button
-                            disabled={updatingId === order.id}
-                            onClick={() => advancePreOrder(order.id, 'completed')}
-                            className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-50"
-                            style={{ background: '#059669' }}
-                          >
-                            Mark Completed
-                          </button>
+                          <>
+                            <button
+                              disabled={updatingId === order.id}
+                              onClick={() => advancePreOrder(order.id, 'completed')}
+                              className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-50"
+                              style={{ background: '#059669' }}
+                            >
+                              Mark Completed
+                            </button>
+                            <span className="self-center text-xs" style={{ color: 'var(--color-text-muted)' }}>or wait for the tourist to confirm receipt</span>
+                          </>
                         ) : null}
                         <button
                           onClick={() => setSelectedPreOrder(isSelected ? null : order.id)}
@@ -673,6 +694,38 @@ export default function VendorDashboard() {
                           {isSelected ? 'Hide Details' : 'View Details'}
                         </button>
                       </div>
+
+                      {collectingId === order.id && (
+                        <div className="mt-4 space-y-3 rounded-xl border p-4" style={{ borderColor: '#059669' }}>
+                          <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>
+                            Remaining payment: ৳{Number(order.remainingAmount).toLocaleString()}
+                          </p>
+                          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="How the customer paid">
+                            {(['cash', 'bkash', 'nagad', 'card'] as const).map(m => (
+                              <button key={m} type="button" role="radio" aria-checked={collectMethod === m}
+                                onClick={() => { setCollectMethod(m); setCollectError(''); }}
+                                className="rounded-lg border px-3 py-1.5 text-xs font-semibold"
+                                style={collectMethod === m
+                                  ? { borderColor: 'var(--color-primary)', background: '#E6F4EF', color: 'var(--color-primary)' }
+                                  : { borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
+                                {methodLabel(m)}
+                              </button>
+                            ))}
+                          </div>
+                          <PaymentProofFields method={collectMethod} value={collectProof} onChange={setCollectProof} perspective="receiver" />
+                          {collectError && <p role="alert" className="text-xs text-red-600">{collectError}</p>}
+                          <div className="flex gap-2">
+                            <button disabled={updatingId === order.id} onClick={() => handleCollectPayment(order)}
+                              className="rounded-xl px-4 py-2 text-sm font-semibold text-white disabled:opacity-50" style={{ background: '#059669' }}>
+                              {updatingId === order.id ? 'Saving…' : 'Payment Received · Hand Over'}
+                            </button>
+                            <button onClick={() => setCollectingId(null)} className="rounded-xl border px-4 py-2 text-sm"
+                              style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Expanded detail */}
@@ -696,9 +749,19 @@ export default function VendorDashboard() {
                               ৳{(['picked_up', 'completed'].includes(order.status)
                                 ? Math.max(Number(order.totalAmount) - Number(order.advancePaid), 0)
                                 : Number(order.remainingAmount)).toLocaleString()}
-                              {['picked_up', 'completed'].includes(order.status) && order.pickupPaymentMethod ? ` · ${order.pickupPaymentMethod}` : ''}
+                              {['picked_up', 'completed'].includes(order.status) && order.pickupPaymentMethod ? ` · ${methodLabel(order.pickupPaymentMethod)}` : ''}
                             </span>
                           </div>
+                          {(order.advancePaymentMethod || order.pickupTransactionId) && (
+                            <div className="mt-2 space-y-0.5 text-xs" style={{ color: 'var(--color-text-muted)' }}>
+                              {order.advancePaymentMethod && (
+                                <p>Advance: {methodLabel(order.advancePaymentMethod)}{order.advancePayerPhone ? ` from ${order.advancePayerPhone}` : ''}{order.advanceTransactionId ? ` · TrxID ${order.advanceTransactionId}` : ''}</p>
+                              )}
+                              {order.pickupTransactionId && (
+                                <p>Pickup: {methodLabel(order.pickupPaymentMethod)}{order.pickupPayerPhone ? ` from ${order.pickupPayerPhone}` : ''} · TrxID {order.pickupTransactionId}</p>
+                              )}
+                            </div>
+                          )}
                         </div>
                         {order.notes && (
                           <div className="p-3 rounded-xl bg-amber-50 text-xs" style={{ color: '#92660A' }}>
@@ -714,7 +777,7 @@ export default function VendorDashboard() {
 
             {/* Manual QR verification */}
             <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-              <h3 className="font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'Fraunces, serif' }}>
+              <h3 className="font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
                 <QrCode size={20} style={{ color: 'var(--color-primary)' }} /> Verify a Pickup QR Code
               </h3>
               <p className="text-xs mb-3" style={{ color: 'var(--color-text-muted)' }}>

@@ -30,7 +30,7 @@ export default function GuideListing() {
       {/* Header */}
       <div className="bg-gradient-to-br from-[#006A4E] to-[#004D38] py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>
             Find Your Perfect Guide
           </h1>
           <p className="text-white/70 mb-8">Expert local guides verified by HeritageBD for authentic, memorable experiences</p>

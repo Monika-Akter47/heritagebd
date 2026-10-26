@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MapPin, Clock, Calendar, Package, ChevronRight, CheckCircle, Smartphone, CreditCard, Banknote, AlertCircle } from 'lucide-react';
 import { paymentTermsApi, productsApi, preordersApi, type PaymentTerms } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
+import PaymentProofFields, { emptyPaymentProof, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 import type { PreOrderProduct } from '../../types';
 
 const STEPS = ['Pickup Info', 'Order Summary', 'Payment', 'Confirmation'];
@@ -35,6 +36,7 @@ export default function PreOrderCheckout() {
   const [pickupTime, setPickupTime] = useState('2:00 PM');
   const [quantity, setQuantity] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bkash');
+  const [paymentProof, setPaymentProof] = useState<PaymentProof>(emptyPaymentProof);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -79,6 +81,11 @@ export default function PreOrderCheckout() {
       setSubmitError('Product details are unavailable. Reload the checkout and try again.');
       return;
     }
+    const proofError = validatePaymentProof(paymentMethod, paymentProof);
+    if (proofError) {
+      setSubmitError(proofError);
+      return;
+    }
 
     setIsProcessing(true);
     setSubmitError(null);
@@ -89,6 +96,8 @@ export default function PreOrderCheckout() {
         pickupTime,
         quantity,
         advancePaymentMethod: paymentMethod,
+        advancePayerPhone: paymentProof.phone,
+        advanceTransactionId: paymentProof.transactionId,
       });
       if (!created?.orderNumber) {
         throw new Error('The server created the pre-order but did not return its order number. Check My Orders before trying again.');
@@ -380,13 +389,15 @@ export default function PreOrderCheckout() {
               </div>
             </div>
 
+            <PaymentProofFields method={paymentMethod} value={paymentProof} onChange={setPaymentProof} amount={advanceAmount} />
+
             <div className="flex items-start gap-2 p-4 rounded-xl" style={{ background: '#EFF6FF' }}>
               <AlertCircle size={16} className="mt-0.5 flex-shrink-0" style={{ color: '#2563EB' }} />
               <p className="text-xs" style={{ color: '#1D4ED8' }}>
-                Pay <strong>৳{advanceAmount.toLocaleString()} ({advancePct}%)</strong> now to confirm your Ready to Pick order. The remaining <strong>৳{remainingAmount.toLocaleString()} ({100 - advancePct}%)</strong> is paid in cash at pickup.
+                Pay <strong>৳{advanceAmount.toLocaleString()} ({advancePct}%)</strong> now to confirm your Ready to Pick order. The remaining <strong>৳{remainingAmount.toLocaleString()} ({100 - advancePct}%)</strong> is paid at pickup, in cash or by bKash/Nagad.
               </p>
             </div>
-            <p className="text-xs text-amber-800">Online advance is currently simulated in demo mode. No real payment gateway is connected.</p>
+            <p className="text-xs text-amber-800">No payment gateway is connected yet: the admin checks your number and TrxID against the wallet statement. Card payments are simulated.</p>
           </div>
         )}
 

@@ -194,7 +194,7 @@ export default function Signup() {
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--color-primary)' }}>
               <span className="text-white font-bold">H</span>
             </div>
-            <span className="font-bold text-xl" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <span className="font-bold text-xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Heritage<span style={{ color: 'var(--color-primary)' }}>BD</span>
             </span>
           </Link>
@@ -228,7 +228,7 @@ export default function Signup() {
         {/* ── STEP 0: Choose role ── */}
         {step === 0 && (
           <div>
-            <h1 className="text-3xl font-bold text-center mb-2" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>
+            <h1 className="text-3xl font-bold text-center mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
               Create your HeritageBD account
             </h1>
             <p className="text-center text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>How will you use HeritageBD?</p>
@@ -282,7 +282,7 @@ export default function Signup() {
                 <ArrowLeft size={18} />
               </button>
               <div>
-                <h2 className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>Create Your Account</h2>
+                <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>Create Your Account</h2>
                 <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Registering as: <strong style={{ color: selectedRole.color }}>{selectedRole.label}</strong></p>
               </div>
             </div>

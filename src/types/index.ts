@@ -342,6 +342,10 @@ export interface PreOrder {
   remainingAmount: number;
   advancePaymentMethod?: 'bkash' | 'nagad' | 'card';
   pickupPaymentMethod?: 'bkash' | 'nagad' | 'card' | 'cash';
+  advancePayerPhone?: string | null;
+  advanceTransactionId?: string | null;
+  pickupPayerPhone?: string | null;
+  pickupTransactionId?: string | null;
   status: PreOrderStatus;
   qrCode: string;              // mock QR data string
   createdAt: string;

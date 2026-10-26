@@ -15,7 +15,7 @@ export default function Footer() {
               </div>
               <span
                 className="font-bold text-xl"
-                style={{ fontFamily: "Fraunces, serif" }}
+                style={{ fontFamily: 'var(--font-display)' }}
               >
                Heritage<span className="text-[#D4A017]">BD</span>
               </span>

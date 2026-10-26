@@ -373,6 +373,8 @@ CREATE TABLE orders (
   payment_method     ENUM('bkash','nagad','card','cod') NOT NULL,
   tracking_number    VARCHAR(60) NULL,
   estimated_delivery DATE NULL,
+  advance_payer_phone VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
   created_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -432,6 +434,10 @@ CREATE TABLE preorders (
   notes                 TEXT NULL,
   cancellation_reason   VARCHAR(255) NULL,
   refund_amount         DECIMAL(10,2) NULL,
+  advance_payer_phone   VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
+  pickup_payer_phone    VARCHAR(20) NULL,
+  pickup_transaction_id VARCHAR(40) NULL,
   created_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -462,6 +468,9 @@ CREATE TABLE guide_bookings (
   balance_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
   advance_status ENUM('held','released','refunded') NOT NULL DEFAULT 'held',
   group_size   INT NOT NULL DEFAULT 1,
+  advance_payment_method VARCHAR(20) NULL,
+  advance_payer_phone VARCHAR(20) NULL,
+  advance_transaction_id VARCHAR(40) NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (guide_id) REFERENCES guides(user_id) ON DELETE CASCADE,
   FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE
@@ -484,6 +493,8 @@ CREATE TABLE guide_payments (
   status ENUM('reported','confirmed') NOT NULL DEFAULT 'reported',
   reported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   confirmed_at DATETIME NULL,
+  payer_phone VARCHAR(20) NULL,
+  recorded_by VARCHAR(20) NOT NULL DEFAULT 'tourist',
   FOREIGN KEY (booking_id) REFERENCES guide_bookings(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

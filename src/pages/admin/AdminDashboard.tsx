@@ -4,16 +4,18 @@ import {
   LayoutDashboard, Users, Store, Compass, MapPin, Package, ShoppingBag,
   Star, Calendar, BookOpen, BarChart2, Settings, Bell, Shield,
   TrendingUp, CheckCircle, XCircle, Clock, Eye, Edit, Trash2, Search,
-  QrCode, Percent, AlertCircle, FileText, UtensilsCrossed
+  QrCode, Percent, AlertCircle, FileText, UtensilsCrossed, Wallet
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { preordersApi, adminApi } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import { UsersSection, VendorsSection, ProductsSection, OrdersSection, BookingsSection, ReviewsSection, EventsSection, LocalFoodsSection, StoriesSection, ReportsSection, DocumentsSection, PlacesSection, SiteImagesSection } from './AdminSections';
+import PaymentsSection from './PaymentsSection';
 import { mockPreOrderSettings } from '../../data/preorderData';
 import Badge from '../../components/ui/Badge';
 import { useApp } from '../../context/AppContext';
-import type { PreOrderSettings } from '../../types';
+import type { PreOrder, PreOrderSettings } from '../../types';
+import { methodLabel } from '../../components/ui/PaymentProofFields';
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,6 +34,7 @@ const NAV_ITEMS = [
   { id: 'local-foods', label: 'Traditional Foods', icon: UtensilsCrossed },
   { id: 'stories', label: 'Stories', icon: BookOpen },
   { id: 'reports', label: 'Reports', icon: BarChart2 },
+  { id: 'payments', label: 'Payments & Advances', icon: Wallet },
   { id: 'earnings', label: 'Earnings & Commission', icon: TrendingUp },
   { id: 'preorder-settings', label: 'Payment Terms & Pre-Order Settings', icon: Percent },
   { id: 'settings', label: 'Settings', icon: Settings },
@@ -152,7 +155,7 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
                     {selected.type === 'guide' ? '🧭' : '🏪'}
                   </div>}
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg" style={{ fontFamily: 'Fraunces, serif', color: 'var(--color-text)' }}>{selected.name}</h3>
+                  <h3 className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>{selected.name}</h3>
                   <p className="text-sm capitalize" style={{ color: 'var(--color-text-muted)' }}>{selected.type} · Submitted {selected.submitted}</p>
                   <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold mt-1"
                     style={statusColors[selected.status]}>
@@ -279,7 +282,7 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
           { label: 'Rejected', value: counts.rejected, color: '#DC2626' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border p-4" style={{ borderColor: 'var(--color-border)' }}>
-            <p className="text-2xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: s.color }}>{s.value}</p>
+            <p className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: s.color }}>{s.value}</p>
             <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>{s.label}</p>
           </div>
         ))}
@@ -366,12 +369,13 @@ export default function AdminDashboard() {
   const [searchParams] = useSearchParams();
   const initialSection = searchParams.get('section');
   const [activeSection, setActiveSection] = useState(
-    initialSection === 'orders' || initialSection === 'documents' ? initialSection : 'dashboard',
+    initialSection === 'orders' || initialSection === 'documents' || initialSection === 'payments' ? initialSection : 'dashboard',
   );
   const [documentsUserId, setDocumentsUserId] = useState<string | undefined>();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [poSettings, setPoSettings] = useState<PreOrderSettings>({ ...mockPreOrderSettings });
   const [poFilter, setPoFilter] = useState('');
+  const [poStatus, setPoStatus] = useState('');
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [settingsError, setSettingsError] = useState('');
@@ -385,7 +389,7 @@ export default function AdminDashboard() {
     () => adminApi.commissionSettings(), [] as any[]
   );
   const { data: mockGuides, setData: setMockGuides, refetch: refetchGuides } = useApiData(() => adminApi.guides(), [] as any[]);
-  const { data: mockPreOrders } = useApiData(() => preordersApi.list(), [] as any[]);
+  const { data: preOrders } = useApiData(() => preordersApi.list(), [] as PreOrder[]);
   const { data: fetchedSettings } = useApiData(() => preordersApi.settings(), null as any);
 
   React.useEffect(() => {
@@ -450,7 +454,7 @@ export default function AdminDashboard() {
       <div className="flex-1 overflow-y-auto">
         {/* Top bar */}
         <div className="sticky top-0 bg-white border-b border-[var(--color-border)] px-6 py-3 flex items-center justify-between z-10">
-          <h2 className="font-bold text-lg capitalize" style={{ fontFamily: 'Fraunces, serif' }}>
+          <h2 className="font-bold text-lg capitalize" style={{ fontFamily: 'var(--font-display)' }}>
             {NAV_ITEMS.find(n => n.id === activeSection)?.label}
           </h2>
           <div className="flex items-center gap-3">
@@ -487,7 +491,7 @@ export default function AdminDashboard() {
                 ].map(stat => (
                   <div key={stat.label} className="bg-white rounded-2xl p-4 border border-[var(--color-border)]">
                     <stat.icon size={18} style={{ color: stat.color }} className="mb-2" />
-                    <p className="text-lg font-bold" style={{ fontFamily: 'Fraunces, serif', color: stat.color }}>{stat.value ?? (statsLoading ? '…' : '—')}</p>
+                    <p className="text-lg font-bold" style={{ fontFamily: 'var(--font-display)', color: stat.color }}>{stat.value ?? (statsLoading ? '…' : '—')}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
                   </div>
                 ))}
@@ -496,7 +500,7 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* User Growth */}
                 <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                  <h3 className="font-bold mb-1" style={{ fontFamily: 'Fraunces, serif' }}>New Sign-ups</h3>
+                  <h3 className="font-bold mb-1" style={{ fontFamily: 'var(--font-display)' }}>New Sign-ups</h3>
                   <p className="text-xs text-[var(--color-text-muted)] mb-3">Accounts created per month, last 6 months</p>
                   <ResponsiveContainer width="100%" height={220}>
                     <LineChart data={stats?.monthly ?? []}>
@@ -514,7 +518,7 @@ export default function AdminDashboard() {
 
                 {/* Sales */}
                 <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                  <h3 className="font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Marketplace Revenue</h3>
+                  <h3 className="font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Marketplace Revenue</h3>
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={stats?.monthly ?? []}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0ece6" />
@@ -529,7 +533,7 @@ export default function AdminDashboard() {
 
               {/* Quick actions */}
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)]">
-                <h3 className="font-bold mb-4" style={{ fontFamily: 'Fraunces, serif' }}>Quick Actions</h3>
+                <h3 className="font-bold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Quick Actions</h3>
                 <div className="flex flex-wrap gap-3">
                   {[
                     { label: 'Verify Guides', onClick: () => setActiveSection('guides'), variant: 'primary' },
@@ -612,14 +616,14 @@ export default function AdminDashboard() {
               {/* Stats bar */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: 'Total Pre-Orders', value: mockPreOrders.length, color: '#006A4E' },
-                  { label: 'Preparing', value: mockPreOrders.filter(o => o.status === 'preparing').length, color: '#D4A017' },
-                  { label: 'Ready for Pickup', value: mockPreOrders.filter(o => o.status === 'ready_for_pickup').length, color: '#2563EB' },
-                  { label: 'Completed', value: mockPreOrders.filter(o => o.status === 'completed').length, color: '#059669' },
+                  { label: 'Total Pre-Orders', value: preOrders.length, color: '#006A4E' },
+                  { label: 'Preparing', value: preOrders.filter(o => o.status === 'preparing').length, color: '#D4A017' },
+                  { label: 'Ready for Pickup', value: preOrders.filter(o => o.status === 'ready_for_pickup').length, color: '#2563EB' },
+                  { label: 'Completed', value: preOrders.filter(o => o.status === 'completed').length, color: '#059669' },
                 ].map(s => (
                   <div key={s.label} className="bg-white rounded-2xl p-4 border border-[var(--color-border)]">
                     <p className="text-xs text-[var(--color-text-muted)] font-semibold uppercase mb-1">{s.label}</p>
-                    <p className="text-3xl font-bold" style={{ fontFamily: 'Fraunces, serif', color: s.color }}>{s.value}</p>
+                    <p className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: s.color }}>{s.value}</p>
                   </div>
                 ))}
               </div>
@@ -630,10 +634,12 @@ export default function AdminDashboard() {
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
                   <input value={poFilter} onChange={e => setPoFilter(e.target.value)} placeholder="Search orders..." className="pl-9 pr-4 py-2 border border-[var(--color-border)] rounded-xl text-sm outline-none w-full" />
                 </div>
-                <select className="border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm outline-none bg-white">
+                <select value={poStatus} onChange={e => setPoStatus(e.target.value)} aria-label="Filter by status"
+                  className="border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm outline-none bg-white">
                   <option value="">All Statuses</option>
-                  <option>confirmed</option><option>preparing</option><option>ready_for_pickup</option>
-                  <option>completed</option><option>cancelled</option>
+                  {['advance_paid', 'vendor_accepted', 'preparing', 'ready_for_pickup', 'arrived', 'qr_verified', 'pickup_payment_pending', 'picked_up', 'completed', 'cancelled'].map(s => (
+                    <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                  ))}
                 </select>
               </div>
 
@@ -643,14 +649,15 @@ export default function AdminDashboard() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-                        {['Order', 'Tourist', 'Vendor', 'Destination', 'Pickup Date/Time', 'Amount', 'Advance', 'Remaining', 'Status'].map(h => (
+                        {['Order', 'Tourist', 'Vendor', 'Destination', 'Pickup Date/Time', 'Amount', 'Advance', 'Remaining', 'Payment', 'Status'].map(h => (
                           <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[var(--color-text-muted)] uppercase whitespace-nowrap">{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--color-border)]">
-                      {mockPreOrders.filter(o =>
-                        !poFilter || o.orderNumber.includes(poFilter) || o.touristName.toLowerCase().includes(poFilter.toLowerCase()) || o.vendorName.toLowerCase().includes(poFilter.toLowerCase())
+                      {preOrders.filter(o =>
+                        (!poStatus || o.status === poStatus)
+                        && (!poFilter || o.orderNumber.includes(poFilter) || o.touristName.toLowerCase().includes(poFilter.toLowerCase()) || o.vendorName.toLowerCase().includes(poFilter.toLowerCase()))
                       ).map(order => {
                         const statusColors: Record<string, string> = {
                           confirmed: 'green', advance_paid: 'green', vendor_accepted: 'green',
@@ -668,6 +675,11 @@ export default function AdminDashboard() {
                             <td className="px-4 py-4 text-sm font-semibold">৳{order.totalAmount.toLocaleString()}</td>
                             <td className="px-4 py-4 text-sm text-green-700">৳{order.advancePaid.toLocaleString()}</td>
                             <td className="px-4 py-4 text-sm" style={{ color: 'var(--color-accent)' }}>৳{order.remainingAmount.toLocaleString()}</td>
+                            <td className="px-4 py-4 text-xs whitespace-nowrap">
+                              {methodLabel(order.advancePaymentMethod)}
+                              {order.advanceTransactionId && <p className="font-mono text-[var(--color-text-muted)]">{order.advancePayerPhone} · {order.advanceTransactionId}</p>}
+                              {order.pickupPaymentMethod && <p className="text-[var(--color-text-muted)]">Pickup: {methodLabel(order.pickupPaymentMethod)}{order.pickupTransactionId ? ` · ${order.pickupTransactionId}` : ''}</p>}
+                            </td>
                             <td className="px-4 py-4">
                               <Badge variant={statusColor as 'green' | 'gold' | 'red' | 'gray'} size="sm">
                                 {order.status.replace(/_/g, ' ')}
@@ -682,6 +694,8 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {activeSection === 'payments' && <PaymentsSection />}
 
           {activeSection === 'earnings' && (
             <div className="space-y-6">
@@ -750,7 +764,7 @@ export default function AdminDashboard() {
 
               {/* Unified payment and commission settings */}
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] space-y-5">
-                <h3 className="font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Platform Payment Terms & Commission</h3>
+                <h3 className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>Platform Payment Terms & Commission</h3>
                 <p className="text-xs text-[var(--color-text-muted)]">These unified rates apply to new orders only. Existing orders keep their saved terms.</p>
                 {commissionSettingsLoading && <p role="status" className="text-sm text-[var(--color-text-muted)]">Loading commission settings…</p>}
                 {commissionSettingsError && <p role="alert" className="text-sm text-red-600">Could not load commission settings: {commissionSettingsError}</p>}
@@ -804,7 +818,7 @@ export default function AdminDashboard() {
 
               {/* Cancellation rules */}
               <div className="bg-white rounded-2xl p-6 border border-[var(--color-border)] space-y-5">
-                <h3 className="font-bold" style={{ fontFamily: 'Fraunces, serif' }}>Cancellation & Refund Rules</h3>
+                <h3 className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>Cancellation & Refund Rules</h3>
 
                 <div>
                   <label className="block text-sm font-semibold mb-2">Cancellation Window (hours before pickup)</label>

@@ -12,6 +12,8 @@ function preorder_hydrate(array $row, bool $includeQrCode = false): array {
         'advancePercent' => (int)$row['advance_percent'], 'advancePaid' => (float)$row['advance_paid'],
         'remainingAmount' => (float)$row['remaining_amount'],
         'advancePaymentMethod' => $row['advance_payment_method'], 'pickupPaymentMethod' => $row['pickup_payment_method'],
+        'advancePayerPhone' => $row['advance_payer_phone'] ?? null, 'advanceTransactionId' => $row['advance_transaction_id'] ?? null,
+        'pickupPayerPhone' => $row['pickup_payer_phone'] ?? null, 'pickupTransactionId' => $row['pickup_transaction_id'] ?? null,
         'status' => $row['status'], 'createdAt' => $row['created_at'], 'updatedAt' => $row['updated_at'],
         'preparationTime' => $row['preparation_time'], 'notes' => $row['notes'],
         'cancellationReason' => $row['cancellation_reason'], 'refundAmount' => $row['refund_amount'] !== null ? (float)$row['refund_amount'] : null,
@@ -137,6 +139,7 @@ function preorders_create(PDO $pdo): void {
     }
     $split = compute_split((int)round($total * 100), $advancePercent, $commissionPercent);
     if ($paymentMethod === null) $paymentMethod = 'bkash';
+    [$advancePhone, $advanceTxn] = payment_proof($d, $paymentMethod, 'advance');
     if (!collect_advance($paymentMethod, $split['advance'])) {
         $pdo->rollBack();
         json_error('The advance payment could not be collected.', 402);
@@ -151,13 +154,13 @@ function preorders_create(PDO $pdo): void {
     $pdo->prepare(
         'INSERT INTO preorders (id, order_number, tourist_id, vendor_id, product_id, destination_id, pickup_location,
                                  pickup_date, pickup_time, quantity, unit_price, total_amount, advance_percent, advance_paid,
-                                 remaining_amount, advance_payment_method, commission_percent, advance_status,
-                                 status, qr_code, preparation_time, notes)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                                 remaining_amount, advance_payment_method, advance_payer_phone, advance_transaction_id,
+                                 commission_percent, advance_status, status, qr_code, preparation_time, notes)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
     )->execute([
         $id, $orderNumber, $user['id'], $product['vendor_id'], $product['id'], $d['destinationId'] ?? null,
         $product['effective_pickup_location'], $d['pickupDate'], $d['pickupTime'], $qty, $unitPrice, $total,
-        $advancePercent, $advancePaid, $remaining, $paymentMethod, $commissionPercent, 'held',
+        $advancePercent, $advancePaid, $remaining, $paymentMethod, $advancePhone, $advanceTxn, $commissionPercent, 'held',
         'advance_paid', $qrCode, $product['preparation_time'], $d['notes'] ?? null,
     ]);
     $decrement = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?');
@@ -254,11 +257,13 @@ function preorders_update(PDO $pdo, string $id): void {
         if (!in_array($newStatus, $allowedNext, true)) {
             json_error("Cannot move pre-order from '{$currentStatus}' to '{$newStatus}'.", 422);
         }
-        if ($user['role'] === 'tourist' && !in_array($newStatus, ['arrived', 'cancelled'], true)) {
-            json_error('Tourists may only mark arrival or cancel their own pre-orders.', 403);
+        // Tourists mark arrival, cancel, or confirm they received a handed-over order.
+        if ($user['role'] === 'tourist' && !in_array($newStatus, ['arrived', 'cancelled', 'completed'], true)) {
+            json_error('Tourists may only mark arrival, cancel, or confirm receipt of their own pre-orders.', 403);
         }
-        if ($newStatus === 'completed' && !in_array($user['role'], ['admin'], true) && $user['id'] !== $existing['vendor_id']) {
-            json_error('Only the vendor or an admin can complete this pre-order.', 403);
+        if ($newStatus === 'completed' && $user['role'] !== 'admin'
+            && !in_array($user['id'], [$existing['vendor_id'], $existing['tourist_id']], true)) {
+            json_error('Only the tourist, the vendor, or an admin can complete this pre-order.', 403);
         }
         $allowedRoles = PREORDER_TRANSITION_ROLES[$newStatus] ?? [];
         if ($allowedRoles && !in_array($user['role'], $allowedRoles, true)) {
@@ -284,7 +289,10 @@ function preorders_update(PDO $pdo, string $id): void {
             if ($currentStatus !== 'pickup_payment_pending' || (float)$existing['remaining_amount'] <= 0) {
                 json_error('Record the final payment before marking this order as picked up.', 422);
             }
+            [$pickupPhone, $pickupTxn] = payment_proof($d, $pickupMethod, 'pickup');
             $fields[] = 'pickup_payment_method = ?'; $params[] = $pickupMethod;
+            $fields[] = 'pickup_payer_phone = ?'; $params[] = $pickupPhone;
+            $fields[] = 'pickup_transaction_id = ?'; $params[] = $pickupTxn;
             $fields[] = 'remaining_amount = 0';
         }
 

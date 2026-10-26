@@ -1,0 +1,4 @@
+E2E flakiness check: npm run test:e2e three times in a row on the test files committed as 1d45c59 (26 Oct 2026)
+run 1:  6 passed (51.1s)
+run 2:  6 passed (38.6s)
+run 3:  6 passed (36.6s)

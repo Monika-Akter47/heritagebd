@@ -1,0 +1,49 @@
+{
+  "base": "https://heritagebd-flax.vercel.app",
+  "total": 60,
+  "concurrency": 5,
+  "warmupMs": 490,
+  "at": "2026-10-26T07:28:40.948Z",
+  "results": [
+    {
+      "endpoint": "/api/places",
+      "requests": 60,
+      "errors": 0,
+      "p50": 679,
+      "p95": 862,
+      "max": 922
+    },
+    {
+      "endpoint": "/api/products?limit=50",
+      "requests": 60,
+      "errors": 0,
+      "p50": 981,
+      "p95": 1103,
+      "max": 1392
+    },
+    {
+      "endpoint": "/api/guides",
+      "requests": 60,
+      "errors": 0,
+      "p50": 650,
+      "p95": 838,
+      "max": 909
+    },
+    {
+      "endpoint": "/api/places/p1",
+      "requests": 60,
+      "errors": 0,
+      "p50": 334,
+      "p95": 473,
+      "max": 541
+    },
+    {
+      "endpoint": "/api/events?upcoming=1",
+      "requests": 60,
+      "errors": 0,
+      "p50": 298,
+      "p95": 389,
+      "max": 410
+    }
+  ]
+}

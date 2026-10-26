@@ -1,0 +1,38 @@
+Data access / config       lines  76.2% (48/63)  functions 100%
+Controllers / API          lines  78.4% (2273/2900)  functions -%
+Business logic / helpers   lines  92.7% (228/246)  functions -%
+Router (index.php)         lines  97.1% (134/138)  functions -%
+Overall                    lines 80.2% (2683/3347)  functions 100%
+
+  50.3%    149/296  controllers/trips_controller.php
+  50.6%     82/162  controllers/uploads_controller.php
+  56.4%    114/202  controllers/admin_controller.php
+  71.4%      60/84  controllers/reviews_controller.php
+  73.1%    152/208  controllers/earnings_controller.php
+  75.2%    100/133  controllers/guides_controller.php
+  75.9%      41/54  config/database.php
+  76.3%     90/118  controllers/guide_payments_controller.php
+  77.8%        7/9  config/cors.php
+  83.7%    169/202  controllers/bookings_controller.php
+  86.2%      25/29  helpers/response.php
+  87.1%    242/278  controllers/orders_controller.php
+  87.7%    199/227  controllers/products_controller.php
+    88%    234/266  controllers/preorders_controller.php
+  88.1%      59/67  controllers/vendor_controller.php
+  89.3%    125/140  controllers/places_controller.php
+  90.7%      39/43  helpers/auth.php
+  92.3%      24/26  helpers/payments.php
+  93.4%      57/61  helpers/areas.php
+  93.6%    160/171  controllers/auth_controller.php
+  93.9%      46/49  controllers/site_content_controller.php
+  94.4%      67/71  helpers/earnings.php
+  96.1%      73/76  controllers/local_foods_controller.php
+  97.1%    134/138  index.php
+  97.6%      40/41  controllers/cart_controller.php
+  99.1%    109/110  controllers/chat_controller.php
+   100%        8/8  controllers/categories_controller.php
+   100%      26/26  controllers/events_controller.php
+   100%      14/14  controllers/notifications_controller.php
+   100%      22/22  controllers/stories_controller.php
+   100%        3/3  helpers/notify.php
+   100%      13/13  helpers/throttle.php

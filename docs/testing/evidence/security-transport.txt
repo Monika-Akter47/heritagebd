@@ -1,0 +1,9 @@
+SEC-01/02 production transport and headers check · 2026-10-26T13:32:10+06:00
+--- http:// redirects to https:// (site)
+308 -> https://heritagebd-flax.vercel.app/
+--- http:// (API)
+301 -> https://heritagebd-api.onrender.com/api/health
+--- security headers on the site
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+--- CORS from an unrelated origin (API direct)
+access-control-allow-origin: *

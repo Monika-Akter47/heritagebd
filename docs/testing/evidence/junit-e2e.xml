@@ -1,0 +1,48 @@
+<testsuites id="" name="" tests="6" failures="0" skipped="0" errors="0" time="35.123523">
+<testsuite name="journeys.spec.ts" timestamp="2026-10-26T07:32:36.216Z" hostname="edge" tests="3" failures="0" skipped="0" time="15.112" errors="0">
+<testcase name="E2E-01 map shows heritage places, layer toggles and marker card links to the place" classname="journeys.spec.ts" time="5.225">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-01-map-shows--d39d6-ker-card-links-to-the-place-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+<testcase name="E2E-02 tourist pre-orders with bKash proof and gets an order number" classname="journeys.spec.ts" time="5.092">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-02-tourist-pr-536e7-of-and-gets-an-order-number-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+<testcase name="E2E-03 admin sees advances with payer number and TrxID on Payments &amp; Advances" classname="journeys.spec.ts" time="4.795">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-03-admin-sees-c986d--TrxID-on-Payments-Advances-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="journeys.spec.ts" timestamp="2026-10-26T07:32:36.216Z" hostname="mobile-edge" tests="3" failures="0" skipped="0" time="13.503" errors="0">
+<testcase name="E2E-01 map shows heritage places, layer toggles and marker card links to the place" classname="journeys.spec.ts" time="4.23">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-01-map-shows--d39d6-ker-card-links-to-the-place-mobile-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+<testcase name="E2E-02 tourist pre-orders with bKash proof and gets an order number" classname="journeys.spec.ts" time="4.629">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-02-tourist-pr-536e7-of-and-gets-an-order-number-mobile-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+<testcase name="E2E-03 admin sees advances with payer number and TrxID on Payments &amp; Advances" classname="journeys.spec.ts" time="4.644">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\journeys-E2E-03-admin-sees-c986d--TrxID-on-Payments-Advances-mobile-edge\test-finished-1.png]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

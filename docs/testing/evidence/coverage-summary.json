@@ -1,0 +1,306 @@
+{
+  "layers": [
+    {
+      "name": "Data access / config",
+      "lines": 63,
+      "covered": 48,
+      "methods": 4,
+      "coveredMethods": 4,
+      "linePct": 76.2,
+      "functionPct": 100
+    },
+    {
+      "name": "Controllers / API",
+      "lines": 2900,
+      "covered": 2273,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 78.4,
+      "functionPct": null
+    },
+    {
+      "name": "Business logic / helpers",
+      "lines": 246,
+      "covered": 228,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 92.7,
+      "functionPct": null
+    },
+    {
+      "name": "Router (index.php)",
+      "lines": 138,
+      "covered": 134,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 97.1,
+      "functionPct": null
+    }
+  ],
+  "overall": {
+    "lines": 3347,
+    "covered": 2683,
+    "methods": 4,
+    "coveredMethods": 4,
+    "linePct": 80.2,
+    "functionPct": 100
+  },
+  "files": [
+    {
+      "path": "controllers/trips_controller.php",
+      "lines": 296,
+      "covered": 149,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 50.3
+    },
+    {
+      "path": "controllers/uploads_controller.php",
+      "lines": 162,
+      "covered": 82,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 50.6
+    },
+    {
+      "path": "controllers/admin_controller.php",
+      "lines": 202,
+      "covered": 114,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 56.4
+    },
+    {
+      "path": "controllers/reviews_controller.php",
+      "lines": 84,
+      "covered": 60,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 71.4
+    },
+    {
+      "path": "controllers/earnings_controller.php",
+      "lines": 208,
+      "covered": 152,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 73.1
+    },
+    {
+      "path": "controllers/guides_controller.php",
+      "lines": 133,
+      "covered": 100,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 75.2
+    },
+    {
+      "path": "config/database.php",
+      "lines": 54,
+      "covered": 41,
+      "methods": 4,
+      "coveredMethods": 4,
+      "linePct": 75.9
+    },
+    {
+      "path": "controllers/guide_payments_controller.php",
+      "lines": 118,
+      "covered": 90,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 76.3
+    },
+    {
+      "path": "config/cors.php",
+      "lines": 9,
+      "covered": 7,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 77.8
+    },
+    {
+      "path": "controllers/bookings_controller.php",
+      "lines": 202,
+      "covered": 169,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 83.7
+    },
+    {
+      "path": "helpers/response.php",
+      "lines": 29,
+      "covered": 25,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 86.2
+    },
+    {
+      "path": "controllers/orders_controller.php",
+      "lines": 278,
+      "covered": 242,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 87.1
+    },
+    {
+      "path": "controllers/products_controller.php",
+      "lines": 227,
+      "covered": 199,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 87.7
+    },
+    {
+      "path": "controllers/preorders_controller.php",
+      "lines": 266,
+      "covered": 234,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 88
+    },
+    {
+      "path": "controllers/vendor_controller.php",
+      "lines": 67,
+      "covered": 59,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 88.1
+    },
+    {
+      "path": "controllers/places_controller.php",
+      "lines": 140,
+      "covered": 125,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 89.3
+    },
+    {
+      "path": "helpers/auth.php",
+      "lines": 43,
+      "covered": 39,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 90.7
+    },
+    {
+      "path": "helpers/payments.php",
+      "lines": 26,
+      "covered": 24,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 92.3
+    },
+    {
+      "path": "helpers/areas.php",
+      "lines": 61,
+      "covered": 57,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 93.4
+    },
+    {
+      "path": "controllers/auth_controller.php",
+      "lines": 171,
+      "covered": 160,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 93.6
+    },
+    {
+      "path": "controllers/site_content_controller.php",
+      "lines": 49,
+      "covered": 46,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 93.9
+    },
+    {
+      "path": "helpers/earnings.php",
+      "lines": 71,
+      "covered": 67,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 94.4
+    },
+    {
+      "path": "controllers/local_foods_controller.php",
+      "lines": 76,
+      "covered": 73,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 96.1
+    },
+    {
+      "path": "index.php",
+      "lines": 138,
+      "covered": 134,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 97.1
+    },
+    {
+      "path": "controllers/cart_controller.php",
+      "lines": 41,
+      "covered": 40,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 97.6
+    },
+    {
+      "path": "controllers/chat_controller.php",
+      "lines": 110,
+      "covered": 109,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 99.1
+    },
+    {
+      "path": "controllers/categories_controller.php",
+      "lines": 8,
+      "covered": 8,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    },
+    {
+      "path": "controllers/events_controller.php",
+      "lines": 26,
+      "covered": 26,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    },
+    {
+      "path": "controllers/notifications_controller.php",
+      "lines": 14,
+      "covered": 14,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    },
+    {
+      "path": "controllers/stories_controller.php",
+      "lines": 22,
+      "covered": 22,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    },
+    {
+      "path": "helpers/notify.php",
+      "lines": 3,
+      "covered": 3,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    },
+    {
+      "path": "helpers/throttle.php",
+      "lines": 13,
+      "covered": 13,
+      "methods": 0,
+      "coveredMethods": 0,
+      "linePct": 100
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+Regression evidence for fixed defects: each test run on the code BEFORE its fix (files from 72586ab) and AFTER (commit 1d45c59)
+Fixed files: backend/index.php, backend/controllers/admin_controller.php, backend/controllers/preorders_controller.php
+Generated 2026-10-26T13:33:11+06:00
+
+=== BEFORE ===
+1) HeritageBD\Tests\Integration\AdminTest::test_TC_29_rejecting_a_pending_vendor_suspends_the_account
+HTTP 200: 
+Failed asserting that 200 is identical to 403.
+2) HeritageBD\Tests\Integration\AuthTest::test_TC_16_forgot_password_answers_the_same_for_unknown_email
+Failed asserting that two strings are identical.
+3) HeritageBD\Tests\Integration\PreorderTest::test_TC_92_tourist_cannot_cancel_once_preparation_has_begun
+Failed asserting that an array contains 200.
+4) HeritageBD\Tests\Integration\PreorderTest::test_TC_93_refund_amount_follows_the_configured_refund_percentage
+Failed asserting that null matches expected 240.
+5) HeritageBD\Tests\Integration\PreorderTest::test_TC_126_tourist_cannot_choose_their_own_refund_amount
+Failed asserting that 99999 matches expected 240.
+6) HeritageBD\Tests\Integration\PreorderTest::test_TC_96_refund_percentage_outside_0_to_100_is_rejected
+HTTP 200: 
+Failed asserting that 200 is identical to 422.
+Tests: 6, Assertions: 28, Failures: 6.
+
+=== AFTER ===
+OK (6 tests, 29 assertions)

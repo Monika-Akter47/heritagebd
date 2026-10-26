@@ -1,0 +1,4574 @@
+{
+  "generatedAt": "2026-10-26T07:39:28.755Z",
+  "catalogue": [
+    {
+      "id": "TC-U10",
+      "requirements": [
+        "FR-26"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "division name resolves to whole division",
+      "name": "test_TC_U10_division_name_resolves_to_whole_division",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U10_division_name_resolves_to_whole_division",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U11",
+      "requirements": [
+        "FR-26"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "old spelling resolves to current district",
+      "name": "test_TC_U11_old_spelling_resolves_to_current_district",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U11_old_spelling_resolves_to_current_district",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U12",
+      "requirements": [
+        "FR-26"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "landmark inside destination name resolves to its district",
+      "name": "test_TC_U12_landmark_inside_destination_name_resolves_to_its_district",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U12_landmark_inside_destination_name_resolves_to_its_district",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U13",
+      "requirements": [
+        "FR-26"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "prefer district keeps same named district",
+      "name": "test_TC_U13_prefer_district_keeps_same_named_district",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U13_prefer_district_keeps_same_named_district",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U14",
+      "requirements": [
+        "FR-21"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "unknown or blank area resolves to null",
+      "name": "test_TC_U14_unknown_or_blank_area_resolves_to_null",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U14_unknown_or_blank_area_resolves_to_null",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U15",
+      "requirements": [
+        "FR-21"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "district query is widened to its division unless exact",
+      "name": "test_TC_U15_district_query_is_widened_to_its_division_unless_exact",
+      "file": "tests/unit/AreaResolverTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U15_district_query_is_widened_to_its_division_unless_exact",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U08",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "valid bangladeshi mobile numbers are normalised",
+      "name": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised",
+      "file": "tests/unit/PaymentProofTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised with data set &quot;plain&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised with data set &quot;+880 with spaces&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised with data set &quot;880 prefix&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised with data set &quot;lowest operator (013)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U08_valid_bangladeshi_mobile_numbers_are_normalised with data set &quot;highest operator (019)&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 5,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U09",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "invalid numbers are rejected",
+      "name": "test_TC_U09_invalid_numbers_are_rejected",
+      "file": "tests/unit/PaymentProofTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;10 digits (one short)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;12 digits (one long)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;operator 2 (below 3)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;not starting 01&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;letters&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U09_invalid_numbers_are_rejected with data set &quot;empty&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 6,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U16",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "own upload paths and https urls are accepted as images",
+      "name": "test_TC_U16_own_upload_paths_and_https_urls_are_accepted_as_images",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U16_own_upload_paths_and_https_urls_are_accepted_as_images",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U17",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "scripts other schemes and malformed paths are not images",
+      "name": "test_TC_U17_scripts_other_schemes_and_malformed_paths_are_not_images",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U17_scripts_other_schemes_and_malformed_paths_are_not_images",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U18",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P3",
+      "polarity": "−",
+      "title": "image reference longer than 500 chars is rejected",
+      "name": "test_TC_U18_image_reference_longer_than_500_chars_is_rejected",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U18_image_reference_longer_than_500_chars_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U19",
+      "requirements": [
+        "FR-15"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "json booleans become 0 or 1 at any depth",
+      "name": "test_TC_U19_json_booleans_become_0_or_1_at_any_depth",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U19_json_booleans_become_0_or_1_at_any_depth",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U20",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "only a sha256 hash of the token is stored",
+      "name": "test_TC_U20_only_a_sha256_hash_of_the_token_is_stored",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U20_only_a_sha256_hash_of_the_token_is_stored",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U21",
+      "requirements": [
+        "FR-30"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "generated ids are prefixed and unique",
+      "name": "test_TC_U21_generated_ids_are_prefixed_and_unique",
+      "file": "tests/unit/RequestHelpersTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U21_generated_ids_are_prefixed_and_unique",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U01",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "srs example 1000 taka splits into 300 advance and 700 balance",
+      "name": "test_TC_U01_srs_example_1000_taka_splits_into_300_advance_and_700_balance",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U01_srs_example_1000_taka_splits_into_300_advance_and_700_balance",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U02",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "Decision table",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "each flow uses its own terms",
+      "name": "test_TC_U02_each_flow_uses_its_own_terms",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U02_each_flow_uses_its_own_terms with data set &quot;order 20/10 on ৳8,500&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U02_each_flow_uses_its_own_terms with data set &quot;pre-order 30/10 on ৳2,800&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U02_each_flow_uses_its_own_terms with data set &quot;guide booking 20/10 on ৳7,000&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 3,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U03",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "zero amount gives all zero shares",
+      "name": "test_TC_U03_zero_amount_gives_all_zero_shares",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U03_zero_amount_gives_all_zero_shares",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U04",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "advance equal to commission releases nothing early",
+      "name": "test_TC_U04_advance_equal_to_commission_releases_nothing_early",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U04_advance_equal_to_commission_releases_nothing_early",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U05",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "full advance leaves no cash balance",
+      "name": "test_TC_U05_full_advance_leaves_no_cash_balance",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U05_full_advance_leaves_no_cash_balance",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U06",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "odd poisha amount is rounded and shares still add up",
+      "name": "test_TC_U06_odd_poisha_amount_is_rounded_and_shares_still_add_up",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U06_odd_poisha_amount_is_rounded_and_shares_still_add_up",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-U07",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "rejects invalid amounts or percentages",
+      "name": "test_TC_U07_rejects_invalid_amounts_or_percentages",
+      "file": "tests/unit/SettlementSplitTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_U07_rejects_invalid_amounts_or_percentages with data set &quot;negative amount&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U07_rejects_invalid_amounts_or_percentages with data set &quot;commission above advance&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U07_rejects_invalid_amounts_or_percentages with data set &quot;advance above 100%&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_U07_rejects_invalid_amounts_or_percentages with data set &quot;negative commission&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 4,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-20",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "protected endpoints return 401 without a token",
+      "name": "test_TC_20_protected_endpoints_return_401_without_a_token",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #0",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #1",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #2",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #3",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #4",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #5",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #6",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #7",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #8",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_20_protected_endpoints_return_401_without_a_token with data set #9",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 10,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-21",
+      "requirements": [
+        "FR-03"
+      ],
+      "level": "Integration",
+      "technique": "Decision table",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "each role is refused endpoints of other roles",
+      "name": "test_TC_21_each_role_is_refused_endpoints_of_other_roles",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;tourist → admin stats&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;tourist → admin users&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;tourist → create product&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;guide → admin payments&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;guide → create pre-order&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;tourist → pre-order settings&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_21_each_role_is_refused_endpoints_of_other_roles with data set &quot;tourist → earnings&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 7,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-22",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot read another tourists preorder",
+      "name": "test_TC_22_tourist_cannot_read_another_tourists_preorder",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_22_tourist_cannot_read_another_tourists_preorder",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-23",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot read another tourists order",
+      "name": "test_TC_23_tourist_cannot_read_another_tourists_order",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_23_tourist_cannot_read_another_tourists_order",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-24",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot read another users conversation",
+      "name": "test_TC_24_tourist_cannot_read_another_users_conversation",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_24_tourist_cannot_read_another_users_conversation",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-25",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "guide cannot edit another guides profile",
+      "name": "test_TC_25_guide_cannot_edit_another_guides_profile",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_25_guide_cannot_edit_another_guides_profile",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-26",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "vendor cannot edit another vendors product",
+      "name": "test_TC_26_vendor_cannot_edit_another_vendors_product",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_26_vendor_cannot_edit_another_vendors_product",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-27",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot advance their own preorder to vendor only states",
+      "name": "test_TC_27_tourist_cannot_advance_their_own_preorder_to_vendor_only_states",
+      "file": "tests/integration/AccessControlTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_27_tourist_cannot_advance_their_own_preorder_to_vendor_only_states",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-28",
+      "requirements": [
+        "FR-04"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "approving a pending guide makes it verified active and notifies it",
+      "name": "test_TC_28_approving_a_pending_guide_makes_it_verified_active_and_notifies_it",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_28_approving_a_pending_guide_makes_it_verified_active_and_notifies_it",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-29",
+      "requirements": [
+        "FR-04"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "rejecting a pending vendor suspends the account",
+      "name": "test_TC_29_rejecting_a_pending_vendor_suspends_the_account",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_29_rejecting_a_pending_vendor_suspends_the_account",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-30",
+      "requirements": [
+        "FR-04"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "verification status must be verified or rejected",
+      "name": "test_TC_30_verification_status_must_be_verified_or_rejected",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_30_verification_status_must_be_verified_or_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-31",
+      "requirements": [
+        "FR-04"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "only an admin can verify",
+      "name": "test_TC_31_only_an_admin_can_verify",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_31_only_an_admin_can_verify",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-32",
+      "requirements": [
+        "FR-44"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "admin lists users filtered by role",
+      "name": "test_TC_32_admin_lists_users_filtered_by_role",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_32_admin_lists_users_filtered_by_role",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-33",
+      "requirements": [
+        "FR-44"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "admin suspends and reinstates a user",
+      "name": "test_TC_33_admin_suspends_and_reinstates_a_user",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_33_admin_suspends_and_reinstates_a_user",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-34",
+      "requirements": [
+        "FR-45"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "admin sees preorders of every tourist",
+      "name": "test_TC_34_admin_sees_preorders_of_every_tourist",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_34_admin_sees_preorders_of_every_tourist",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-35",
+      "requirements": [
+        "FR-46"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "statistics counters match the database",
+      "name": "test_TC_35_statistics_counters_match_the_database",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_35_statistics_counters_match_the_database",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-36",
+      "requirements": [
+        "FR-47"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "reports provide 12 month series and breakdown by flow",
+      "name": "test_TC_36_reports_provide_12_month_series_and_breakdown_by_flow",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_36_reports_provide_12_month_series_and_breakdown_by_flow",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-37",
+      "requirements": [
+        "FR-09"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "admin creates updates and deletes a place",
+      "name": "test_TC_37_admin_creates_updates_and_deletes_a_place",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_37_admin_creates_updates_and_deletes_a_place",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-38",
+      "requirements": [
+        "FR-09"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "non admin cannot create places events or stories",
+      "name": "test_TC_38_non_admin_cannot_create_places_events_or_stories",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_38_non_admin_cannot_create_places_events_or_stories",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-39",
+      "requirements": [
+        "FR-09"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "admin creates and deletes an event and a story",
+      "name": "test_TC_39_admin_creates_and_deletes_an_event_and_a_story",
+      "file": "tests/integration/AdminTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_39_admin_creates_and_deletes_an_event_and_a_story",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-01",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "tourist registration is active immediately and returns token",
+      "name": "test_TC_01_tourist_registration_is_active_immediately_and_returns_token",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_01_tourist_registration_is_active_immediately_and_returns_token",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-02",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "vendor and guide registrations start pending verification",
+      "name": "test_TC_02_vendor_and_guide_registrations_start_pending_verification",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_02_vendor_and_guide_registrations_start_pending_verification",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-03",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "password shorter than 8 characters is rejected",
+      "name": "test_TC_03_password_shorter_than_8_characters_is_rejected",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_03_password_shorter_than_8_characters_is_rejected with data set &quot;7 chars (min-1)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_03_password_shorter_than_8_characters_is_rejected with data set &quot;8 chars (min)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_03_password_shorter_than_8_characters_is_rejected with data set &quot;9 chars (min+1)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_03_password_shorter_than_8_characters_is_rejected with data set &quot;empty&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 4,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-04",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "second account with same email is rejected case insensitively",
+      "name": "test_TC_04_second_account_with_same_email_is_rejected_case_insensitively",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_04_second_account_with_same_email_is_rejected_case_insensitively",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-05",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "admin role cannot self register",
+      "name": "test_TC_05_admin_role_cannot_self_register",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_05_admin_role_cannot_self_register",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-06",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "invalid registration input is rejected",
+      "name": "test_TC_06_invalid_registration_input_is_rejected",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_06_invalid_registration_input_is_rejected with data set &quot;malformed email&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_06_invalid_registration_input_is_rejected with data set &quot;unknown role&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_06_invalid_registration_input_is_rejected with data set &quot;phone not BD mobile&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_06_invalid_registration_input_is_rejected with data set &quot;blank name&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 4,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-07",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "valid login returns user and token usable on me",
+      "name": "test_TC_07_valid_login_returns_user_and_token_usable_on_me",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_07_valid_login_returns_user_and_token_usable_on_me",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-08",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "wrong password and unknown email get the same 401",
+      "name": "test_TC_08_wrong_password_and_unknown_email_get_the_same_401",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_08_wrong_password_and_unknown_email_get_the_same_401",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-09",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "sixth failed login within 15 minutes is throttled",
+      "name": "test_TC_09_sixth_failed_login_within_15_minutes_is_throttled",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_09_sixth_failed_login_within_15_minutes_is_throttled",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-10",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "suspended account cannot log in",
+      "name": "test_TC_10_suspended_account_cannot_log_in",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_10_suspended_account_cannot_log_in",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-11",
+      "requirements": [
+        "FR-48"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "logout revokes the token",
+      "name": "test_TC_11_logout_revokes_the_token",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_11_logout_revokes_the_token",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-12",
+      "requirements": [
+        "FR-48"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "expired token is rejected",
+      "name": "test_TC_12_expired_token_is_rejected",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_12_expired_token_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-13",
+      "requirements": [
+        "FR-05"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "valid otp resets password and signs out old sessions",
+      "name": "test_TC_13_valid_otp_resets_password_and_signs_out_old_sessions",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_13_valid_otp_resets_password_and_signs_out_old_sessions",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-14",
+      "requirements": [
+        "FR-05"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "otp older than 15 minutes is rejected",
+      "name": "test_TC_14_otp_older_than_15_minutes_is_rejected",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_14_otp_older_than_15_minutes_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-15",
+      "requirements": [
+        "FR-05"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "otp must be exactly six digits",
+      "name": "test_TC_15_otp_must_be_exactly_six_digits",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_15_otp_must_be_exactly_six_digits with data set &quot;5 digits&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_15_otp_must_be_exactly_six_digits with data set &quot;7 digits&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_15_otp_must_be_exactly_six_digits with data set &quot;letters&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 3,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-16",
+      "requirements": [
+        "FR-05"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "forgot password answers the same for unknown email",
+      "name": "test_TC_16_forgot_password_answers_the_same_for_unknown_email",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_16_forgot_password_answers_the_same_for_unknown_email",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-17",
+      "requirements": [
+        "FR-06"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "user updates own name and phone",
+      "name": "test_TC_17_user_updates_own_name_and_phone",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_17_user_updates_own_name_and_phone",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-18",
+      "requirements": [
+        "FR-06"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "tourist saves and unsaves a place",
+      "name": "test_TC_18_tourist_saves_and_unsaves_a_place",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_18_tourist_saves_and_unsaves_a_place",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-19",
+      "requirements": [
+        "FR-06"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "wrong current password cannot change password",
+      "name": "test_TC_19_wrong_current_password_cannot_change_password",
+      "file": "tests/integration/AuthTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_19_wrong_current_password_cannot_change_password",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-118",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "vendor uploads a product image that is served back",
+      "name": "test_TC_118_vendor_uploads_a_product_image_that_is_served_back",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_118_vendor_uploads_a_product_image_that_is_served_back",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-119",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "non image disguised as png and anonymous uploads are rejected",
+      "name": "test_TC_119_non_image_disguised_as_png_and_anonymous_uploads_are_rejected",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_119_non_image_disguised_as_png_and_anonymous_uploads_are_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-120",
+      "requirements": [
+        "FR-01"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "vendor uploads a verification document that only admins can list",
+      "name": "test_TC_120_vendor_uploads_a_verification_document_that_only_admins_can_list",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_120_vendor_uploads_a_verification_document_that_only_admins_can_list",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-121",
+      "requirements": [
+        "FR-06"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "vendor completes shop profile",
+      "name": "test_TC_121_vendor_completes_shop_profile",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_121_vendor_completes_shop_profile",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-122",
+      "requirements": [
+        "FR-06"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "incomplete shop profile is rejected",
+      "name": "test_TC_122_incomplete_shop_profile_is_rejected",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_122_incomplete_shop_profile_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-123",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "local foods for a district list that district first with bangla names",
+      "name": "test_TC_123_local_foods_for_a_district_list_that_district_first_with_bangla_names",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_123_local_foods_for_a_district_list_that_district_first_with_bangla_names",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-124",
+      "requirements": [
+        "FR-09"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "admin adds edits and removes a local food",
+      "name": "test_TC_124_admin_adds_edits_and_removes_a_local_food",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_124_admin_adds_edits_and_removes_a_local_food",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-125",
+      "requirements": [
+        "FR-09"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "±",
+      "title": "admin sets homepage hero image and rejects invalid urls",
+      "name": "test_TC_125_admin_sets_homepage_hero_image_and_rejects_invalid_urls",
+      "file": "tests/integration/ContentUploadTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_125_admin_sets_homepage_hero_image_and_rejects_invalid_urls",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-40",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "places filter by category and division",
+      "name": "test_TC_40_places_filter_by_category_and_division",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_40_places_filter_by_category_and_division",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-41",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "search is case insensitive",
+      "name": "test_TC_41_search_is_case_insensitive",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_41_search_is_case_insensitive",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-42",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "search with no match returns an empty list not an error",
+      "name": "test_TC_42_search_with_no_match_returns_an_empty_list_not_an_error",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_42_search_with_no_match_returns_an_empty_list_not_an_error",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-43",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "list limit is capped at 200",
+      "name": "test_TC_43_list_limit_is_capped_at_200",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_43_list_limit_is_capped_at_200",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-44",
+      "requirements": [
+        "FR-07"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "upcoming events end today or later",
+      "name": "test_TC_44_upcoming_events_end_today_or_later",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_44_upcoming_events_end_today_or_later",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-45",
+      "requirements": [
+        "FR-08"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "place detail has the fields listed in the srs",
+      "name": "test_TC_45_place_detail_has_the_fields_listed_in_the_srs",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_45_place_detail_has_the_fields_listed_in_the_srs",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-46",
+      "requirements": [
+        "FR-08"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "unknown place returns 404",
+      "name": "test_TC_46_unknown_place_returns_404",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_46_unknown_place_returns_404",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-47",
+      "requirements": [
+        "FR-10"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "categories report the number of places",
+      "name": "test_TC_47_categories_report_the_number_of_places",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_47_categories_report_the_number_of_places",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-48",
+      "requirements": [
+        "FR-11"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "every place has coordinates inside bangladesh for the map",
+      "name": "test_TC_48_every_place_has_coordinates_inside_bangladesh_for_the_map",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_48_every_place_has_coordinates_inside_bangladesh_for_the_map",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-49",
+      "requirements": [
+        "FR-21"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "products filter by category and price range",
+      "name": "test_TC_49_products_filter_by_category_and_price_range",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_49_products_filter_by_category_and_price_range",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-50",
+      "requirements": [
+        "FR-21"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "products sort by price ascending and descending",
+      "name": "test_TC_50_products_sort_by_price_ascending_and_descending",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_50_products_sort_by_price_ascending_and_descending",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-51",
+      "requirements": [
+        "FR-21"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "preorder filter returns only eligible in stock products",
+      "name": "test_TC_51_preorder_filter_returns_only_eligible_in_stock_products",
+      "file": "tests/integration/DiscoveryTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_51_preorder_filter_returns_only_eligible_in_stock_products",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-52",
+      "requirements": [
+        "FR-14"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "guide updates profile languages and price",
+      "name": "test_TC_52_guide_updates_profile_languages_and_price",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_52_guide_updates_profile_languages_and_price",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-53",
+      "requirements": [
+        "FR-15"
+      ],
+      "level": "Integration",
+      "technique": "Decision table",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "public sees no coordinates unless available and sharing",
+      "name": "test_TC_53_public_sees_no_coordinates_unless_available_and_sharing",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_53_public_sees_no_coordinates_unless_available_and_sharing",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-54",
+      "requirements": [
+        "FR-15"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "shared position is approximate for the public",
+      "name": "test_TC_54_shared_position_is_approximate_for_the_public",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_54_shared_position_is_approximate_for_the_public",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-55",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "booking goes pending accepted finished completed and notifies",
+      "name": "test_TC_55_booking_goes_pending_accepted_finished_completed_and_notifies",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_55_booking_goes_pending_accepted_finished_completed_and_notifies",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-56",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "guide cannot skip from pending to completed",
+      "name": "test_TC_56_guide_cannot_skip_from_pending_to_completed",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_56_guide_cannot_skip_from_pending_to_completed",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-57",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "booking dates in the past or reversed are rejected",
+      "name": "test_TC_57_booking_dates_in_the_past_or_reversed_are_rejected",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_57_booking_dates_in_the_past_or_reversed_are_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-58",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "guide cannot be double booked for overlapping dates",
+      "name": "test_TC_58_guide_cannot_be_double_booked_for_overlapping_dates",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_58_guide_cannot_be_double_booked_for_overlapping_dates",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-59",
+      "requirements": [
+        "FR-17"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "guide dashboard lists only the guides own bookings",
+      "name": "test_TC_59_guide_dashboard_lists_only_the_guides_own_bookings",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_59_guide_dashboard_lists_only_the_guides_own_bookings",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-60",
+      "requirements": [
+        "FR-18"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "tourist creates a named trip with destinations",
+      "name": "test_TC_60_tourist_creates_a_named_trip_with_destinations",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_60_tourist_creates_a_named_trip_with_destinations",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-61",
+      "requirements": [
+        "FR-18"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "trip needs a name and end not before start",
+      "name": "test_TC_61_trip_needs_a_name_and_end_not_before_start",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_61_trip_needs_a_name_and_end_not_before_start",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-62",
+      "requirements": [
+        "FR-19"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "days and stops keep their order and trip can be deleted",
+      "name": "test_TC_62_days_and_stops_keep_their_order_and_trip_can_be_deleted",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_62_days_and_stops_keep_their_order_and_trip_can_be_deleted",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-63",
+      "requirements": [
+        "FR-19"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "another tourist cannot view or delete my trip",
+      "name": "test_TC_63_another_tourist_cannot_view_or_delete_my_trip",
+      "file": "tests/integration/GuideTripTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_63_another_tourist_cannot_view_or_delete_my_trip",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-64",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "vendor adds edits and deletes a product with tags and specs",
+      "name": "test_TC_64_vendor_adds_edits_and_deletes_a_product_with_tags_and_specs",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_64_vendor_adds_edits_and_deletes_a_product_with_tags_and_specs",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-65",
+      "requirements": [
+        "FR-20"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "price must be above zero and stock not negative",
+      "name": "test_TC_65_price_must_be_above_zero_and_stock_not_negative",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_65_price_must_be_above_zero_and_stock_not_negative",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-66",
+      "requirements": [
+        "FR-22"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "cart add merges update remove and clear",
+      "name": "test_TC_66_cart_add_merges_update_remove_and_clear",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_66_cart_add_merges_update_remove_and_clear",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-67",
+      "requirements": [
+        "FR-22"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "unknown product cannot be added to cart",
+      "name": "test_TC_67_unknown_product_cannot_be_added_to_cart",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_67_unknown_product_cannot_be_added_to_cart",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-68",
+      "requirements": [
+        "FR-23"
+      ],
+      "level": "Integration",
+      "technique": "Use case",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "checkout creates order clears cart and holds the advance",
+      "name": "test_TC_68_checkout_creates_order_clears_cart_and_holds_the_advance",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_68_checkout_creates_order_clears_cart_and_holds_the_advance",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-69",
+      "requirements": [
+        "FR-23"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "checkout with empty cart or missing address is rejected",
+      "name": "test_TC_69_checkout_with_empty_cart_or_missing_address_is_rejected",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_69_checkout_with_empty_cart_or_missing_address_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-70",
+      "requirements": [
+        "FR-24"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "checkout fails when quantity exceeds stock and stock is unchanged",
+      "name": "test_TC_70_checkout_fails_when_quantity_exceeds_stock_and_stock_is_unchanged",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_70_checkout_fails_when_quantity_exceeds_stock_and_stock_is_unchanged",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-71",
+      "requirements": [
+        "FR-24"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "buying exactly the remaining stock succeeds and decrements to zero",
+      "name": "test_TC_71_buying_exactly_the_remaining_stock_succeeds_and_decrements_to_zero",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_71_buying_exactly_the_remaining_stock_succeeds_and_decrements_to_zero",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-72",
+      "requirements": [
+        "FR-36"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "delivery order moves through the srs states to completed",
+      "name": "test_TC_72_delivery_order_moves_through_the_srs_states_to_completed",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_72_delivery_order_moves_through_the_srs_states_to_completed",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-73",
+      "requirements": [
+        "FR-36"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "vendor cannot skip states or release the advance",
+      "name": "test_TC_73_vendor_cannot_skip_states_or_release_the_advance",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_73_vendor_cannot_skip_states_or_release_the_advance",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-74",
+      "requirements": [
+        "FR-36"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "order has a tracking number and estimated delivery",
+      "name": "test_TC_74_order_has_a_tracking_number_and_estimated_delivery",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Fail",
+          "case": "test_TC_74_order_has_a_tracking_number_and_estimated_delivery",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Fail",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-75",
+      "requirements": [
+        "FR-38"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "order history is role aware",
+      "name": "test_TC_75_order_history_is_role_aware",
+      "file": "tests/integration/MarketplaceTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_75_order_history_is_role_aware",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-108",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "tourist reports cash and guide confirms it",
+      "name": "test_TC_108_tourist_reports_cash_and_guide_confirms_it",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_108_tourist_reports_cash_and_guide_confirms_it",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-109",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "guide records bkash payment directly and earnings show it received",
+      "name": "test_TC_109_guide_records_bkash_payment_directly_and_earnings_show_it_received",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_109_guide_records_bkash_payment_directly_and_earnings_show_it_received",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-110",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "guide payment rules are enforced",
+      "name": "test_TC_110_guide_payment_rules_are_enforced",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_110_guide_payment_rules_are_enforced",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-111",
+      "requirements": [
+        "FR-45"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "admin ledger lists advances with payer number and trxid",
+      "name": "test_TC_111_admin_ledger_lists_advances_with_payer_number_and_trxid",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_111_admin_ledger_lists_advances_with_payer_number_and_trxid",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-112",
+      "requirements": [
+        "FR-50"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "failed logins are logged with identifier and time",
+      "name": "test_TC_112_failed_logins_are_logged_with_identifier_and_time",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_112_failed_logins_are_logged_with_identifier_and_time",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-113",
+      "requirements": [
+        "FR-50"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "important user and payment events are kept in an audit log",
+      "name": "test_TC_113_important_user_and_payment_events_are_kept_in_an_audit_log",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Fail",
+          "case": "test_TC_113_important_user_and_payment_events_are_kept_in_an_audit_log",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Fail",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-114",
+      "requirements": [
+        "FR-03"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "sql injection in search and login is harmless",
+      "name": "test_TC_114_sql_injection_in_search_and_login_is_harmless",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_114_sql_injection_in_search_and_login_is_harmless",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-115",
+      "requirements": [
+        "FR-49"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "errors never expose sql paths or stack traces",
+      "name": "test_TC_115_errors_never_expose_sql_paths_or_stack_traces",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_115_errors_never_expose_sql_paths_or_stack_traces",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-116",
+      "requirements": [
+        "FR-02"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "passwords are stored only as bcrypt hashes",
+      "name": "test_TC_116_passwords_are_stored_only_as_bcrypt_hashes",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_116_passwords_are_stored_only_as_bcrypt_hashes",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-117",
+      "requirements": [
+        "FR-51"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "schema and data can be restored from the committed sql",
+      "name": "test_TC_117_schema_and_data_can_be_restored_from_the_committed_sql",
+      "file": "tests/integration/PaymentsSecurityTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_117_schema_and_data_can_be_restored_from_the_committed_sql",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-76",
+      "requirements": [
+        "FR-25"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "preorder eligible product requires preparation time and pickup location",
+      "name": "test_TC_76_preorder_eligible_product_requires_preparation_time_and_pickup_location",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_76_preorder_eligible_product_requires_preparation_time_and_pickup_location",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-77",
+      "requirements": [
+        "FR-25"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "tourist cannot preorder a product that is not preorder enabled",
+      "name": "test_TC_77_tourist_cannot_preorder_a_product_that_is_not_preorder_enabled",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_77_tourist_cannot_preorder_a_product_that_is_not_preorder_enabled",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-78",
+      "requirements": [
+        "FR-26"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "preorder products are listed for a destination area",
+      "name": "test_TC_78_preorder_products_are_listed_for_a_destination_area",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_78_preorder_products_are_listed_for_a_destination_area",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-79",
+      "requirements": [
+        "FR-27"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "quantity must be a whole number within stock",
+      "name": "test_TC_79_quantity_must_be_a_whole_number_within_stock",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_79_quantity_must_be_a_whole_number_within_stock with data set &quot;zero&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_79_quantity_must_be_a_whole_number_within_stock with data set &quot;negative&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_79_quantity_must_be_a_whole_number_within_stock with data set &quot;fraction&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_79_quantity_must_be_a_whole_number_within_stock with data set &quot;stock + 1&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 4,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-80",
+      "requirements": [
+        "FR-28"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "preorder stores 30 percent advance and 70 percent remaining",
+      "name": "test_TC_80_preorder_stores_30_percent_advance_and_70_percent_remaining",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_80_preorder_stores_30_percent_advance_and_70_percent_remaining",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-81",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "advance is recorded with method payer number and trxid",
+      "name": "test_TC_81_advance_is_recorded_with_method_payer_number_and_trxid",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_81_advance_is_recorded_with_method_payer_number_and_trxid",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-82",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "wallet advance without valid number or trxid is rejected",
+      "name": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected with data set &quot;missing number&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected with data set &quot;missing TrxID&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected with data set &quot;invalid number&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected with data set &quot;TrxID 5 chars&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_82_wallet_advance_without_valid_number_or_trxid_is_rejected with data set &quot;TrxID 21 chars&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 5,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-83",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "trxid of 6 and 20 characters and card without proof are accepted",
+      "name": "test_TC_83_trxid_of_6_and_20_characters_and_card_without_proof_are_accepted",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_83_trxid_of_6_and_20_characters_and_card_without_proof_are_accepted",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-84",
+      "requirements": [
+        "FR-30"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "each preorder gets a unique order number and qr code",
+      "name": "test_TC_84_each_preorder_gets_a_unique_order_number_and_qr_code",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_84_each_preorder_gets_a_unique_order_number_and_qr_code",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-85",
+      "requirements": [
+        "FR-31"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "vendor moves preorder to ready and tourist is notified",
+      "name": "test_TC_85_vendor_moves_preorder_to_ready_and_tourist_is_notified",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_85_vendor_moves_preorder_to_ready_and_tourist_is_notified",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-86",
+      "requirements": [
+        "FR-31"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "vendor cannot skip from accepted to ready",
+      "name": "test_TC_86_vendor_cannot_skip_from_accepted_to_ready",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_86_vendor_cannot_skip_from_accepted_to_ready",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-87",
+      "requirements": [
+        "FR-32"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "wrong qr code is rejected",
+      "name": "test_TC_87_wrong_qr_code_is_rejected",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_87_wrong_qr_code_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-88",
+      "requirements": [
+        "FR-32"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "qr code can be used only once",
+      "name": "test_TC_88_qr_code_can_be_used_only_once",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_88_qr_code_can_be_used_only_once",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-89",
+      "requirements": [
+        "FR-33"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "remaining payment by bkash is recorded and tourist confirms receipt",
+      "name": "test_TC_89_remaining_payment_by_bkash_is_recorded_and_tourist_confirms_receipt",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_89_remaining_payment_by_bkash_is_recorded_and_tourist_confirms_receipt",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-90",
+      "requirements": [
+        "FR-33"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "wallet pickup payment needs payer number and trxid",
+      "name": "test_TC_90_wallet_pickup_payment_needs_payer_number_and_trxid",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_90_wallet_pickup_payment_needs_payer_number_and_trxid",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-91",
+      "requirements": [
+        "FR-34"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "cancellation before preparation refunds advance and restores stock",
+      "name": "test_TC_91_cancellation_before_preparation_refunds_advance_and_restores_stock",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_91_cancellation_before_preparation_refunds_advance_and_restores_stock",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-92",
+      "requirements": [
+        "FR-34"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot cancel once preparation has begun",
+      "name": "test_TC_92_tourist_cannot_cancel_once_preparation_has_begun",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_92_tourist_cannot_cancel_once_preparation_has_begun",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-93",
+      "requirements": [
+        "FR-34"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "refund amount follows the configured refund percentage",
+      "name": "test_TC_93_refund_amount_follows_the_configured_refund_percentage",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_93_refund_amount_follows_the_configured_refund_percentage",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-126",
+      "requirements": [
+        "FR-34"
+      ],
+      "level": "Integration",
+      "technique": "Error guessing",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "tourist cannot choose their own refund amount",
+      "name": "test_TC_126_tourist_cannot_choose_their_own_refund_amount",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_126_tourist_cannot_choose_their_own_refund_amount",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-94",
+      "requirements": [
+        "FR-34"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "cancellation needs a reason",
+      "name": "test_TC_94_cancellation_needs_a_reason",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_94_cancellation_needs_a_reason",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-95",
+      "requirements": [
+        "FR-35"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "admin updates preorder settings and they are served publicly",
+      "name": "test_TC_95_admin_updates_preorder_settings_and_they_are_served_publicly",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_95_admin_updates_preorder_settings_and_they_are_served_publicly",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-96",
+      "requirements": [
+        "FR-35"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "refund percentage outside 0 to 100 is rejected",
+      "name": "test_TC_96_refund_percentage_outside_0_to_100_is_rejected",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_96_refund_percentage_outside_0_to_100_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-97",
+      "requirements": [
+        "FR-37"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "full timeline reaches completed through every srs state",
+      "name": "test_TC_97_full_timeline_reaches_completed_through_every_srs_state",
+      "file": "tests/integration/PreorderTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_97_full_timeline_reaches_completed_through_every_srs_state",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-98",
+      "requirements": [
+        "FR-39"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "buyer reviews a purchased product",
+      "name": "test_TC_98_buyer_reviews_a_purchased_product",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_98_buyer_reviews_a_purchased_product",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-99",
+      "requirements": [
+        "FR-39"
+      ],
+      "level": "Integration",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "rating must be between 1 and 5",
+      "name": "test_TC_99_rating_must_be_between_1_and_5",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_99_rating_must_be_between_1_and_5 with data set &quot;0 (min-1)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_99_rating_must_be_between_1_and_5 with data set &quot;1 (min)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_99_rating_must_be_between_1_and_5 with data set &quot;5 (max)&quot;",
+          "file": "junit-php.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "test_TC_99_rating_must_be_between_1_and_5 with data set &quot;6 (max+1)&quot;",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 4,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-100",
+      "requirements": [
+        "FR-39"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "second review of the same item and review without purchase are refused",
+      "name": "test_TC_100_second_review_of_the_same_item_and_review_without_purchase_are_refused",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_100_second_review_of_the_same_item_and_review_without_purchase_are_refused",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-101",
+      "requirements": [
+        "FR-39"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "tourist can review a heritage place",
+      "name": "test_TC_101_tourist_can_review_a_heritage_place",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Fail",
+          "case": "test_TC_101_tourist_can_review_a_heritage_place",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Fail",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-102",
+      "requirements": [
+        "FR-40"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "average rating and count are recalculated",
+      "name": "test_TC_102_average_rating_and_count_are_recalculated",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_102_average_rating_and_count_are_recalculated",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-103",
+      "requirements": [
+        "FR-41"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "reviews are listed with user date rating and comment",
+      "name": "test_TC_103_reviews_are_listed_with_user_date_rating_and_comment",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_103_reviews_are_listed_with_user_date_rating_and_comment",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-104",
+      "requirements": [
+        "FR-42"
+      ],
+      "level": "Integration",
+      "technique": "State transition",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "notifications are created and can be marked read",
+      "name": "test_TC_104_notifications_are_created_and_can_be_marked_read",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_104_notifications_are_created_and_can_be_marked_read",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-105",
+      "requirements": [
+        "FR-42"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "user cannot mark someone elses notification",
+      "name": "test_TC_105_user_cannot_mark_someone_elses_notification",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_105_user_cannot_mark_someone_elses_notification",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-106",
+      "requirements": [
+        "FR-43"
+      ],
+      "level": "Integration",
+      "technique": "Use case",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "chat message raises unread count until read",
+      "name": "test_TC_106_chat_message_raises_unread_count_until_read",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_106_chat_message_raises_unread_count_until_read",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-107",
+      "requirements": [
+        "FR-43"
+      ],
+      "level": "Integration",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "empty message is rejected",
+      "name": "test_TC_107_empty_message_is_rejected",
+      "file": "tests/integration/ReviewsCommsTest.php",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "test_TC_107_empty_message_is_rejected",
+          "file": "junit-php.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F01",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "accepts a complete bKash proof, including +880 numbers",
+      "name": "TC-F01 accepts a complete bKash proof, including +880 numbers",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F01 accepts a complete bKash proof, including +880 numbers",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F02",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "asks for the number, then the TrxID, naming the wallet",
+      "name": "TC-F02 asks for the number, then the TrxID, naming the wallet",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F02 asks for the number, then the TrxID, naming the wallet",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F03",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "phone",
+      "name": "TC-F03 phone %s valid=%s",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F03 phone 0171234567 valid=false",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F03 phone 01712345678 valid=true",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F03 phone 017123456789 valid=false",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F03 phone 01212345678 valid=false",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F03 phone 01312345678 valid=true",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 5,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F04",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "BVA",
+      "priority": "P1",
+      "polarity": "−",
+      "title": "TrxID",
+      "name": "TC-F04 TrxID %s valid=%s",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F04 TrxID ABCDE valid=false",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F04 TrxID ABCDEF valid=true",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAA valid=true",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAAA valid=false",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F04 TrxID AB-123 valid=false",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 5,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F05",
+      "requirements": [
+        "FR-33"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "card and cash need no proof",
+      "name": "TC-F05 card and cash need no proof",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "validatePaymentProof &gt; TC-F05 card and cash need no proof",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F06",
+      "requirements": [
+        "FR-29"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "shows number and TrxID inputs with the amount only for wallets",
+      "name": "TC-F06 shows number and TrxID inputs with the amount only for wallets",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "PaymentProofFields &gt; TC-F06 shows number and TrxID inputs with the amount only for wallets",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F07",
+      "requirements": [
+        "FR-33"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "vendor view asks for the customer\\",
+      "name": "TC-F07 vendor view asks for the customer\\",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "PaymentProofFields &gt; TC-F07 vendor view asks for the customer&apos;s number and has no send instruction",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F08",
+      "requirements": [
+        "FR-23"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "labels every payment method",
+      "name": "TC-F08 labels every payment method",
+      "file": "tests/frontend/payments.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "PaymentProofFields &gt; TC-F08 labels every payment method",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F09",
+      "requirements": [
+        "FR-37"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "pre-order status",
+      "name": "TC-F09 pre-order status %s has a readable label",
+      "file": "tests/frontend/status.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status confirmed has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status advance_paid has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status vendor_accepted has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status preparing has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status ready_for_pickup has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status arrived has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status qr_verified has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status pickup_payment_pending has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status picked_up has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status completed has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status cancelled has a readable label",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F09 pre-order status refunded has a readable label",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 12,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F10",
+      "requirements": [
+        "FR-36"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "+",
+      "title": "delivery status",
+      "name": "TC-F10 delivery status %s has a readable label and colour",
+      "file": "tests/frontend/status.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status placed has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status confirmed has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status preparing has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status shipped has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status out_for_delivery has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status delivered has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status completed has a readable label and colour",
+          "file": "junit-frontend.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F10 delivery status cancelled has a readable label and colour",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 8,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F11",
+      "requirements": [
+        "FR-37"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P2",
+      "polarity": "−",
+      "title": "unknown or empty status degrades gracefully",
+      "name": "TC-F11 unknown or empty status degrades gracefully",
+      "file": "tests/frontend/status.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F11 unknown or empty status degrades gracefully",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F12",
+      "requirements": [
+        "FR-16"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "terminal states use success / danger colours",
+      "name": "TC-F12 terminal states use success / danger colours",
+      "file": "tests/frontend/status.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F12 terminal states use success / danger colours",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "TC-F13",
+      "requirements": [
+        "FR-37"
+      ],
+      "level": "Unit",
+      "technique": "EP",
+      "priority": "P3",
+      "polarity": "+",
+      "title": "badge renders the label and a custom label override",
+      "name": "TC-F13 badge renders the label and a custom label override",
+      "file": "tests/frontend/status.test.tsx",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "statusLabel &gt; TC-F13 badge renders the label and a custom label override",
+          "file": "junit-frontend.xml"
+        }
+      ],
+      "executions": 1,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "E2E-01",
+      "requirements": [
+        "FR-11",
+        "FR-12",
+        "FR-13"
+      ],
+      "level": "System",
+      "technique": "Use case",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "map shows heritage places, layer toggles and marker card links to the place",
+      "name": "E2E-01 map shows heritage places, layer toggles and marker card links to the place",
+      "file": "tests/e2e/journeys.spec.ts",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "E2E-01 map shows heritage places, layer toggles and marker card links to the place",
+          "file": "junit-e2e.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "E2E-01 map shows heritage places, layer toggles and marker card links to the place",
+          "file": "junit-e2e.xml"
+        }
+      ],
+      "executions": 2,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "E2E-02",
+      "requirements": [
+        "FR-27",
+        "FR-28",
+        "FR-29",
+        "FR-30"
+      ],
+      "level": "System",
+      "technique": "Use case",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "tourist pre-orders with bKash proof and gets an order number",
+      "name": "E2E-02 tourist pre-orders with bKash proof and gets an order number",
+      "file": "tests/e2e/journeys.spec.ts",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "E2E-02 tourist pre-orders with bKash proof and gets an order number",
+          "file": "junit-e2e.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "E2E-02 tourist pre-orders with bKash proof and gets an order number",
+          "file": "junit-e2e.xml"
+        }
+      ],
+      "executions": 2,
+      "result": "Pass",
+      "automated": "Y"
+    },
+    {
+      "id": "E2E-03",
+      "requirements": [
+        "FR-45"
+      ],
+      "level": "System",
+      "technique": "Use case",
+      "priority": "P1",
+      "polarity": "+",
+      "title": "admin sees advances with payer number and TrxID on Payments & Advances",
+      "name": "E2E-03 admin sees advances with payer number and TrxID on Payments & Advances",
+      "file": "tests/e2e/journeys.spec.ts",
+      "source": "Own",
+      "results": [
+        {
+          "status": "Pass",
+          "case": "E2E-03 admin sees advances with payer number and TrxID on Payments &amp; Advances",
+          "file": "junit-e2e.xml"
+        },
+        {
+          "status": "Pass",
+          "case": "E2E-03 admin sees advances with payer number and TrxID on Payments &amp; Advances",
+          "file": "junit-e2e.xml"
+        }
+      ],
+      "executions": 2,
+      "result": "Pass",
+      "automated": "Y"
+    }
+  ],
+  "rtm": {
+    "FR-26": [
+      "TC-U10",
+      "TC-U11",
+      "TC-U12",
+      "TC-U13",
+      "TC-78"
+    ],
+    "FR-21": [
+      "TC-U14",
+      "TC-U15",
+      "TC-49",
+      "TC-50",
+      "TC-51"
+    ],
+    "FR-29": [
+      "TC-U08",
+      "TC-U09",
+      "TC-81",
+      "TC-82",
+      "TC-83",
+      "TC-F01",
+      "TC-F02",
+      "TC-F03",
+      "TC-F04",
+      "TC-F06",
+      "E2E-02"
+    ],
+    "FR-20": [
+      "TC-U16",
+      "TC-U17",
+      "TC-U18",
+      "TC-118",
+      "TC-119",
+      "TC-64",
+      "TC-65"
+    ],
+    "FR-15": [
+      "TC-U19",
+      "TC-53",
+      "TC-54"
+    ],
+    "FR-02": [
+      "TC-U20",
+      "TC-07",
+      "TC-08",
+      "TC-09",
+      "TC-10",
+      "TC-116"
+    ],
+    "FR-30": [
+      "TC-U21",
+      "TC-84",
+      "E2E-02"
+    ],
+    "FR-28": [
+      "TC-U01",
+      "TC-U02",
+      "TC-U03",
+      "TC-U04",
+      "TC-U05",
+      "TC-U06",
+      "TC-U07",
+      "TC-80",
+      "E2E-02"
+    ],
+    "FR-49": [
+      "TC-20",
+      "TC-22",
+      "TC-23",
+      "TC-24",
+      "TC-25",
+      "TC-26",
+      "TC-27",
+      "TC-115"
+    ],
+    "FR-03": [
+      "TC-21",
+      "TC-114"
+    ],
+    "FR-04": [
+      "TC-28",
+      "TC-29",
+      "TC-30",
+      "TC-31"
+    ],
+    "FR-44": [
+      "TC-32",
+      "TC-33"
+    ],
+    "FR-45": [
+      "TC-34",
+      "TC-111",
+      "E2E-03"
+    ],
+    "FR-46": [
+      "TC-35"
+    ],
+    "FR-47": [
+      "TC-36"
+    ],
+    "FR-09": [
+      "TC-37",
+      "TC-38",
+      "TC-39",
+      "TC-124",
+      "TC-125"
+    ],
+    "FR-01": [
+      "TC-01",
+      "TC-02",
+      "TC-03",
+      "TC-04",
+      "TC-05",
+      "TC-06",
+      "TC-120"
+    ],
+    "FR-48": [
+      "TC-11",
+      "TC-12"
+    ],
+    "FR-05": [
+      "TC-13",
+      "TC-14",
+      "TC-15",
+      "TC-16"
+    ],
+    "FR-06": [
+      "TC-17",
+      "TC-18",
+      "TC-19",
+      "TC-121",
+      "TC-122"
+    ],
+    "FR-07": [
+      "TC-123",
+      "TC-40",
+      "TC-41",
+      "TC-42",
+      "TC-43",
+      "TC-44"
+    ],
+    "FR-08": [
+      "TC-45",
+      "TC-46"
+    ],
+    "FR-10": [
+      "TC-47"
+    ],
+    "FR-11": [
+      "TC-48",
+      "E2E-01"
+    ],
+    "FR-14": [
+      "TC-52"
+    ],
+    "FR-16": [
+      "TC-55",
+      "TC-56",
+      "TC-57",
+      "TC-58",
+      "TC-108",
+      "TC-109",
+      "TC-110",
+      "TC-F12"
+    ],
+    "FR-17": [
+      "TC-59"
+    ],
+    "FR-18": [
+      "TC-60",
+      "TC-61"
+    ],
+    "FR-19": [
+      "TC-62",
+      "TC-63"
+    ],
+    "FR-22": [
+      "TC-66",
+      "TC-67"
+    ],
+    "FR-23": [
+      "TC-68",
+      "TC-69",
+      "TC-F08"
+    ],
+    "FR-24": [
+      "TC-70",
+      "TC-71"
+    ],
+    "FR-36": [
+      "TC-72",
+      "TC-73",
+      "TC-74",
+      "TC-F10"
+    ],
+    "FR-38": [
+      "TC-75"
+    ],
+    "FR-50": [
+      "TC-112",
+      "TC-113"
+    ],
+    "FR-51": [
+      "TC-117"
+    ],
+    "FR-25": [
+      "TC-76",
+      "TC-77"
+    ],
+    "FR-27": [
+      "TC-79",
+      "E2E-02"
+    ],
+    "FR-31": [
+      "TC-85",
+      "TC-86"
+    ],
+    "FR-32": [
+      "TC-87",
+      "TC-88"
+    ],
+    "FR-33": [
+      "TC-89",
+      "TC-90",
+      "TC-F05",
+      "TC-F07"
+    ],
+    "FR-34": [
+      "TC-91",
+      "TC-92",
+      "TC-93",
+      "TC-126",
+      "TC-94"
+    ],
+    "FR-35": [
+      "TC-95",
+      "TC-96"
+    ],
+    "FR-37": [
+      "TC-97",
+      "TC-F09",
+      "TC-F11",
+      "TC-F13"
+    ],
+    "FR-39": [
+      "TC-98",
+      "TC-99",
+      "TC-100",
+      "TC-101"
+    ],
+    "FR-40": [
+      "TC-102"
+    ],
+    "FR-41": [
+      "TC-103"
+    ],
+    "FR-42": [
+      "TC-104",
+      "TC-105"
+    ],
+    "FR-43": [
+      "TC-106",
+      "TC-107"
+    ],
+    "FR-12": [
+      "E2E-01"
+    ],
+    "FR-13": [
+      "E2E-01"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+Target https://heritagebd-flax.vercel.app · 60 requests/endpoint · 5 concurrent · warm-up 490 ms
+
+/api/places                p50   679 ms   p95   862 ms   max   922 ms   errors 0/60
+/api/products?limit=50     p50   981 ms   p95  1103 ms   max  1392 ms   errors 0/60
+/api/guides                p50   650 ms   p95   838 ms   max   909 ms   errors 0/60
+/api/places/p1             p50   334 ms   p95   473 ms   max   541 ms   errors 0/60
+/api/events?upcoming=1     p50   298 ms   p95   389 ms   max   410 ms   errors 0/60

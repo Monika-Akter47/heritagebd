@@ -1,0 +1,142 @@
+{
+  "note": "Defect log for the Software Test Report (v1.0, tested version v1.0.1-test / 1d45c59). Not yet mirrored as GitHub Issues.",
+  "defects": [
+    {
+      "id": "DEF-07", "title": "Tourist can set any refund amount when cancelling a pre-order", "severity": "S1", "priority": "P1",
+      "foundBy": "TC-126 / Integration (error guessing)", "status": "Closed", "fix": "99d71bf", "regression": "TC-126",
+      "env": "PHP 8.2.35 API on PGlite (PostgreSQL 17), Windows 11, base commit 72586ab",
+      "steps": ["Log in as a tourist with a pre-order in vendor_accepted", "PUT /api/preorders/{id} {status: cancelled, cancellationReason: 'x', refundAmount: 99999}", "GET the pre-order"],
+      "expected": "Refund computed by the server from the configured policy (SRS §5.3: prevent unauthorised modification of payment records; FR-34)",
+      "actual": "refundAmount 99999 stored and shown as the refund",
+      "evidence": "regression-before-after.txt: 'Failed asserting that 99999 matches expected 240'",
+      "rootCause": "preorders_update copied refundAmount from any participant's request body into the row (generic field map) without a role check."
+    },
+    {
+      "id": "DEF-04", "title": "Tourist can cancel a pre-order after preparation has started", "severity": "S2", "priority": "P1",
+      "foundBy": "TC-92 / Integration (state transition)", "status": "Closed", "fix": "99d71bf", "regression": "TC-92",
+      "env": "PHP 8.2.35 API on PGlite, Windows 11, base 72586ab",
+      "steps": ["Vendor moves a pre-order to preparing", "Tourist sends status cancelled with a reason"],
+      "expected": "Refused: cancellation only before preparation begins (FR-34, SRS §4.2.6)",
+      "actual": "200 OK, pre-order cancelled and advance marked refunded",
+      "evidence": "regression-before-after.txt: TC-92 'Failed asserting that an array contains 200'",
+      "rootCause": "PREORDER_TRANSITIONS allowed cancelled from every non-final state for every participant; no tourist-specific rule."
+    },
+    {
+      "id": "DEF-05", "title": "Refund amount not calculated from the configured refund percentage", "severity": "S2", "priority": "P1",
+      "foundBy": "TC-93 / Integration (EP)", "status": "Closed", "fix": "99d71bf", "regression": "TC-93",
+      "env": "PHP 8.2.35 API on PGlite, Windows 11, base 72586ab",
+      "steps": ["Pre-order of ৳1,000 (advance ৳300), policy 80%", "Tourist cancels before preparation"],
+      "expected": "refundAmount = 80% × ৳300 = ৳240 (FR-34, SRS §4.2.6)",
+      "actual": "refundAmount null",
+      "evidence": "regression-before-after.txt: 'Failed asserting that null matches expected 240'",
+      "rootCause": "Known limitation (SRS §6.5): settings were stored but never applied on cancellation."
+    },
+    {
+      "id": "DEF-03", "title": "Rejected vendor account stays active", "severity": "S2", "priority": "P1",
+      "foundBy": "TC-29 / Integration (state transition)", "status": "Closed", "fix": "99d71bf", "regression": "TC-29",
+      "env": "PHP 8.2.35 API on PGlite, Windows 11, base 72586ab",
+      "steps": ["Register a vendor", "Admin PUT /api/admin/vendors/{id}/verify {status: rejected}", "Vendor logs in"],
+      "expected": "Login refused: rejection suspends the account (FR-04, SRS §4.5)",
+      "actual": "200 OK, vendor logged in",
+      "evidence": "regression-before-after.txt: TC-29 'Failed asserting that 200 is identical to 403'",
+      "rootCause": "admin_vendor_verify always set status = 'active'; the guide version set 'suspended' on rejection."
+    },
+    {
+      "id": "DEF-13", "title": "Reporting a guide payment fails on PostgreSQL", "severity": "S2", "priority": "P1",
+      "foundBy": "Code review while building the guide cash flow", "status": "Closed", "fix": "8bf0f55", "regression": "TC-108",
+      "env": "Production: Render API + Supabase PostgreSQL",
+      "steps": ["Tourist reports a cash payment for a finished tour (POST /api/guide-payments)"],
+      "expected": "201 Created, payment reported (FR-16)",
+      "actual": "500: INSERT used the double-quoted \"reported\", which PostgreSQL reads as a column name",
+      "evidence": "TC-108 passes on PostgreSQL",
+      "rootCause": "MySQL-only SQL (double-quoted string literal) missed in the PostgreSQL migration."
+    },
+    {
+      "id": "DEF-14", "title": "Bengali names shown as garbled text (mojibake)", "severity": "S2", "priority": "P1",
+      "foundBy": "User report; data scan of the live API", "status": "Closed", "fix": "data fix on Supabase (79 values) + 8bf0f55 (fonts, dump command)", "regression": "TC-123",
+      "env": "Production (Supabase data), all browsers",
+      "steps": ["Open a place or local food page"],
+      "expected": "Bangla names readable (SRS §5.4: Bangla-capable storage)",
+      "actual": "'αª¼αªù…' instead of 'বগুড়ার দই'",
+      "evidence": "Scan of 79 live items: 0 garbled after fix; TC-123 asserts Bengali script",
+      "rootCause": "The XAMPP dump was written through the Windows console (code page 437)."
+    },
+    {
+      "id": "DEF-02", "title": "PHP warnings leak into API responses", "severity": "S3", "priority": "P2",
+      "foundBy": "TC-16 / Integration (EP)", "status": "Closed", "fix": "99d71bf", "regression": "TC-16",
+      "env": "PHP 8.2.35 with display_errors=On (php.ini-development / XAMPP), Windows 11",
+      "steps": ["POST /api/auth/forgot-password with a registered e-mail while no mail server is reachable"],
+      "expected": "Same JSON message as for an unknown e-mail; no server details (OWASP misconfiguration)",
+      "actual": "HTML warning with the server path printed before the JSON; reveals which e-mails are registered",
+      "evidence": "regression-before-after.txt: TC-16 'two strings are identical' failure",
+      "rootCause": "The API relied on php.ini to hide errors (production image happens to hide them)."
+    },
+    {
+      "id": "DEF-06", "title": "Pre-order settings accept out-of-range values", "severity": "S3", "priority": "P2",
+      "foundBy": "TC-96 / Integration (BVA)", "status": "Closed", "fix": "99d71bf", "regression": "TC-96",
+      "env": "PHP 8.2.35 API on PGlite, Windows 11, base 72586ab",
+      "steps": ["Admin PUT /api/preorders/settings {advanceRefundPercent: 101}"],
+      "expected": "422 (refund percentage 0–100, FR-35)",
+      "actual": "200, stored",
+      "evidence": "regression-before-after.txt: TC-96",
+      "rootCause": "No server-side validation of the settings form."
+    },
+    {
+      "id": "DEF-01", "title": "API smoke test out of date after required payment proof", "severity": "S3", "priority": "P2",
+      "foundBy": "backend/tests/api_smoke.php (existing suite)", "status": "Closed", "fix": "99d71bf", "regression": "api_smoke.php 'create pre-order'",
+      "env": "Local PHP 8.2 API on PGlite",
+      "steps": ["php backend/tests/api_smoke.php <api>"],
+      "expected": "121 passed", "actual": "10 failed: pre-order creation 422 (payer number required)",
+      "evidence": "Smoke run 111/121 → 121/121", "rootCause": "Test not updated with the API change in 8bf0f55."
+    },
+    {
+      "id": "DEF-09", "title": "Place reviews cannot be submitted", "severity": "S2", "priority": "P2",
+      "foundBy": "TC-101 / Integration (EP)", "status": "Open (deferred)", "fix": "", "regression": "TC-101",
+      "env": "PHP 8.2.35 API on PGlite; also production", "steps": ["Tourist POST /api/reviews {targetType: place, targetId: p1, rating: 5, content}"],
+      "expected": "201 (FR-39: reviews for places, products and guides)", "actual": "422 'Place reviews require a verified visit record, which is not supported yet.'",
+      "evidence": "junit-php.xml TC-101", "rootCause": "Design choice to require a visit record that does not exist yet."
+    },
+    {
+      "id": "DEF-08", "title": "No tracking number or automatic 5-day delivery estimate", "severity": "S3", "priority": "P3",
+      "foundBy": "TC-74 / Integration (EP)", "status": "Open (deferred)", "fix": "", "regression": "TC-74",
+      "env": "PHP 8.2.35 API on PGlite; also production", "steps": ["Tourist checks out a delivery order"],
+      "expected": "Tracking number and estimated delivery = placement + 5 days (SRS §4.4, FR-36)", "actual": "trackingNumber null; estimatedDelivery null until the vendor sets it",
+      "evidence": "junit-php.xml TC-74", "rootCause": "Implementation changed to vendor-set delivery dates; SRS not updated."
+    },
+    {
+      "id": "DEF-10", "title": "No audit log of user and payment events", "severity": "S3", "priority": "P3",
+      "foundBy": "TC-113 / Integration (EP)", "status": "Open (deferred)", "fix": "", "regression": "TC-113",
+      "env": "Schema v1.0.1-test", "steps": ["Inspect the database schema"],
+      "expected": "Audit/activity log (FR-50)", "actual": "Only failed logins are recorded (auth_attempts)",
+      "evidence": "junit-php.xml TC-113", "rootCause": "Not implemented (SRS §6.5)."
+    },
+    {
+      "id": "DEF-11", "title": "Accessibility: low contrast, unnamed icon buttons/links, unlabelled selects", "severity": "S3", "priority": "P2",
+      "foundBy": "Lighthouse 12.8.2 (tool)", "status": "Open", "fix": "", "regression": "Lighthouse re-run",
+      "env": "Production site, Edge 155 headless", "steps": ["Run Lighthouse accessibility on the six key pages"],
+      "expected": "No failing WCAG 2.2 AA audits", "actual": "color-contrast, button-name, link-name, select-name, heading-order, target-size",
+      "evidence": "evidence/lighthouse/*.report.html", "rootCause": "Icon-only controls without aria-label; muted text colours below 4.5:1."
+    },
+    {
+      "id": "DEF-15", "title": "API accepts requests from any origin (CORS *)", "severity": "S3", "priority": "P2",
+      "foundBy": "SEC-02 / manual security check", "status": "Open", "fix": "Set CORS_ORIGIN=https://heritagebd-flax.vercel.app on Render (configuration only)", "regression": "SEC-02",
+      "env": "Production API (Render)", "steps": ["curl -H 'Origin: https://evil.example' https://heritagebd-api.onrender.com/api/places"],
+      "expected": "CORS restricted to the production frontend (SRS §5.3)", "actual": "access-control-allow-origin: *",
+      "evidence": "evidence/security-transport.txt", "rootCause": "CORS_ORIGIN not set on Render; the code defaults to * (SRS §6.5)."
+    },
+    {
+      "id": "DEF-16", "title": "No clickjacking / MIME-sniffing / CSP headers on the site", "severity": "S4", "priority": "P3",
+      "foundBy": "SEC-01 / manual security check", "status": "Open", "fix": "", "regression": "SEC-01",
+      "env": "Production site (Vercel)", "steps": ["curl -I https://heritagebd-flax.vercel.app/"],
+      "expected": "X-Frame-Options or CSP frame-ancestors, X-Content-Type-Options: nosniff (OWASP security misconfiguration)", "actual": "Only Strict-Transport-Security is sent",
+      "evidence": "evidence/security-transport.txt", "rootCause": "No headers block in vercel.json."
+    },
+    {
+      "id": "DEF-12", "title": "API returns 502 for about a minute after each deploy", "severity": "S3", "priority": "P3",
+      "foundBy": "Performance run (p95.mjs)", "status": "Open", "fix": "", "regression": "p95.mjs (errors = 0)",
+      "env": "Production: Vercel /api proxy → Render free plan", "steps": ["Push to main", "Request /api/places during the Render deploy"],
+      "expected": "No failed requests", "actual": "502 Bad Gateway for every request for ~1 minute",
+      "evidence": "First p95 run: 300/300 errors; re-run after deploy: 0/300", "rootCause": "Render free plan has no zero-downtime deploy for this service."
+    }
+  ]
+}

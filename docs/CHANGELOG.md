@@ -3,7 +3,27 @@
 All notable changes to HeritageBD. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); dates are YYYY-MM-DD.
 
-## [Unreleased] — 2026-10-26: Test suite and fixes from testing
+## 2026-10-27: Durable uploads, pickup codes, verification alerts
+
+### Fixed
+
+- **Uploaded files vanished after every deploy** ("file missing on server" in the Verification Center).
+  Render's disk is wiped on deploy, so uploads (documents, product and profile photos) are now also stored
+  in the new `stored_files` table and served from there when the disk copy is gone. Files lost before this
+  fix must be uploaded again; `backend/tools/restore_documents.php` copies any that still exist locally.
+- Vendors could not verify a pickup: they had to type the full QR text exactly. Tourists now see an
+  8-character **pickup code** under the QR; vendors enter the order number and that code (case and spaces
+  ignored), also from `ready_for_pickup`.
+- Admins got no notification when a guide or vendor submitted for verification; they now do, with a link
+  to the Verification Center.
+- The Verification Center showed "0 files" and "no documents"; it now lists the uploaded documents with
+  View buttons, plus NID, licence number and certifications.
+
+### Added
+
+- Tests TC-127 (pickup code), TC-128 (admin notified), TC-129 (documents survive a wiped disk).
+
+## 2026-10-26: Test suite and fixes from testing
 
 ### Added
 

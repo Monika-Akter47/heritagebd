@@ -47,6 +47,9 @@ vendor/
 # Test run output
 coverage/
 .phpunit.cache/
+# Generated reports (Word and PDF) stay local
+docs/**/*.docx
+docs/**/*.pdf
 # Playwright output (the HTML report and JUnit go to docs/testing/evidence)
 test-results/
 playwright-report/

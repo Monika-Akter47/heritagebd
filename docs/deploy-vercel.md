@@ -137,7 +137,7 @@ Preview URLs will then be blocked by CORS.)
 | `/api/...` returns the website's HTML | The `/api` rewrite must come **before** the SPA rule in `vercel.json` |
 | CORS error in the browser console | Calling Render directly without `CORS_ORIGIN`; use the rewrite instead |
 | First request very slow | Render free plan waking from sleep |
-| Uploaded photos vanish | Free-plan disk is ephemeral; add a persistent disk |
+| "File missing on server" for an old upload | Free-plan disk is wiped on deploy. Uploads since 2026-10-27 are kept in `stored_files`; older ones must be re-uploaded or restored with `backend/tools/restore_documents.php` |
 | Password-reset email never arrives | The container has no mail transport for PHP `mail()`; configure SMTP first |
 
 ## Keeping MySQL and PostgreSQL in step

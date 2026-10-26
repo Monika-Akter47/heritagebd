@@ -129,6 +129,12 @@ Files live in `heritagebd-data/uploads/{products,profiles,private}` inside the p
 adds `VITE_API_URL`. An older sibling folder (`../heritagebd-data/uploads`) is still read as a
 fallback, but new files are written to the project folder only.
 
+Every upload is also written to `stored_files` (`kind` = `document`/`product`/`profile`, `name`, `mime_type`,
+`data BYTEA`), because the Render disk is wiped on each deploy. The API serves the disk copy when it exists
+and falls back to the database. On Supabase the table was added with `postgres/002_stored_files.sql`. To
+put documents that only exist locally back into the database, run
+`DATABASE_URL=... php backend/tools/restore_documents.php heritagebd-data/uploads/private`.
+
 Also, for databases created before reset codes were hashed:
 `ALTER TABLE password_resets MODIFY otp_code VARCHAR(255) NOT NULL;`
 

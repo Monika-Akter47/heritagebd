@@ -203,7 +203,8 @@ error log and a generic message is returned (no SQL/PHP details are exposed).
 The suite never touches a real database: it starts an in-memory PostgreSQL (PGlite) seeded from
 `backend/database/postgres/`, the PHP API on it, and (for E2E) the Vite dev server. Needs PHP 8.2 with
 `pdo_pgsql`, `curl` and `mbstring` (plus Xdebug for coverage), Node 22, and Microsoft Edge for E2E.
-The full report is [docs/testing/Test_Report.pdf](docs/testing/Test_Report.pdf).
+The full Software Test Report (Word and PDF) is kept outside the repository; the evidence it cites is in
+[docs/testing/evidence/](docs/testing/evidence/).
 
 ```bash
 git clone https://github.com/Monika-Akter47/heritagebd.git && cd heritagebd

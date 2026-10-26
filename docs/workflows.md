@@ -28,7 +28,7 @@ be cancelled. `refunded` is defined but currently unreachable (see known issues)
 |---|---|---|
 | `vendor_accepted`, `preparing`, `ready_for_pickup` | vendor, admin | |
 | `arrived` | tourist, vendor, admin | Tourist taps "I've arrived", or the vendor marks it at the counter |
-| `qr_verified` | vendor, admin | `qrCode` must match (`hash_equals`); vendor types the code, there is no camera scanner |
+| `qr_verified` | vendor, admin | Vendor enters the order number and the tourist's 8-character pickup code (last 8 letters/digits of `qrCode`; case, spaces and dashes ignored) or the full QR text. Allowed from `ready_for_pickup` (marked `arrived` first) or `arrived`; there is no camera scanner |
 | `pickup_payment_pending` | vendor, admin | |
 | `picked_up` | vendor, admin | Needs `pickupPaymentMethod` (`bkash`/`nagad`/`card`/`cash`); zeroes `remaining_amount` |
 | `completed` | vendor, admin | Runs `settle_preorder()` |
@@ -79,7 +79,8 @@ Sequence diagram: [diagrams.md §12](diagrams.md#12-local-foods-and-products-by-
 
 1. Vendor/guide registers → `users.status = pending`, profile `verification_status = pending`.
 2. Completes onboarding (`/onboarding/vendor|guide`) and uploads documents (`POST /documents`).
-3. Admin reviews documents and calls `/admin/vendors|guides/{id}/verify`.
+   Submitting the profile sends every admin a "Guide/Vendor verification request" notification.
+3. Admin reviews documents in **Admin → Verification Center** and calls `/admin/vendors|guides/{id}/verify`.
 4. Only verified, active partners appear publicly or receive orders/bookings.
 
 ## Payments

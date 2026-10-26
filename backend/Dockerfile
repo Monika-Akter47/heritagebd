@@ -17,8 +17,8 @@ COPY backend/ /var/www/html/
 # Uploads live outside the web root. The product/profile images committed to git
 # (the database points at them) are baked into the image, so they survive restarts.
 # Files uploaded after deploy go to the same folder; on Render's free tier that disk
-# is ephemeral, so those disappear on restart/redeploy unless a persistent disk is
-# mounted at this path.
+# is wiped on restart/redeploy, so every upload is also stored in the database
+# (stored_files) and served from there when the file is gone.
 ENV HERITAGE_UPLOAD_DIR=/var/heritagebd-uploads
 COPY heritagebd-data/uploads/products/ /var/heritagebd-uploads/products/
 COPY heritagebd-data/uploads/profiles/ /var/heritagebd-uploads/profiles/

@@ -9,7 +9,7 @@
 // docs/testing/evidence/: junit.xml, and with --coverage the merged HTML/Clover/text reports.
 
 import { spawn } from 'node:child_process';
-import { mkdirSync, rmSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, rmSync, readdirSync, writeFileSync, existsSync, openSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import net from 'node:net';
@@ -63,7 +63,9 @@ if (suite !== 'unit') {
   const router = coverage ? 'tests/support/coverage-router.php' : 'backend/index.php';
   const apiArgs = ['-S', `127.0.0.1:${apiPort}`, '-t', 'backend', router];
   const api = spawn(php, apiArgs, {
-    cwd: root, stdio: ['ignore', 'ignore', 'pipe'],
+    // The server logs every request to stderr; it must go to a file, since an unread pipe fills up and
+    // blocks the server mid-run.
+    cwd: root, stdio: ['ignore', 'ignore', (mkdirSync(join(root, 'coverage'), { recursive: true }), openSync(join(root, 'coverage', 'api-server.log'), 'w'))],
     env: { ...process.env, DATABASE_URL: dbUrl, DB_SSLMODE: 'disable', APP_TIMEZONE: 'Asia/Dhaka',
            HERITAGE_UPLOAD_DIR: join(root, 'coverage', 'uploads'),
            ...(coverage ? { XDEBUG_MODE: 'coverage', HERITAGE_COVERAGE_DIR: covDir } : {}) },

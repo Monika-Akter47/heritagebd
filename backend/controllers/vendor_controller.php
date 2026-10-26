@@ -86,5 +86,6 @@ function vendor_profile_update(PDO $pdo): void {
         throw $error;
     }
 
+    notify_admins($pdo, 'Vendor verification request', "{$user['name']} submitted shop details for verification.", 'system', '/admin?section=verification');
     vendor_profile_show($pdo);
 }

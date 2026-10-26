@@ -178,6 +178,20 @@ final class PreorderTest extends ApiTestCase
         $this->assertContains($again['code'], [409, 422]);
     }
 
+    /** TC-127 | FR-32 | Integration | EP | P1 | + */
+    public function test_TC_127_vendor_can_verify_with_the_short_pickup_code_the_tourist_sees(): void
+    {
+        [$po, $vendor, $tourist] = $this->preorderAt('ready_for_pickup');
+        $code = $this->call('GET', "/preorders/{$po['id']}", null, $tourist)['data']['pickupCode'];
+        $this->assertMatchesRegularExpression('/^[A-Z0-9]{8}$/', $code);
+        $this->assertArrayNotHasKey('pickupCode', $this->call('GET', "/preorders/{$po['id']}", null, $vendor)['data']);
+
+        $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'arrived'], $vendor);
+        // typed by hand: lower case with a space in the middle
+        $typed = strtolower(substr($code, 0, 4) . ' ' . substr($code, 4));
+        $this->assertStatus(200, $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'qr_verified', 'qrCode' => $typed], $vendor));
+    }
+
     /** TC-89 | FR-33 | Integration | State transition | P1 | + */
     public function test_TC_89_remaining_payment_by_bkash_is_recorded_and_tourist_confirms_receipt(): void
     {

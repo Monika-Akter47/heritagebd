@@ -54,7 +54,24 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
 
   const { data: rawVendors, loading: vendorsLoading, error: vendorsError, setData: setRawVendors } = useApiData(() => adminApi.allVendors(), [] as any[]);
   const { data: rawGuides, loading: guidesLoading, error: guidesError, setData: setRawGuides } = useApiData(() => adminApi.guides(), [] as any[]);
-  const loading = vendorsLoading || guidesLoading;
+  // Files uploaded with the application (Submitted Documents), counted per applicant.
+  const { data: uploadedDocs, loading: docsLoading } = useApiData(() => adminApi.documents(), [] as any[]);
+  const docsOf = (userId: string) => uploadedDocs.filter((d: any) => d.userId === userId);
+  const [openingDoc, setOpeningDoc] = useState<string | null>(null);
+  async function openDocument(doc: any) {
+    setOpeningDoc(doc.id);
+    setActionError('');
+    try {
+      const url = URL.createObjectURL(await adminApi.downloadDocument(doc.id));
+      window.open(url, '_blank', 'noopener');
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not open this document.');
+    } finally {
+      setOpeningDoc(null);
+    }
+  }
+  const loading = vendorsLoading || guidesLoading || docsLoading;
 
   const applicants = [
     ...rawVendors.map((v: any) => ({
@@ -64,11 +81,12 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
       categories: Array.isArray(v.productCategories) ? v.productCategories.join(', ') : '',
       pickupLocation: v.pickupLocation,
       nidNumber: v.nidNumber, tradeLicense: v.tradeLicense,
-      submitted: (v.createdAt || '').slice(0, 10), status: v.verificationStatus, docs: [v.nidNumber, v.tradeLicense].filter(Boolean).length,
+      submitted: (v.createdAt || '').slice(0, 10), status: v.verificationStatus, docs: docsOf(v.id).length,
     })),
     ...rawGuides.map((g: any) => ({
       id: g.id, name: g.name, avatar: g.profileImage || g.avatar, type: 'guide' as const, area: g.location,
-      submitted: (g.createdAt || '').slice(0, 10), status: g.verificationStatus, docs: (g.certifications || []).length,
+      submitted: (g.createdAt || '').slice(0, 10), status: g.verificationStatus, docs: docsOf(g.id).length,
+      nidNumber: g.nidNumber, guideLicense: g.guideLicense, certifications: g.certifications || [],
     })),
   ];
 
@@ -189,10 +207,8 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
                   </div>
                 ))}
                 <div className="flex justify-between">
-                  <span style={{ color: 'var(--color-text-muted)' }}>{selected.type === 'vendor' ? 'Document references' : 'Documents'}</span>
-                  <span className="font-medium" style={{ color: 'var(--color-text)' }}>
-                    {selected.docs} {selected.type === 'vendor' ? 'provided' : 'uploaded'}
-                  </span>
+                  <span style={{ color: 'var(--color-text-muted)' }}>Documents</span>
+                  <span className="font-medium" style={{ color: 'var(--color-text)' }}>{selected.docs} uploaded</span>
                 </div>
               </div>
             </div>
@@ -201,30 +217,34 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
               <h4 className="font-bold text-sm mb-3" style={{ color: 'var(--color-text)' }}>
                 Submitted Documents
               </h4>
-              {selected.type === 'vendor' ? (
-                <>
-                  {[
-                    ['National ID (NID)', selected.nidNumber],
-                    ['Trade License', selected.tradeLicense],
-                  ].filter(([, value]) => value).map(([label, value]) => (
-                    <div key={label} className="flex justify-between gap-4 py-2 border-b last:border-b-0 text-sm" style={{ borderColor: 'var(--color-border)' }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>{label}</span>
-                      <span className="font-medium text-right" style={{ color: 'var(--color-text)' }}>{value}</span>
-                    </div>
-                  ))}
-                  {selected.docs === 0 && <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>No document references provided.</p>}
-                </>
-              ) : (
-                <>
-                  {selected.docs > 0 && <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                    {selected.docs} certification record(s) on the guide profile.
-                  </p>}
-                  {selected.docs === 0 && <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>No documents on file yet.</p>}
-                </>
-              )}
+              {docsOf(selected.id).length === 0 && <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>No files uploaded yet.</p>}
+              {docsOf(selected.id).map((doc: any) => (
+                <div key={doc.id} className="flex items-center justify-between gap-3 py-2 border-b last:border-b-0 text-sm" style={{ borderColor: 'var(--color-border)' }}>
+                  <div className="min-w-0">
+                    <p className="font-medium capitalize" style={{ color: 'var(--color-text)' }}>{String(doc.documentType).replace(/_/g, ' ')}</p>
+                    <p className="truncate text-xs" style={{ color: 'var(--color-text-muted)' }}>{doc.fileName} · {(doc.createdAt || '').slice(0, 10)}</p>
+                  </div>
+                  {doc.fileAvailable
+                    ? <button type="button" disabled={openingDoc === doc.id} onClick={() => void openDocument(doc)}
+                        className="shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold disabled:opacity-50" style={{ borderColor: 'var(--color-border)' }}>
+                        {openingDoc === doc.id ? 'Opening…' : 'View'}
+                      </button>
+                    : <span className="shrink-0 text-xs text-red-600">File missing on server</span>}
+                </div>
+              ))}
+              {[
+                ['NID number', selected.nidNumber],
+                [selected.type === 'vendor' ? 'Trade license no.' : 'Guide license no.', selected.type === 'vendor' ? selected.tradeLicense : selected.guideLicense],
+                ...(selected.type === 'guide' && selected.certifications?.length ? [['Certifications', selected.certifications.join(', ')]] : []),
+              ].filter(([, value]) => value).map(([label, value]) => (
+                <div key={label} className="mt-2 flex justify-between gap-4 text-xs">
+                  <span style={{ color: 'var(--color-text-muted)' }}>{label}</span>
+                  <span className="font-medium text-right" style={{ color: 'var(--color-text)' }}>{value}</span>
+                </div>
+              ))}
               <button type="button" onClick={() => onOpenDocuments(selected.id)}
                 className="mt-3 rounded-lg border border-[#006A4E] px-3 py-2 text-xs font-semibold text-[#006A4E] hover:bg-[#006A4E]/5">
-                View uploaded files
+                Open in Submitted Documents
               </button>
             </div>
           </div>
@@ -336,7 +356,7 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
                 </td>
                 <td className="px-4 py-3 text-xs" style={{ color: 'var(--color-text-muted)' }}>{a.submitted}</td>
                 <td className="px-4 py-3 text-xs" style={{ color: 'var(--color-text-muted)' }}>
-                  {a.docs} {a.type === 'vendor' ? 'details' : 'files'}
+                  {a.docs} {a.docs === 1 ? 'file' : 'files'}
                 </td>
                 <td className="px-4 py-3">
                   <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold capitalize"
@@ -370,7 +390,7 @@ export default function AdminDashboard() {
   const [searchParams] = useSearchParams();
   const initialSection = searchParams.get('section');
   const [activeSection, setActiveSection] = useState(
-    initialSection === 'orders' || initialSection === 'documents' || initialSection === 'payments' ? initialSection : 'dashboard',
+    ['orders', 'documents', 'payments', 'verification'].includes(initialSection ?? '') ? initialSection! : 'dashboard',
   );
   const [documentsUserId, setDocumentsUserId] = useState<string | undefined>();
   const [sidebarOpen, setSidebarOpen] = useState(false);

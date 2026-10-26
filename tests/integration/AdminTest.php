@@ -20,6 +20,23 @@ final class AdminTest extends ApiTestCase
         $this->assertContains('Verification update', $titles);
     }
 
+    /** TC-128 | FR-04 | Integration | Use case | P1 | + */
+    public function test_TC_128_admin_is_notified_when_a_guide_or_vendor_submits_for_verification(): void
+    {
+        $admin = $this->login(self::ADMIN);
+        [$guideToken, $guide] = $this->register('guide');
+        [$vendorToken] = $this->register('vendor', ['shopName' => 'Notify Shop']);
+
+        $this->assertStatus(200, $this->call('PUT', "/guides/{$guide['id']}", ['bio' => 'Old Dhaka walks', 'location' => 'Dhaka', 'pricePerDay' => 2500,
+            'tourTypes' => [['name' => 'Walk', 'duration' => '1 day', 'price' => 2500]]], $guideToken));
+        $this->assertStatus(200, $this->call('PUT', '/vendor/profile', ['shopName' => 'Notify Shop', 'businessType' => 'Food', 'businessAddress' => 'Dhaka',
+            'location' => 'Dhaka', 'shopDescription' => 'Pitha', 'pickupLocation' => 'Lalbagh', 'productCategories' => ['Handicrafts']], $vendorToken));
+
+        $titles = array_column($this->call('GET', '/notifications', null, $admin)['data'], 'title');
+        $this->assertContains('Guide verification request', $titles);
+        $this->assertContains('Vendor verification request', $titles);
+    }
+
     /** TC-29 | FR-04 | Integration | State transition | P1 | − */
     public function test_TC_29_rejecting_a_pending_vendor_suspends_the_account(): void
     {

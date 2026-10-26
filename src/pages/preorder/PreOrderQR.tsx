@@ -62,7 +62,15 @@ export default function PreOrderQR() {
             </div>
           </div>
 
-          <p className="mt-4 text-xs tracking-widest font-mono" style={{ color: 'var(--color-text-muted)' }}>{order.qrCode}</p>
+          {order.pickupCode && (
+            <div className="mt-5 text-center">
+              <p className="text-xs font-semibold uppercase" style={{ color: 'var(--color-text-muted)' }}>Pickup code</p>
+              <p className="mt-1 font-mono text-3xl font-bold tracking-[0.3em]" style={{ color: 'var(--color-text)' }}>
+                {order.pickupCode.slice(0, 4)} {order.pickupCode.slice(4)}
+              </p>
+              <p className="mt-1 text-xs" style={{ color: 'var(--color-text-muted)' }}>Tell the vendor this code if they can't scan the QR.</p>
+            </div>
+          )}
         </div>
 
         {/* Order details */}

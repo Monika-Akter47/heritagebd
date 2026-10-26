@@ -181,5 +181,14 @@ function guides_update(PDO $pdo, string $id): void {
         throw $e;
     }
 
+    // A pending guide saving their profile (the onboarding "submit") is a verification request.
+    if ($user['id'] === $id && isset($d['bio'])) {
+        $status = $pdo->prepare('SELECT verification_status FROM guides WHERE user_id = ?');
+        $status->execute([$id]);
+        if ($status->fetchColumn() === 'pending') {
+            notify_admins($pdo, 'Guide verification request', "{$user['name']} submitted a guide profile for verification.", 'system', '/admin?section=verification');
+        }
+    }
+
     guides_show($pdo, $id);
 }

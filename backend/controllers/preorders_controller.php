@@ -18,8 +18,16 @@ function preorder_hydrate(array $row, bool $includeQrCode = false): array {
         'preparationTime' => $row['preparation_time'], 'notes' => $row['notes'],
         'cancellationReason' => $row['cancellation_reason'], 'refundAmount' => $row['refund_amount'] !== null ? (float)$row['refund_amount'] : null,
     ];
-    if ($includeQrCode) $order['qrCode'] = $row['qr_code'];
+    if ($includeQrCode) {
+        $order['qrCode'] = $row['qr_code'];
+        $order['pickupCode'] = preorder_pickup_code($row['qr_code']);
+    }
     return $order;
+}
+
+/** Short code the tourist reads out at pickup: the last 8 characters of the QR text, upper-case. */
+function preorder_pickup_code(string $qrCode): string {
+    return strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $qrCode), -8));
 }
 
 function preorder_select_sql(): string {
@@ -285,9 +293,13 @@ function preorders_update(PDO $pdo, string $id): void {
         }
 
         // QR must actually match before we allow verification.
+        // The tourist shows either the full QR text or the short pickup code (its last 8 characters);
+        // vendors never receive the code, so typing it proves the tourist is present.
         if ($newStatus === 'qr_verified') {
-            if (empty($d['qrCode']) || !hash_equals($existing['qr_code'], (string)$d['qrCode'])) {
-                json_error('Invalid or missing QR code.', 422);
+            $given = strtoupper(preg_replace('/[\s-]+/', '', (string)($d['qrCode'] ?? '')));
+            $full = strtoupper(preg_replace('/[\s-]+/', '', $existing['qr_code']));
+            if ($given === '' || (!hash_equals($full, $given) && !hash_equals(preorder_pickup_code($existing['qr_code']), $given))) {
+                json_error('That code does not match this order. Ask the tourist for the 8-character pickup code on their QR screen.', 422);
             }
         }
 

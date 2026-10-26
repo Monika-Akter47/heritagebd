@@ -46,6 +46,7 @@ export default function VendorDashboard() {
   const [selectedPreOrder, setSelectedPreOrder] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [scanOrderId, setScanOrderId] = useState('');
+  const [scanCode, setScanCode] = useState('');
   const [scanError, setScanError] = useState('');
   const [deliveryDates, setDeliveryDates] = useState<Record<string, string>>({});
 
@@ -67,16 +68,21 @@ export default function VendorDashboard() {
     }
   }
 
-  async function handleScanVerify(order: PreOrder) {
+  async function handleScanVerify(order: PreOrder, typedCode?: string) {
     setScanError('');
-    const code = window.prompt(`Enter/scan the QR code shown by ${order.touristName}:`, '');
+    const code = typedCode ?? window.prompt(`Enter the 8-character pickup code on ${order.touristName}'s QR screen:`, '');
     if (!code) return;
     setUpdatingId(order.id);
     try {
+      // The tourist is at the counter, so record arrival first if they did not tap "I've arrived".
+      if (order.status === 'ready_for_pickup') await preordersApi.update(order.id, { status: 'arrived' });
       await preordersApi.update(order.id, { status: 'qr_verified', qrCode: code });
       await refetchPreOrders();
     } catch (e: any) {
-      setScanError(e?.message || 'QR code did not match this order.');
+      const message = e?.message || 'The code did not match this order.';
+      setScanError(message);
+      if (typedCode === undefined) window.alert(message);
+      await refetchPreOrders();
     } finally {
       setUpdatingId(null);
     }
@@ -783,23 +789,36 @@ export default function VendorDashboard() {
                 <QrCode size={20} style={{ color: 'var(--color-primary)' }} /> Verify a Pickup QR Code
               </h3>
               <p className="text-xs mb-3" style={{ color: 'var(--color-text-muted)' }}>
-                This project doesn't include a camera-based scanner — type or paste the code the tourist shows you instead.
-                Find the order below once it reaches "Tourist Has Arrived" and use "Verify QR Code" on that card.
+                Ask the tourist for their order number and the 8-character pickup code shown under their QR code.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   value={scanOrderId}
                   onChange={e => setScanOrderId(e.target.value)}
-                  placeholder="Order ID (e.g. po_xxxxxxxx)"
+                  placeholder="Order number, e.g. HB261026C6A3A"
                   className="flex-1 px-4 py-2.5 rounded-xl border text-sm"
+                  style={{ borderColor: 'var(--color-border)' }}
+                />
+                <input
+                  value={scanCode}
+                  onChange={e => setScanCode(e.target.value)}
+                  placeholder="Pickup code"
+                  className="sm:w-40 px-4 py-2.5 rounded-xl border text-sm font-mono uppercase"
                   style={{ borderColor: 'var(--color-border)' }}
                 />
                 <button
                   onClick={() => {
-                    const order = vendorPreOrders.find(o => o.id === scanOrderId);
-                    if (!order) { setScanError('No pre-order found with that ID.'); return; }
-                    if (order.status !== 'arrived') { setScanError(`This order is currently "${order.status}" — it must reach "arrived" before QR verification.`); return; }
-                    handleScanVerify(order);
+                    const wanted = scanOrderId.trim().replace(/^#/, '').toUpperCase();
+                    const order = vendorPreOrders.find(o => o.orderNumber.toUpperCase() === wanted || o.id.toUpperCase() === wanted);
+                    if (!order) { setScanError('No pre-order of yours has that order number.'); return; }
+                    if (!['ready_for_pickup', 'arrived'].includes(order.status)) {
+                      setScanError(order.status === 'qr_verified' || order.status === 'pickup_payment_pending' || order.status === 'picked_up' || order.status === 'completed'
+                        ? 'This order was already verified.'
+                        : 'Mark the order as ready for pickup before verifying it.');
+                      return;
+                    }
+                    if (!scanCode.trim()) { setScanError('Enter the pickup code.'); return; }
+                    void handleScanVerify(order, scanCode).then(() => { setScanCode(''); });
                   }}
                   className="px-5 py-2.5 rounded-xl font-semibold text-sm text-white transition-colors hover:opacity-90"
                   style={{ background: 'var(--color-primary)' }}

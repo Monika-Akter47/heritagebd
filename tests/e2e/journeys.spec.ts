@@ -16,9 +16,14 @@ async function login(page: Page, email: string, role: 'tourist' | 'vendor' | 'gu
 
 // E2E-01 | FR-11, FR-12, FR-13 | System | Use case | P1 | +
 test('E2E-01 map shows heritage places, layer toggles and marker card links to the place', async ({ page }) => {
+  // Places and guides load separately; count only once both API calls have finished.
+  const placesLoaded = page.waitForResponse(r => r.url().includes('/api/places') && r.ok());
+  const guidesLoaded = page.waitForResponse(r => r.url().includes('/api/guides') && r.ok());
   await page.goto('/map');
+  await Promise.all([placesLoaded, guidesLoaded]);
   await expect(page.locator('.leaflet-container')).toBeVisible();
   await expect(page.locator('.leaflet-marker-icon').first()).toBeVisible({ timeout: 20_000 });
+  await page.waitForLoadState('networkidle');
   const withPlaces = await page.locator('.leaflet-marker-icon').count();
   expect(withPlaces).toBeGreaterThanOrEqual(12);                      // 12 seed places (FR-11)
 

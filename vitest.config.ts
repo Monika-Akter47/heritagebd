@@ -12,7 +12,8 @@ export default defineConfig({
     outputFile: { junit: 'docs/testing/evidence/junit-frontend.xml' },
     coverage: {
       provider: 'v8',
-      include: ['src/components/ui/PaymentProofFields.tsx', 'src/components/ui/StatusBadge.tsx', 'src/services/api.ts'],
+      // The unit-tested UI modules; pages are covered by the Playwright journeys instead.
+      include: ['src/components/ui/PaymentProofFields.tsx', 'src/components/ui/StatusBadge.tsx'],
       reporter: ['text', 'html', 'json-summary'],
       reportsDirectory: 'docs/testing/evidence/coverage-frontend',
     },

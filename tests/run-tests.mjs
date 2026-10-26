@@ -90,6 +90,13 @@ if (suite === 'e2e') {
 }
 stopAll();
 
+// --frontend: also run the Vitest suite, whatever PHPUnit returned, and fail if either failed.
+if (args.includes('--frontend')) {
+  const vitest = await run(process.execPath, [join(root, 'node_modules', 'vitest', 'vitest.mjs'), 'run', ...(coverage ? ['--coverage'] : [])]);
+  code = code || vitest;
+}
+stopAll();
+
 if (coverage) {
   await new Promise(r => setTimeout(r, 500));   // let the API flush its last coverage file
   console.log(`\nMerging ${readdirSync(covDir).length} coverage files…`);

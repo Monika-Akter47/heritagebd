@@ -41,3 +41,12 @@ desktop.ini
 
 # Generated before each build from heritagebd-data/uploads (scripts/build-image-manifest.mjs)
 public/uploads/
+
+# PHP test dependencies (composer install)
+vendor/
+# Test run output
+coverage/
+.phpunit.cache/
+# Playwright output (the HTML report and JUnit go to docs/testing/evidence)
+test-results/
+playwright-report/

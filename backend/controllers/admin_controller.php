@@ -150,8 +150,9 @@ function admin_vendor_verify(PDO $pdo, string $id): void {
     $pdo->beginTransaction();
     try {
         $pdo->prepare('UPDATE vendors SET verification_status = ? WHERE user_id = ?')->execute([$d['status'], $id]);
-        $pdo->prepare("UPDATE users SET verified = ?, status = 'active' WHERE id = ?")
-            ->execute([$d['status'] === 'verified' ? 1 : 0, $id]);
+        // Same as guides (SRS §4.5, FR-04): approval activates the account, rejection suspends it.
+        $pdo->prepare('UPDATE users SET verified = ?, status = ? WHERE id = ?')
+            ->execute([$d['status'] === 'verified' ? 1 : 0, $d['status'] === 'verified' ? 'active' : 'suspended', $id]);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) $pdo->rollBack();

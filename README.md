@@ -198,7 +198,36 @@ Roles are enforced **on the server** for every request (the role in the browser 
 Responses are `{ "success": true, "data": … }` or `{ "success": false, "message": "…" }`. Server errors are logged to the PHP
 error log and a generic message is returned (no SQL/PHP details are exposed).
 
-## 9. Troubleshooting
+## 9. Running the tests
+
+The suite never touches a real database: it starts an in-memory PostgreSQL (PGlite) seeded from
+`backend/database/postgres/`, the PHP API on it, and (for E2E) the Vite dev server. Needs PHP 8.2 with
+`pdo_pgsql`, `curl` and `mbstring` (plus Xdebug for coverage), Node 22, and Microsoft Edge for E2E.
+The full report is [docs/testing/Test_Report.pdf](docs/testing/Test_Report.pdf).
+
+```bash
+git clone https://github.com/Monika-Akter47/heritagebd.git && cd heritagebd
+npm ci
+composer install
+npm run lint              # TypeScript + php -l on every PHP file
+npm test                  # PHP unit + API integration (PHPUnit), then frontend unit (Vitest)
+npm run test:unit         # unit tests only
+npm run test:integration  # API integration tests only
+npm run test:e2e          # Playwright journeys on Edge + mobile viewport
+npm run test:coverage     # same as npm test, with coverage → docs/testing/evidence/coverage/
+node tests/performance/p95.mjs   # p95 response time of key endpoints (deployed site by default)
+```
+
+| Folder | Contents |
+|---|---|
+| `tests/unit/` | PHPUnit unit tests of the business rules (money split, phone/TrxID, areas, helpers) |
+| `tests/integration/` | PHPUnit API tests over HTTP, one class per feature area; each test is tagged `TC-ID \| FR \| level \| technique \| priority` |
+| `tests/frontend/` | Vitest unit tests of React components and validators |
+| `tests/e2e/` | Playwright end-to-end journeys |
+| `tests/performance/` | p95 load script |
+| `docs/testing/evidence/` | JUnit results, coverage, audits, Lighthouse, p95 and before/after regression runs |
+
+## 10. Troubleshooting
 
 | Problem | Fix |
 |---|---|

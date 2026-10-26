@@ -66,8 +66,8 @@ Admin → Traditional Foods.
 - The catch-all route `*` renders Landing instead of a 404 page.
 - Most API responses are still `any` in `src/services/api.ts`. The interfaces in `src/types` exist
   but aren't wired to the client.
-- Backend tests are `settlement_smoke.php` and the HTTP smoke test `api_smoke.php` (run by hand);
-  there is no frontend test suite and no CI running them automatically.
+- The test suite (`npm test`, `npm run test:e2e`) runs locally with one command, but no CI workflow
+  runs it on pull requests yet, and branch protection is off.
 - No migration runner or `schema_migrations` table.
 - Very large page components (`TripPlanner.tsx`, `AdminDashboard.tsx`, `AdminSections.tsx`,
   `VendorDashboard.tsx`).
@@ -75,6 +75,24 @@ Admin → Traditional Foods.
 - `.env copy.example` duplicates `.env.example`, and `src/imports/pasted_text/preorder-feature.md`
   duplicates `ready-when-you-arrive.md` (both confirmed byte-identical).
 - `scripts/generate-seed.cjs` is stale; regenerating `seed.sql` would drop hand-added data.
+
+### 11. Gaps against the SRS found by testing (2026-10-26)
+
+Each has a failing test that will pass once the gap is closed (see the Software Test Report §9).
+
+- **No tracking number or 5-day delivery estimate (FR-36, TC-74).** The vendor sets the delivery date
+  when confirming; the SRS expects a tracking number and placement + 5 days.
+- **Place reviews are disabled (FR-39, TC-101).** The API requires a "verified visit record", which
+  does not exist yet, so nobody can review a place.
+- **No audit log (FR-50, TC-113).** Only failed logins are recorded (`auth_attempts`); payment and
+  user events are not.
+- **The "cancellation window (hours)" setting has no effect.** The SRS does not say what it controls;
+  cancellation is limited by order state (before preparation) instead.
+- **Accessibility:** Lighthouse flags low colour contrast, icon buttons and links without accessible
+  names, unlabelled filter selects and heading order (scores 82–95; details in the test report).
+- **Only Chromium tested.** Firefox could not run on the test machine; Safari/Firefox are unverified.
+- **Brief 502s after a deploy.** Render rebuilds on every push to `main`; the `/api` proxy fails until
+  the new instance is up (observed for ~1 minute).
 
 ## Fixed on 2026-10-24
 

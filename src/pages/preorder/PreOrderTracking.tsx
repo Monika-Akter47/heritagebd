@@ -270,7 +270,8 @@ export default function PreOrderTracking() {
           >
             Add to Trip Planner
           </button>
-          {['confirmed', 'advance_paid', 'vendor_accepted', 'preparing'].includes(order.status) && (
+          {/* FR-34: cancellation only before preparation begins (enforced by the API too). */}
+          {['confirmed', 'advance_paid', 'vendor_accepted'].includes(order.status) && (
             <button
               onClick={handleCancel}
               disabled={cancelling}
@@ -387,9 +388,8 @@ function CancelledView({ order }: { order: any }) {
           {order.status === 'refunded' ? 'Order Refunded' : 'Order Cancelled'}
         </h2>
         <p className="text-sm mt-2 mb-6" style={{ color: 'var(--color-text-muted)' }}>
-          {order.status === 'refunded'
-            ? `A refund of ৳${order.refundAmount?.toLocaleString()} has been initiated.`
-            : `Your pre-order #${order.orderNumber} has been cancelled.`}
+          {`Your pre-order #${order.orderNumber} has been ${order.status === 'refunded' ? 'refunded' : 'cancelled'}.`}
+          {order.refundAmount != null && ` A refund of ৳${Number(order.refundAmount).toLocaleString()} of your ৳${Number(order.advancePaid).toLocaleString()} advance has been initiated.`}
         </p>
         <button onClick={() => navigate('/shop')} className="w-full py-4 rounded-2xl font-bold text-white" style={{ background: 'var(--color-primary)' }}>
           Browse More Products

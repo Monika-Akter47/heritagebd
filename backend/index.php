@@ -4,6 +4,11 @@
  * Every request is routed through here (see .htaccess).
  */
 
+// Warnings must never reach the client: they break the JSON body and reveal server paths (and,
+// from the reset-mail warning, which emails are registered). Log them instead, whatever php.ini says.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/helpers/response.php';

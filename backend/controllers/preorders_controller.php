@@ -61,6 +61,17 @@ function preorders_settings_update(PDO $pdo): void {
     require_role($user, ['admin']);
     $d = body();
 
+    $intIn = fn(string $key, int $min, int $max) => !array_key_exists($key, $d)
+        || (is_numeric($d[$key]) && (int)$d[$key] == $d[$key] && (int)$d[$key] >= $min && (int)$d[$key] <= $max);
+    if (!$intIn('advanceRefundPercent', 0, 100)) json_error('The advance refund must be a whole percentage from 0 to 100.', 422);
+    if (!$intIn('cancellationWindowHours', 0, 720)) json_error('The cancellation window must be 0–720 hours.', 422);
+    if (!$intIn('vendorPreparationCutoffMinutes', 0, 1440)) json_error('The preparation cut-off must be 0–1440 minutes.', 422);
+    if (!$intIn('maxPickupTimeSlots', 1, 24)) json_error('Allow between 1 and 24 pickup time slots.', 422);
+    if (isset($d['paymentMethods']) && (!is_array($d['paymentMethods']) || !$d['paymentMethods']
+        || array_diff($d['paymentMethods'], ['bkash', 'nagad', 'card', 'cash']))) {
+        json_error('Payment methods must be chosen from bKash, Nagad, card and cash.', 422);
+    }
+
     $existing = $pdo->query('SELECT * FROM preorder_settings WHERE id = 1')->fetch();
     $merged = [
         'payment_methods' => isset($d['paymentMethods']) ? json_encode(array_values($d['paymentMethods'])) : ($existing['payment_methods'] ?? '["bkash","nagad","card"]'),
@@ -221,6 +232,9 @@ const PREORDER_TRANSITIONS = [
     'refunded'               => [],
 ];
 
+// States in which the tourist may still cancel: before preparation begins (FR-34).
+const PREORDER_TOURIST_CANCELLABLE = ['confirmed', 'advance_paid', 'vendor_accepted'];
+
 // Which role(s) may push the pre-order INTO a given status.
 const PREORDER_TRANSITION_ROLES = [
     'vendor_accepted'        => ['vendor', 'admin'],
@@ -301,12 +315,26 @@ function preorders_update(PDO $pdo, string $id): void {
             json_error('A cancellation reason is required.', 422);
         }
 
+        // FR-34: a tourist may cancel only before the vendor starts preparing, and gets back the
+        // administrator-configured share of the advance. A vendor or admin cancelling refunds it all.
+        if ($newStatus === 'cancelled') {
+            if ($user['role'] === 'tourist' && !in_array($currentStatus, PREORDER_TOURIST_CANCELLABLE, true)) {
+                json_error('This pre-order can no longer be cancelled: the vendor has started preparing it.', 409);
+            }
+            $refundPercent = $user['role'] === 'tourist'
+                ? (int)($pdo->query('SELECT advance_refund_percent FROM preorder_settings WHERE id = 1')->fetchColumn() ?: 80)
+                : 100;
+            $fields[] = 'refund_amount = ?';
+            $params[] = round((float)$existing['advance_paid'] * $refundPercent / 100, 2);
+            unset($d['refundAmount']);   // computed here, not taken from the client
+        }
+
         $fields[] = 'status = ?'; $params[] = $newStatus;
     }
 
-    $map = [
-        'cancellationReason' => 'cancellation_reason', 'refundAmount' => 'refund_amount', 'notes' => 'notes',
-    ];
+    // Only an admin may set a refund amount by hand; otherwise it is computed on cancellation above.
+    $map = ['cancellationReason' => 'cancellation_reason', 'notes' => 'notes']
+        + ($user['role'] === 'admin' ? ['refundAmount' => 'refund_amount'] : []);
     foreach ($map as $k => $col) {
         if (array_key_exists($k, $d)) { $fields[] = "$col = ?"; $params[] = $d[$k]; }
     }

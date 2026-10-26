@@ -3,7 +3,27 @@
 All notable changes to HeritageBD. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); dates are YYYY-MM-DD.
 
-## [Unreleased] — 2026-10-26: Payment records, guide cash, Bengali text
+## [Unreleased] — 2026-10-26: Test suite and fixes from testing
+
+### Added
+
+- Automated test suite (`npm test`, `npm run test:e2e`, `npm run test:coverage`): PHPUnit unit and API
+  integration tests against an in-memory PostgreSQL, Vitest frontend tests, Playwright journeys, a p95
+  script, and evidence under `docs/testing/evidence/`. See README §9 and the Software Test Report.
+
+### Fixed (found by the tests)
+
+- **Security:** a tourist could set any `refundAmount` when cancelling a pre-order. Refunds are now
+  computed by the server; only an admin may set one by hand.
+- Pre-order cancellation (FR-34): a tourist can cancel only before preparation starts, and the refund is
+  the configured percentage of the advance (vendor/admin cancellation refunds it in full).
+- Pre-order settings accepted out-of-range values (e.g. a 101% refund); they are now validated.
+- A rejected vendor stayed active; rejection now suspends the account, as for guides (FR-04).
+- PHP warnings (e.g. a failed reset e-mail) were printed into API responses where `display_errors` is on,
+  breaking the JSON, exposing paths and revealing registered e-mails. The API now always logs them.
+- `backend/tests/api_smoke.php` sends the bKash payer number and TrxID now required for pre-orders.
+
+## 2026-10-26: Payment records, guide cash, Bengali text
 
 ### Added
 

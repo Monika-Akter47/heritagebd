@@ -11,7 +11,14 @@
     "typecheck": "tsc --noEmit",
     "format": "oxfmt",
     "db:pg": "php scripts/mysql-to-postgres.php schema backend/database/schema.sql > backend/database/postgres/schema.sql && php scripts/mysql-to-postgres.php data backend/database/seed.sql > backend/database/postgres/seed.sql",
-    "test:api": "php backend/tests/api_smoke.php"
+    "test:api": "php backend/tests/api_smoke.php",
+    "test": "node tests/run-tests.mjs && vitest run",
+    "test:unit": "node tests/run-tests.mjs --suite unit && vitest run",
+    "test:integration": "node tests/run-tests.mjs --suite integration",
+    "test:frontend": "vitest run",
+    "test:coverage": "node tests/run-tests.mjs --coverage && vitest run --coverage",
+    "lint": "tsc --noEmit && node tests/support/php-lint.mjs",
+    "test:e2e": "node tests/run-tests.mjs --suite e2e"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.22",
@@ -26,14 +33,18 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.11",
     "@electric-sql/pglite-socket": "^0.2.14",
+    "@playwright/test": "1.56.1",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^6.0.0",
+    "@vitest/coverage-v8": "4.1.12",
+    "jsdom": "26.1.0",
     "oxfmt": "^0.2.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
-    "vite": "^8.0.0"
+    "vite": "^8.3.5",
+    "vitest": "4.1.12"
   }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HeritageBD API tests. Run everything with npm test (starts the test database and API);
+     vendor/bin/phpunit with testsuite unit runs the unit tests alone. -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/support/bootstrap.php"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="default"
+         failOnRisky="true"
+         failOnWarning="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">backend/controllers</directory>
+            <directory suffix=".php">backend/helpers</directory>
+            <directory suffix=".php">backend/config</directory>
+            <file>backend/index.php</file>
+        </include>
+    </source>
+</phpunit>

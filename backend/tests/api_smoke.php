@@ -128,7 +128,7 @@ $pre = (call('GET', '/products?preorder=1')['data'] ?? [])[0] ?? null;
 $preVendor = $pre ? login($pre['vendor']['email']) : null;
 $r = step('create pre-order', call('POST', '/preorders', [
     'productId' => $pre['id'] ?? '', 'pickupDate' => date('Y-m-d', strtotime('+1 day')), 'pickupTime' => $pre['availableTimeSlots'][0] ?? '10:00 AM',
-    'quantity' => 1, 'advancePaymentMethod' => 'bkash',
+    'quantity' => 1, 'advancePaymentMethod' => 'bkash', 'advancePayerPhone' => '01712345678', 'advanceTransactionId' => 'TEST9BG7XK',
 ], $tourist), 201);
 $pid = $r['data']['id'] ?? 'x';
 foreach (['vendor_accepted', 'preparing', 'ready_for_pickup'] as $s) step("vendor $s", call('PUT', "/preorders/$pid", ['status' => $s], $preVendor));

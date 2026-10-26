@@ -13,6 +13,7 @@ import { UsersSection, VendorsSection, ProductsSection, OrdersSection, BookingsS
 import PaymentsSection from './PaymentsSection';
 import { mockPreOrderSettings } from '../../data/preorderData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from "../../components/ui/StatusBadge";
 import { useApp } from '../../context/AppContext';
 import type { PreOrder, PreOrderSettings } from '../../types';
 import { methodLabel } from '../../components/ui/PaymentProofFields';
@@ -157,7 +158,7 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
                 <div className="flex-1">
                   <h3 className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>{selected.name}</h3>
                   <p className="text-sm capitalize" style={{ color: 'var(--color-text-muted)' }}>{selected.type} · Submitted {selected.submitted}</p>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold mt-1"
+                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold mt-1 capitalize"
                     style={statusColors[selected.status]}>
                     {selected.status}
                   </span>
@@ -338,7 +339,7 @@ function VerificationCenter({ onOpenDocuments }: { onOpenDocuments: (userId: str
                   {a.docs} {a.type === 'vendor' ? 'details' : 'files'}
                 </td>
                 <td className="px-4 py-3">
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold"
+                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold capitalize"
                     style={statusColors[a.status]}>
                     {a.status}
                   </span>
@@ -659,12 +660,6 @@ export default function AdminDashboard() {
                         (!poStatus || o.status === poStatus)
                         && (!poFilter || o.orderNumber.includes(poFilter) || o.touristName.toLowerCase().includes(poFilter.toLowerCase()) || o.vendorName.toLowerCase().includes(poFilter.toLowerCase()))
                       ).map(order => {
-                        const statusColors: Record<string, string> = {
-                          confirmed: 'green', advance_paid: 'green', vendor_accepted: 'green',
-                          preparing: 'gold', ready_for_pickup: 'blue',
-                          completed: 'green', cancelled: 'red', refunded: 'gray',
-                        };
-                        const statusColor = statusColors[order.status] || 'gray';
                         return (
                           <tr key={order.id} className="hover:bg-gray-50">
                             <td className="px-4 py-4 text-sm font-semibold">#{order.orderNumber}</td>
@@ -681,9 +676,7 @@ export default function AdminDashboard() {
                               {order.pickupPaymentMethod && <p className="text-[var(--color-text-muted)]">Pickup: {methodLabel(order.pickupPaymentMethod)}{order.pickupTransactionId ? ` · ${order.pickupTransactionId}` : ''}</p>}
                             </td>
                             <td className="px-4 py-4">
-                              <Badge variant={statusColor as 'green' | 'gold' | 'red' | 'gray'} size="sm">
-                                {order.status.replace(/_/g, ' ')}
-                              </Badge>
+                              <StatusBadge status={order.status} />
                             </td>
                           </tr>
                         );

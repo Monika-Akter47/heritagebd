@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Star, Calendar, DollarSign, Users, ToggleLeft, ToggleRight, MapPin, CheckCircle, XCircle, Clock, Phone } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { useApp } from '../../context/AppContext';
 import { Link } from 'react-router-dom';
 import { bookingsApi, earningsApi, guidePaymentsApi, guidesApi, tripsApi, type GuidePayment } from '../../services/api';
@@ -361,9 +362,8 @@ export default function GuideDashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap mb-1">
                       <p className="font-semibold">{req.touristName || 'Tourist'}</p>
-                      <Badge variant={req.status === 'pending' ? 'gold' : ['accepted', 'awaiting_confirmation', 'completed'].includes(req.status) ? 'green' : 'red'} size="sm">
-                        {req.status === 'completed' ? 'Successfully completed' : req.status === 'awaiting_confirmation' ? 'Waiting for tourist confirmation' : req.status}
-                      </Badge>
+                      <StatusBadge status={req.status}
+                        label={req.status === 'awaiting_confirmation' ? 'Waiting for Tourist Confirmation' : undefined} />
                     </div>
                     <p className="text-sm text-[var(--color-text-muted)] mb-1">
                       <span className="font-medium">{req.tourType}</span> · {fmtDate(req)} · {req.groupSize} person(s)

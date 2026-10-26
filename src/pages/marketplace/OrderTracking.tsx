@@ -4,6 +4,7 @@ import { Package, CheckCircle, Truck, MapPin, Clock, ArrowLeft, Star } from 'luc
 import { ordersApi, reviewsApi } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { useApp } from '../../context/AppContext';
 import type { Order } from '../../types';
 
@@ -87,16 +88,6 @@ export default function OrderTracking() {
   const platformShare = Math.round(Number(order.totalAmount) * 100 * Number(order.commissionPercent || 10) / 100) / 100;
   const vendorAdvanceShare = Math.round((advanceAmount - platformShare) * 100) / 100;
 
-  const statusBadge = {
-    placed: 'blue',
-    confirmed: 'green',
-    preparing: 'gold',
-    shipped: 'gold',
-    out_for_delivery: 'orange',
-    delivered: 'orange',
-    completed: 'green',
-    cancelled: 'red',
-  } as const;
 
   const orderVendors = [...new Map(
     order.items
@@ -170,9 +161,7 @@ export default function OrderTracking() {
                 Placed on {new Date(order.createdAt).toLocaleDateString('en-BD', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
             </div>
-            <Badge variant={statusBadge[order.status] || 'gray'} size="md">
-              {order.status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-            </Badge>
+            <StatusBadge status={order.status} size="md" />
           </div>
           {order.estimatedDelivery && (
             <div className="flex items-center gap-2 mt-4 text-sm text-[#006A4E]">

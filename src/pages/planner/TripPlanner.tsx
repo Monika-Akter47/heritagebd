@@ -10,6 +10,7 @@ import type { TripDay, TripStop } from '../../types';
 import LocalTaste from '../../components/local/LocalTaste';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { useApp } from '../../context/AppContext';
 import { Link } from 'react-router-dom';
 
@@ -1042,7 +1043,7 @@ export default function TripPlanner() {
                       <Calendar size={11} />
                       {new Date(trip.startDate).toLocaleDateString('en-BD', { month: 'short', day: 'numeric' })} – {new Date(trip.endDate).toLocaleDateString('en-BD', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
-                    <Badge variant={trip.status === 'planned' ? 'green' : 'gray'} size="sm" className="mt-2">{trip.status}</Badge>
+                    <StatusBadge status={trip.status} className="mt-2" />
                   </button>
                 ))}
                 {showNewTrip && (

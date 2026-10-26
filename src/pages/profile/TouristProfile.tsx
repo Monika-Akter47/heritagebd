@@ -5,6 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { authApi, tripsApi, ordersApi, preordersApi, bookingsApi, reviewsApi, documentsApi, placesApi, guidePaymentsApi, type GuidePayment } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from '../../components/ui/StatusBadge';
 import PaymentProofFields, { emptyPaymentProof, methodLabel, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 
 /** Tourist side of the guide's balance payment: mark it paid, then the guide confirms receipt. */
@@ -364,9 +365,8 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
                         <p className="text-xs text-[var(--color-text-muted)]">{booking.startDate} – {booking.endDate} · ৳{booking.totalPrice.toLocaleString()}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Badge variant={['accepted', 'awaiting_confirmation', 'completed'].includes(booking.status) ? 'green' : booking.status === 'pending' ? 'gold' : 'gray'}>
-                          {booking.status === 'completed' ? 'Successfully completed' : booking.status === 'awaiting_confirmation' ? 'Guide finished · confirmation needed' : booking.status}
-                        </Badge>
+                        <StatusBadge status={booking.status} size="md"
+                          label={booking.status === 'awaiting_confirmation' ? 'Guide Finished · Please Confirm' : undefined} />
                         {['pending', 'accepted'].includes(booking.status) && (
                           <button
                             onClick={async () => {
@@ -496,7 +496,7 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
                           <p className="text-xs text-[var(--color-text-muted)]">#{order.orderNumber} · Pickup {order.pickupDate} at {order.pickupTime}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Badge variant={order.status === 'completed' ? 'green' : 'gold'}>{order.status.replace(/_/g, ' ')}</Badge>
+                          <StatusBadge status={order.status} size="md" />
                           <Link to={`/preorder/tracking/${encodeURIComponent(order.orderNumber)}`} className="text-sm text-[#006A4E] font-medium hover:underline">View order</Link>
                         </div>
                       </div>

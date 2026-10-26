@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { adminApi, productsApi, ordersApi, bookingsApi, eventsApi, storiesApi, placesApi, productImagesApi, siteContentApi, areasApi, localFoodsApi, type AreaDivision, type LocalFood, type LocalFoodType } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from "../../components/ui/StatusBadge";
 import type { HeritagePlace } from '../../types';
 
 // ---------------------------------------------------------------------------
@@ -82,7 +83,7 @@ export function UsersSection({ currentUserId }: { currentUserId?: string }) {
               <td className={td + ' font-medium'}>{u.name}</td>
               <td className={td}>{u.email}</td>
               <td className={td}><Badge variant="gray" size="sm">{u.role}</Badge></td>
-              <td className={td}><Badge variant={u.status === 'active' ? 'green' : 'red'} size="sm">{u.status}</Badge></td>
+              <td className={td}><StatusBadge status={u.status} /></td>
               <td className={td}>{fmt(u.createdAt)}</td>
               <td className={td}>
                 {u.role !== 'admin' && u.id !== currentUserId && (
@@ -662,7 +663,7 @@ export function BookingsSection() {
               <td className={td}>{b.tourType}</td>
               <td className={td + ' whitespace-nowrap'}>{fmt(b.startDate)}{b.endDate !== b.startDate ? ` – ${fmt(b.endDate)}` : ''}</td>
               <td className={td}>{taka(b.totalPrice)}</td>
-              <td className={td}><Badge variant={b.status === 'pending' ? 'gold' : ['accepted', 'awaiting_confirmation', 'completed'].includes(b.status) ? 'green' : 'red'} size="sm">{b.status.replace(/_/g, ' ')}</Badge></td>
+              <td className={td}><StatusBadge status={b.status} /></td>
               <td className={td}>
                 {['pending', 'accepted'].includes(b.status) && (
                   <button disabled={busy === b.id} className={btn} style={{ borderColor: '#F42A41', color: '#F42A41' }}

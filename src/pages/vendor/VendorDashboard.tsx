@@ -6,6 +6,7 @@ import { productsApi, ordersApi, preordersApi, productImagesApi, earningsApi } f
 import { useApiData } from '../../hooks/useApiData';
 import { preOrderStatusConfig } from '../../data/preorderData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge, { statusLabel } from '../../components/ui/StatusBadge';
 import PaymentProofFields, { emptyPaymentProof, methodLabel, validatePaymentProof, type PaymentProof } from '../../components/ui/PaymentProofFields';
 import { useApp } from '../../context/AppContext';
 import type { Order, PreOrder, Product } from '../../types';
@@ -489,9 +490,10 @@ export default function VendorDashboard() {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex flex-wrap items-center gap-2">
-                          {order.status === 'delivered' && <span className="text-xs font-semibold text-amber-700">Delivered · waiting for tourist confirmation</span>}
-                          {order.status === 'completed' && <span className="text-xs font-semibold text-green-700">Delivery confirmed · advance settled</span>}
-                          {order.status === 'cancelled' && <span className="text-xs font-semibold text-red-600">Cancelled · advance refunded</span>}
+                          <StatusBadge status={order.status} label={
+                            order.status === 'completed' ? 'Completed · Advance Settled'
+                              : order.status === 'cancelled' ? 'Cancelled · Advance Refunded' : undefined} />
+                          {['placed', 'confirmed', 'preparing', 'shipped', 'out_for_delivery'].includes(order.status) && <span className="basis-full" />}
                           {order.status === 'placed' && (
                             <>
                               <label className="text-xs text-[var(--color-text-muted)]">
@@ -525,8 +527,8 @@ export default function VendorDashboard() {
                           {(ORDER_TRANSITIONS[order.status] ?? []).filter(status => status !== 'cancelled').map(status => (
                             <button key={status} type="button" onClick={() => updateOrderStatus(order.id, status)}
                               disabled={updatingId === order.id}
-                              className="rounded-lg border px-3 py-1.5 text-xs font-semibold capitalize disabled:opacity-50">
-                              {updatingId === order.id ? 'Updating…' : status === 'delivered' ? 'Mark delivered' : status.replace(/_/g, ' ')}
+                              className="rounded-lg border px-3 py-1.5 text-xs font-semibold disabled:opacity-50">
+                              {updatingId === order.id ? 'Updating…' : status === 'delivered' ? 'Mark Delivered' : `Mark ${statusLabel(status)}`}
                             </button>
                           ))}
                         </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { adminApi, type AdminPayments } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
+import StatusBadge from "../../components/ui/StatusBadge";
 import { methodLabel } from '../../components/ui/PaymentProofFields';
 
 // Every online advance (held → released to the partner on completion, or refunded) and every
@@ -112,8 +113,8 @@ export default function PaymentsSection() {
                 <td className={td + ' font-semibold'}>{taka(a.advance)}</td>
                 <td className={td}>{methodLabel(a.method)}</td>
                 <td className={td}><Proof method={a.method} phone={a.payerPhone} txn={a.transactionId} /></td>
-                <td className={td}><Badge variant={a.advanceStatus === 'released' ? 'green' : a.advanceStatus === 'refunded' ? 'red' : 'gold'} size="sm">{a.advanceStatus}</Badge></td>
-                <td className={td + ' text-xs'}>{a.status.replace(/_/g, ' ')}</td>
+                <td className={td}><StatusBadge status={a.advanceStatus} /></td>
+                <td className={td}><StatusBadge status={a.status} /></td>
               </tr>
             ))}
           </Table>

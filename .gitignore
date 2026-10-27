@@ -1,33 +1,55 @@
-# Dependencies
-node_modules/
+# HeritageBD: React + Vite frontend (Vercel), PHP API (Render), PostgreSQL (Supabase)
 
-# Build output
+# --- Frontend (Node, Vite) ---
+node_modules/
 dist/
 dist-ssr/
 *.tsbuildinfo
-coverage/
+npm-debug.log*
+pnpm-debug.log*
 
-# Environment and secrets (keep the committed .env.example)
+# Generated before each build from heritagebd-data/uploads (scripts/build-image-manifest.mjs)
+public/uploads/
+
+# --- Backend (PHP) ---
+vendor/
+php_errors.log
+
+# Private verification documents never leave the server; product and profile
+# images ship with the project because the database points at them.
+heritagebd-data/uploads/private/
+
+# Local database dumps
+*.sql.bak
+data.mysql.sql
+
+# --- Environment and secrets (keep .env.example) ---
 .env
 .env.*
 !.env.example
 *.local
 
-# Uploads: product/profile images ship with the project (the database points at
-# them); private verification documents never leave the server.
-heritagebd-data/uploads/private/
+# --- Tests ---
+coverage/
+.phpunit.cache/
+test-results/
+playwright-report/
+# Generated reports (Word and PDF) stay local
+docs/**/*.docx
+docs/**/*.pdf
 
-# Logs
-*.log
-logs/
-npm-debug.log*
-pnpm-debug.log*
-php_errors.log
-
-# Vercel CLI link (created by `vercel link`; holds the local project/org IDs)
+# --- Deploy tooling ---
+# Vercel CLI link (holds the local project/org IDs)
 .vercel/
 
-# Editors and OS
+# --- AI assistant and editor-tool files ---
+.claude/
+CLAUDE.md
+AGENTS.md
+.mcp.json
+.figma/
+
+# --- Editors and OS ---
 .vscode/*
 !.vscode/extensions.json
 .idea/
@@ -36,20 +58,6 @@ php_errors.log
 Thumbs.db
 desktop.ini
 
-# Local Claude Code settings
-.claude/settings.local.json
-
-# Generated before each build from heritagebd-data/uploads (scripts/build-image-manifest.mjs)
-public/uploads/
-
-# PHP test dependencies (composer install)
-vendor/
-# Test run output
-coverage/
-.phpunit.cache/
-# Generated reports (Word and PDF) stay local
-docs/**/*.docx
-docs/**/*.pdf
-# Playwright output (the HTML report and JUnit go to docs/testing/evidence)
-test-results/
-playwright-report/
+# --- Logs ---
+*.log
+logs/

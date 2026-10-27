@@ -47,6 +47,7 @@ mkdirSync(evidence, { recursive: true });
 const phpunitArgs = ['vendor/bin/phpunit', '--log-junit', join(evidence, `junit-${suite === 'all' ? 'php' : suite}.xml`)];
 if (suite !== 'all') phpunitArgs.push('--testsuite', suite);
 if (filter) phpunitArgs.push('--filter', filter);
+if (args.includes('--testdox')) phpunitArgs.push('--testdox');   // list each test by name
 if (coverage) { rmSync(join(root, 'coverage'), { recursive: true, force: true }); mkdirSync(covDir, { recursive: true }); phpunitArgs.push('--coverage-php', join(covDir, 'phpunit.cov')); }
 
 let env = {};

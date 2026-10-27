@@ -8,7 +8,7 @@
 
 ```mermaid
 flowchart LR
-    U[Visitor] --> V["Vercel<br/>heritagebd.vercel.app"]
+    U[Visitor] --> V["Vercel<br/>heritagebd-flax.vercel.app"]
     V -- "/api/* rewrite (same origin)" --> R["Render · Singapore<br/>heritagebd-api.onrender.com<br/>PHP 8.2 + Apache"]
     R -- "Session pooler · TLS · IPv4" --> S[("Supabase · ap-southeast-1<br/>PostgreSQL 17, RLS on")]
     R --- IMG[("/var/heritagebd-uploads<br/>images baked into the image")]
@@ -70,7 +70,7 @@ Run `data.pg.sql` after deleting the default rows the schema inserts
    |---|---|
    | `DATABASE_URL` | The Session pooler URI from step 1 **without the password**, e.g. `postgresql://postgres.sbhnmsrbvampinpgggvl@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres` |
    | `DB_PASS` | Your Supabase database password exactly as typed. Keeping it separate means characters such as `@ # / :` need no URL-encoding |
-   | `CORS_ORIGIN` | Your Vercel URL (e.g. `https://heritagebd.vercel.app`). Harmless with the rewrite; required if you call Render directly |
+   | `CORS_ORIGIN` | Your Vercel URL (e.g. `https://heritagebd-flax.vercel.app`). Harmless with the rewrite; required if you call Render directly |
    | `APP_TIMEZONE` | `Asia/Dhaka` (preset) |
 
    TLS is on by default for PostgreSQL (`sslmode=require`). To also verify the server certificate,

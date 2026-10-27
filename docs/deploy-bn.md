@@ -41,7 +41,7 @@ English version: [deploy-vercel.md](deploy-vercel.md)
    |---|---|
    | `DATABASE_URL` | ধাপ ১ এর Session pooler লিংক, **পাসওয়ার্ড ছাড়া** (যেমন `postgresql://postgres.sbhnmsrbvampinpgggvl@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres`) |
    | `DB_PASS` | আপনার Supabase ডাটাবেস পাসওয়ার্ড, হুবহু যেমন আছে। আলাদা রাখলে `@ # / :` এর মতো চিহ্ন বদলাতে হয় না |
-   | `CORS_ORIGIN` | আপনার Vercel ঠিকানা, যেমন `https://heritagebd.vercel.app` (না জানলে পরে দিলেও চলবে) |
+   | `CORS_ORIGIN` | আপনার Vercel ঠিকানা, যেমন `https://heritagebd-flax.vercel.app` (না জানলে পরে দিলেও চলবে) |
    | `APP_TIMEZONE` | `Asia/Dhaka` (আগে থেকেই দেওয়া থাকে) |
 
 4. **Apply / Deploy** চাপুন। প্রথম বিল্ডে ৫–১০ মিনিট লাগতে পারে।

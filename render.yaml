@@ -14,7 +14,7 @@ services:
         sync: false
       - key: DB_PASS              # the Supabase database password, as-is (no URL-encoding needed)
         sync: false
-      - key: CORS_ORIGIN          # your Vercel URL, e.g. https://heritagebd.vercel.app (only needed without the /api rewrite)
+      - key: CORS_ORIGIN          # your Vercel URL, e.g. https://heritagebd-flax.vercel.app (only needed without the /api rewrite)
         sync: false
       - key: APP_TIMEZONE
         value: Asia/Dhaka

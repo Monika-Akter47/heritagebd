@@ -3,6 +3,31 @@
 All notable changes to HeritageBD. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); dates are YYYY-MM-DD.
 
+## 2026-10-27: Admin refunds, ride fares, trip photos, pickup-date order
+
+### Added
+
+- **Admin refunds.** When a vendor cancels a paid pre-order, or a guide cancels or rejects a booking, the
+  advance becomes `refund_pending` and admins are notified. In **Admin → Payments** the admin sends the
+  money back, enters the method and refund TrxID, and clicks Refund; the tourist is notified with the TrxID.
+  A tourist cancelling their own order or booking is still refunded straight away. Needs
+  `postgres/003_admin_refunds.sql` (Supabase) or `migrations/010_admin_refunds.sql` (MySQL).
+- **Uber/Pathao fare estimate** in the trip planner, replacing "Preferred transport". The tourist picks a
+  starting point; the road distance (straight line × 1.3) gives simulated fares for Pathao Bike, Uber
+  Moto (up to 60 km), Pathao Car and Uber X, with the cheapest marked Recommended.
+- Tests TC-130 to TC-137.
+
+### Changed
+
+- The vendor's pre-order list is sorted by pickup date (soonest first); finished, cancelled and refunded
+  orders go to the bottom.
+
+### Fixed
+
+- Trip planner showed the wrong or broken photos: destinations and stops were hardcoded with stock
+  images. They now come from the places API with each place's own photo, and saved trips show the
+  place's current photo (with a placeholder if an image fails).
+
 ## 2026-10-27: Durable uploads, pickup codes, verification alerts
 
 ### Fixed

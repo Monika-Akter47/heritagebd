@@ -17,6 +17,8 @@ function preorder_hydrate(array $row, bool $includeQrCode = false): array {
         'status' => $row['status'], 'createdAt' => $row['created_at'], 'updatedAt' => $row['updated_at'],
         'preparationTime' => $row['preparation_time'], 'notes' => $row['notes'],
         'cancellationReason' => $row['cancellation_reason'], 'refundAmount' => $row['refund_amount'] !== null ? (float)$row['refund_amount'] : null,
+        'advanceStatus' => $row['advance_status'] ?? null, 'refundMethod' => $row['refund_method'] ?? null,
+        'refundTransactionId' => $row['refund_transaction_id'] ?? null, 'refundedAt' => $row['refunded_at'] ?? null,
     ];
     if ($includeQrCode) {
         $order['qrCode'] = $row['qr_code'];
@@ -200,7 +202,9 @@ function preorders_create(PDO $pdo): void {
 function preorders_index(PDO $pdo): void {
     $user = require_auth($pdo);
     if ($user['role'] === 'vendor') {
-        $stmt = $pdo->prepare(preorder_select_sql() . ' WHERE po.vendor_id = ? ORDER BY po.created_at DESC');
+        $stmt = $pdo->prepare(preorder_select_sql() . ' WHERE po.vendor_id = ?
+            ORDER BY CASE WHEN po.status IN (\'completed\', \'cancelled\', \'refund_pending\', \'refunded\') THEN 1 ELSE 0 END,
+                     po.pickup_date, po.created_at');
     } elseif ($user['role'] === 'admin') {
         $stmt = $pdo->prepare(preorder_select_sql() . ' ORDER BY po.created_at DESC');
     } else {
@@ -370,8 +374,16 @@ function preorders_update(PDO $pdo, string $id): void {
         if (($d['status'] ?? null) === 'completed') {
             settle_preorder($pdo, $lockedOrder);
         } elseif (in_array($d['status'] ?? null, ['cancelled', 'refunded'], true)) {
-            $pdo->prepare("UPDATE preorders SET advance_status = 'refunded' WHERE id = ? AND advance_status = 'held'")
-                ->execute([$id]);
+            // A tourist's own cancellation refunds the configured share straight away. When the vendor
+            // (or an admin) cancels a paid pre-order, the advance waits until an admin sends it back.
+            $pending = $d['status'] === 'cancelled' && $user['role'] !== 'tourist' && (float)$existing['advance_paid'] > 0;
+            $pdo->prepare('UPDATE preorders SET advance_status = ? WHERE id = ? AND advance_status = \'held\'')
+                ->execute([$pending ? 'refund_pending' : 'refunded', $id]);
+            if ($pending) {
+                notify_admins($pdo, 'Refund needed',
+                    "Pre-order {$existing['order_number']} was cancelled by the vendor. Send the tourist's advance back.",
+                    'order', '/admin?section=payments');
+            }
         }
         if (($d['status'] ?? null) === 'cancelled') {
             $pdo->prepare('UPDATE products SET stock = stock + ? WHERE id = ?')

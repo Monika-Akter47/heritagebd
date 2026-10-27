@@ -13,25 +13,12 @@ import Badge from '../../components/ui/Badge';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { useApp } from '../../context/AppContext';
 import { Link } from 'react-router-dom';
+import {
+  START_POINTS, buildItinerary, formatMinutes, toDestination,
+  type Destination, type FareEstimate, type Itinerary,
+} from '../../services/tripRoute';
 
-// ─── Mock data for smart route planning ──────────────────────────────────────
-
-const LOCATIONS = [
-  'Dhaka (Motijheel)', 'Old Dhaka', 'Mirpur', 'Uttara', 'Gulshan',
-  'Chittagong City', 'Sylhet City', 'Rajshahi City', 'Khulna City',
-  'Barishal City', 'Cox\'s Bazar Town', 'Rangpur City',
-];
-
-const DESTINATIONS = [
-  { id: 'd1', name: 'Lalbagh Fort & Old Dhaka', location: 'Old Dhaka', district: 'Dhaka', type: 'Heritage', duration: '3–4 hrs', img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd2', name: 'Sonargaon & Panam City', location: 'Narayanganj', district: 'Narayanganj', type: 'Heritage', duration: '5–6 hrs', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd3', name: 'Paharpur Buddhist Vihara', location: 'Rajshahi', district: 'Naogaon', type: 'Archaeological', duration: '4–5 hrs', img: 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd4', name: 'Sundarbans Mangrove', location: 'Khulna', district: 'Khulna', type: 'Nature', duration: 'Multi-day', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd5', name: 'Cox\'s Bazar Beach', location: "Cox's Bazar", district: "Cox's Bazar", type: 'Nature', duration: 'Multi-day', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd6', name: 'Srimangal Tea Gardens', location: 'Sylhet', district: 'Moulvibazar', type: 'Nature', duration: '3–4 hrs', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd7', name: 'Ahsan Manzil Pink Palace', location: 'Old Dhaka', district: 'Dhaka', type: 'Heritage', duration: '2–3 hrs', img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=400&h=280&fit=crop&auto=format' },
-  { id: 'd8', name: 'Bagerhat Mosque City', location: 'Bagerhat', district: 'Bagerhat', type: 'Heritage', duration: '5–6 hrs', img: 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=400&h=280&fit=crop&auto=format' },
-];
+// Places, distances and ride fares come from services/tripRoute.ts and the places API.
 
 const PREFS = [
   { id: 'heritage', label: 'Heritage Sites', emoji: '🏛️' },
@@ -54,107 +41,63 @@ const DURATIONS = [
   { id: 'weekend', label: 'Weekend', desc: '2 days' },
 ];
 
-const TRANSPORT_OPTS = [
-  { id: 'cng', emoji: '🛵', label: 'CNG', cost: '৳300–400' },
-  { id: 'rickshaw', emoji: '🛺', label: 'Rickshaw', cost: '৳100–200' },
-  { id: 'bus', emoji: '🚌', label: 'Bus', cost: '৳100–150' },
-  { id: 'car', emoji: '🚗', label: 'Car', cost: '৳600–800' },
-];
-
-// Generated itinerary mock based on destination selection
-const GENERATED_ROUTES: Record<string, {
-  stops: { time: string; name: string; type: string; duration: string; img: string; tip: string }[];
-  readyToPick: { name: string; vendor: string; price: number; prepTime: string }[];
-  summary: { distance: string; totalTime: string; cost: string };
-}> = {
-  d1: {
-    stops: [
-      { time: '9:00 AM', name: 'Lalbagh Fort', type: 'Heritage', duration: '1.5 hrs', img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=200&h=140&fit=crop', tip: 'Go early to avoid crowds' },
-      { time: '10:45 AM', name: 'Ahsan Manzil', type: 'Museum', duration: '1 hr', img: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=200&h=140&fit=crop', tip: 'Closed on Thursdays' },
-      { time: '12:00 PM', name: 'Sadarghat River Port', type: 'Landmark', duration: '45 min', img: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=200&h=140&fit=crop', tip: 'Great for photography' },
-      { time: '1:00 PM', name: 'Old Dhaka Food Street', type: 'Food', duration: '1 hr', img: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=140&fit=crop', tip: 'Try biryani and kebabs' },
-      { time: '2:30 PM', name: 'Star Mosque', type: 'Heritage', duration: '30 min', img: 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=200&h=140&fit=crop', tip: 'Remove shoes before entering' },
-    ],
-    readyToPick: [
-      { name: 'Old Dhaka Biryani Set', vendor: 'Haji Biriyani', price: 380, prepTime: '45 min' },
-      { name: 'Nakshi Kantha (small)', vendor: 'Old Town Crafts', price: 850, prepTime: '1 hr' },
-    ],
-    summary: { distance: '12 km', totalTime: '6h 30m', cost: '৳800–1,200' },
-  },
-  d2: {
-    stops: [
-      { time: '8:30 AM', name: 'Panam City Ruins', type: 'Heritage', duration: '1.5 hrs', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=140&fit=crop', tip: 'Best in morning light' },
-      { time: '10:15 AM', name: 'Goaldi Mosque', type: 'Heritage', duration: '45 min', img: 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=200&h=140&fit=crop', tip: '15th century architecture' },
-      { time: '11:15 AM', name: 'Folk Art Museum', type: 'Museum', duration: '1 hr', img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=200&h=140&fit=crop', tip: 'Buy local crafts here' },
-      { time: '12:30 PM', name: 'Sonargaon Riverside', type: 'Nature', duration: '45 min', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=140&fit=crop', tip: 'Boat ride available' },
-    ],
-    readyToPick: [
-      { name: 'Muslin Stole (handwoven)', vendor: 'Sonargaon Weavers', price: 1200, prepTime: '30 min' },
-      { name: 'Traditional Pitha Box', vendor: 'Narayanganj Kitchen', price: 350, prepTime: '1 hr' },
-    ],
-    summary: { distance: '32 km', totalTime: '5h 30m', cost: '৳600–1,000' },
-  },
-};
-
-// Fallback route for destinations without specific data
-const DEFAULT_ROUTE = {
-  stops: [
-    { time: '9:00 AM', name: 'Main Entrance & Visitor Center', type: 'Info', duration: '30 min', img: 'https://images.unsplash.com/photo-1524230659092-07f99a4d0ef6?w=200&h=140&fit=crop', tip: 'Pick up a map here' },
-    { time: '9:45 AM', name: 'Main Heritage Site', type: 'Heritage', duration: '2 hrs', img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=200&h=140&fit=crop', tip: 'Best viewed before noon' },
-    { time: '12:00 PM', name: 'Local Food Stop', type: 'Food', duration: '1 hr', img: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=140&fit=crop', tip: 'Try the local specialty' },
-    { time: '1:30 PM', name: 'Craft Market', type: 'Shopping', duration: '1 hr', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=140&fit=crop', tip: 'Bargain gently and respectfully' },
-  ],
-  readyToPick: [
-    { name: 'Local Specialty Snack Pack', vendor: 'Local Vendor', price: 250, prepTime: '30 min' },
-  ],
-  summary: { distance: '40–80 km', totalTime: '6–8h', cost: '৳700–1,500' },
-};
-
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
-function LocationDetector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const [detecting, setDetecting] = useState(false);
-  const [detected, setDetected] = useState(false);
-
-  function handleDetect() {
-    setDetecting(true);
-    setTimeout(() => {
-      onChange('Dhaka (Motijheel)');
-      setDetecting(false);
-      setDetected(true);
-    }, 1200);
-  }
-
+function StartPointPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
-    <div className="space-y-2">
-      <button
-        onClick={handleDetect}
-        disabled={detecting}
-        className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 font-semibold text-sm transition-all"
-        style={detected
-          ? { borderColor: 'var(--color-primary)', background: '#E6F4EF', color: 'var(--color-primary)' }
-          : { borderColor: 'var(--color-border)', background: 'white', color: 'var(--color-text)' }}>
-        {detecting
-          ? <><span className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin inline-block" /> Detecting location...</>
-          : detected
-          ? <><CheckCircle size={16} /> 📍 {value}</>
-          : <><Crosshair size={16} style={{ color: 'var(--color-primary)' }} /> Use My Current Location</>}
-      </button>
-      <p className="text-xs text-center" style={{ color: 'var(--color-text-muted)' }}>or enter manually</p>
-      <select value={value} onChange={e => { onChange(e.target.value); setDetected(false); }}
-        className="w-full px-4 py-3 rounded-2xl border-2 text-sm outline-none bg-white border-[var(--color-border)] focus:border-[var(--color-primary)]">
-        <option value="">Select your location...</option>
-        {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
-      </select>
+    <select value={value} onChange={e => onChange(e.target.value)}
+      className="w-full px-4 py-3 rounded-2xl border-2 text-sm outline-none bg-white border-[var(--color-border)] focus:border-[var(--color-primary)]">
+      <option value="">Select where you start from...</option>
+      {START_POINTS.map(l => <option key={l.name} value={l.name}>{l.name}</option>)}
+    </select>
+  );
+}
+
+/** Simulated Uber/Pathao fares from the starting point; the cheapest available ride is recommended. */
+function RideFares({ fares, km, from, to }: { fares: FareEstimate[]; km: number; from: string; to: string }) {
+  const best = fares.find(f => f.available);
+  return (
+    <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: 'var(--color-border)' }}>
+      <div className="px-5 py-3 border-b" style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface-2)' }}>
+        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Ride estimate</p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text)' }}>{from} → {to} · about {Math.round(km)} km by road</p>
+      </div>
+      <div className="divide-y" style={{ borderColor: 'var(--color-border)' }}>
+        {fares.map(f => (
+          <div key={f.ride.id} className={`flex items-center gap-3 px-5 py-3 ${f.available ? '' : 'opacity-50'}`}>
+            <span className="text-xl">{f.ride.emoji}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                {f.ride.label}
+                {best && f.ride.id === best.ride.id && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold text-white" style={{ background: 'var(--color-primary)' }}>Recommended</span>
+                )}
+              </p>
+              <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+                {f.available ? `about ${formatMinutes(f.minutes)}` : `Not offered beyond ${f.ride.maxKm} km`}
+              </p>
+            </div>
+            {f.available && <p className="text-sm font-bold" style={{ color: 'var(--color-text)' }}>৳{f.low.toLocaleString()}–{f.high.toLocaleString()}</p>}
+          </div>
+        ))}
+      </div>
+      <p className="px-5 py-2 text-[11px]" style={{ color: 'var(--color-text-muted)', background: 'var(--color-surface-2)' }}>
+        Simulated estimate from distance and typical rates; the app price may differ. Nothing is booked.
+      </p>
     </div>
   );
 }
+
+const PLACE_FALLBACK = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="#E6F4EF"/></svg>');
+const onImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  if (e.currentTarget.src !== PLACE_FALLBACK) e.currentTarget.src = PLACE_FALLBACK;
+};
 
 function GuideBookingModal({ guide, destination, location, route, preferredDate, onClose }: {
   guide: any;
   destination: string;
   location: string;
-  route: typeof DEFAULT_ROUTE;
+  route: Itinerary;
   preferredDate: string;
   onClose: () => void;
 }) {
@@ -194,9 +137,10 @@ function GuideBookingModal({ guide, destination, location, route, preferredDate,
           days: [{
             date: startDate,
             stops: route.stops.map((stop, index) => ({
+              placeId: stop.placeId,
               placeName: stop.name,
               placeImage: stop.img,
-              location,
+              location: stop.location,
               duration: stop.duration,
               notes: stop.tip,
               order: index,
@@ -314,20 +258,19 @@ function GuideBookingModal({ guide, destination, location, route, preferredDate,
 }
 
 function GeneratedItinerary({
-  destination, prefs, budget, duration, transport, onReset, onSave, onBook
+  destination, route, start, prefs, budget, duration, onReset, onSave, onBook
 }: {
-  destination: typeof DESTINATIONS[0];
+  destination: Destination;
+  route: Itinerary;
+  start: string;
   prefs: string[];
   budget: string;
   duration: string;
-  transport: string;
   onReset: () => void;
   onSave: () => void;
   onBook: (guide: any) => void;
 }) {
-  const route = GENERATED_ROUTES[destination.id] || DEFAULT_ROUTE;
   const [activeStop, setActiveStop] = useState<number | null>(null);
-  const transportOpt = TRANSPORT_OPTS.find(t => t.id === transport)!;
   const {
     data: fetchedGuides,
     loading: guidesLoading,
@@ -361,7 +304,7 @@ function GeneratedItinerary({
       {/* Route header */}
       <div className="rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--color-border)' }}>
         <div className="relative h-44">
-          <img src={destination.img} alt={destination.name} className="w-full h-full object-cover" />
+          <img src={destination.img || PLACE_FALLBACK} onError={onImgError} alt={destination.name} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E]/80 to-transparent" />
           <div className="absolute bottom-4 left-5 right-5">
             <div className="flex items-center gap-2 mb-1">
@@ -389,12 +332,7 @@ function GeneratedItinerary({
         </div>
       </div>
 
-      {/* Transport badge */}
-      <div className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: 'var(--color-surface-2)' }}>
-        <span className="text-lg">{transportOpt.emoji}</span>
-        <span style={{ color: 'var(--color-text)' }}>Recommended: {transportOpt.label}</span>
-        <span className="ml-auto text-xs" style={{ color: 'var(--color-text-muted)' }}>{transportOpt.cost}</span>
-      </div>
+      <RideFares fares={route.fares} km={route.startKm} from={start} to={destination.name} />
 
       {/* Stop-by-stop timeline */}
       <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: 'var(--color-border)' }}>
@@ -427,7 +365,7 @@ function GeneratedItinerary({
               </button>
               {activeStop === i && (
                 <div className="px-5 pb-4 flex gap-3 bg-gray-50">
-                  <img src={stop.img} alt={stop.name} className="w-24 h-16 rounded-xl object-cover flex-shrink-0" />
+                  <img src={stop.img || PLACE_FALLBACK} onError={onImgError} alt={stop.name} className="w-24 h-16 rounded-xl object-cover flex-shrink-0" />
                   <div>
                     <p className="text-xs font-semibold mb-1 flex items-center gap-1" style={{ color: '#D97706' }}>
                       💡 Tip
@@ -562,11 +500,10 @@ export default function TripPlanner() {
   const [step, setStep] = useState<'form' | 'results'>('form');
   const [myLocation, setMyLocation] = useState('');
   const [destSearch, setDestSearch] = useState('');
-  const [selectedDest, setSelectedDest] = useState<typeof DESTINATIONS[0] | null>(null);
+  const [selectedDest, setSelectedDest] = useState<Destination | null>(null);
   const [prefs, setPrefs] = useState<string[]>(['heritage', 'food', 'readytopick']);
   const [budget, setBudget] = useState('mid');
   const [duration, setDuration] = useState('fullday');
-  const [transport, setTransport] = useState('cng');
   const [travelDate, setTravelDate] = useState('');
   const [generating, setGenerating] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -584,7 +521,17 @@ export default function TripPlanner() {
   const [showNewTrip, setShowNewTrip] = useState(false);
   const [newTripName, setNewTripName] = useState('');
 
-  const filteredDests = DESTINATIONS.filter(d =>
+  const { data: allPlaces } = useApiData(() => placesApi.list({ limit: 200 }), [] as any[]);
+  const destinations = React.useMemo(
+    () => allPlaces.map(toDestination).filter((d: Destination | null): d is Destination => d !== null),
+    [allPlaces],
+  );
+  const startPoint = START_POINTS.find(p => p.name === myLocation);
+  const route = React.useMemo(
+    () => (startPoint && selectedDest ? buildItinerary(startPoint, selectedDest, destinations, duration) : null),
+    [startPoint, selectedDest, destinations, duration],
+  );
+  const filteredDests = destinations.filter(d =>
     !destSearch || d.name.toLowerCase().includes(destSearch.toLowerCase()) || d.location.toLowerCase().includes(destSearch.toLowerCase())
   );
 
@@ -599,8 +546,7 @@ export default function TripPlanner() {
   }
 
   async function handleSave() {
-    if (!selectedDest) return;
-    const route = GENERATED_ROUTES[selectedDest.id] || DEFAULT_ROUTE;
+    if (!selectedDest || !route) return;
     const date = travelDate || new Date().toISOString().split('T')[0];
     try {
       const newTrip = await tripsApi.create({
@@ -612,9 +558,10 @@ export default function TripPlanner() {
         days: [{
           date,
           stops: route.stops.map((s, i) => ({
+            placeId: s.placeId,
             placeName: s.name,
             placeImage: s.img,
-            location: selectedDest.location,
+            location: s.location,
             duration: s.duration,
             notes: s.tip,
             order: i,
@@ -630,7 +577,6 @@ export default function TripPlanner() {
   }
 
   // ---- Persisted trip editing (every change goes to MySQL via PUT /trips/:id) ----
-  const { data: allPlaces } = useApiData(() => placesApi.list({ limit: 200 }), [] as any[]);
   const {
     data: availableTripGuides,
     loading: guideAvailabilityLoading,
@@ -642,6 +588,11 @@ export default function TripPlanner() {
     [] as any[],
     [currentUser?.role, selectedTrip?.startDate, selectedTrip?.endDate],
   );
+  // Older saved stops kept a stock photo; show the place's own photo whenever the stop is linked to a place.
+  const placeImageFor = (stop: any) =>
+    allPlaces.find((p: any) => p.id === stop.placeId
+      || String(p.name).toLowerCase() === String(stop.placeName).toLowerCase())?.images?.[0]
+    || stop.placeImage || PLACE_FALLBACK;
   const [tripBusy, setTripBusy] = useState(false);
   const [tripError, setTripError] = useState('');
   const [addingToDay, setAddingToDay] = useState<string | null>(null);
@@ -771,12 +722,12 @@ export default function TripPlanner() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
-      {bookingGuide && selectedDest && (
+      {bookingGuide && selectedDest && route && (
         <GuideBookingModal
           guide={bookingGuide}
           destination={selectedDest.name}
           location={selectedDest.location}
-          route={GENERATED_ROUTES[selectedDest.id] || DEFAULT_ROUTE}
+          route={route}
           preferredDate={travelDate}
           onClose={() => setBookingGuide(null)}
         />
@@ -836,7 +787,7 @@ export default function TripPlanner() {
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: 'var(--color-primary)' }}>1</div>
                   <h3 className="font-bold text-sm" style={{ color: 'var(--color-text)' }}>Your Starting Location</h3>
                 </div>
-                <LocationDetector value={myLocation} onChange={setMyLocation} />
+                <StartPointPicker value={myLocation} onChange={setMyLocation} />
               </div>
 
               {/* Choose Destination */}
@@ -858,10 +809,10 @@ export default function TripPlanner() {
                       style={selectedDest?.id === d.id
                         ? { borderColor: 'var(--color-primary)', background: '#E6F4EF' }
                         : { borderColor: 'var(--color-border)', background: 'white' }}>
-                      <img src={d.img} alt={d.name} className="w-14 h-10 rounded-lg object-cover flex-shrink-0" />
+                      <img src={d.img || PLACE_FALLBACK} onError={onImgError} alt={d.name} className="w-14 h-10 rounded-lg object-cover flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm truncate" style={{ color: 'var(--color-text)' }}>{d.name}</p>
-                        <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>📍 {d.location} · ⏱ {d.duration}</p>
+                        <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>📍 {d.district}, {d.division} · {d.type}</p>
                       </div>
                       {selectedDest?.id === d.id && <CheckCircle size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />}
                     </button>
@@ -929,36 +880,25 @@ export default function TripPlanner() {
                 </div>
               </div>
 
-              {/* Transport + Date */}
+              {/* Date + ride estimate */}
               <div className="bg-white rounded-2xl border p-5" style={{ borderColor: 'var(--color-border)' }}>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: 'var(--color-primary)' }}>5</div>
-                  <h3 className="font-bold text-sm" style={{ color: 'var(--color-text)' }}>Transport & Date</h3>
+                  <h3 className="font-bold text-sm" style={{ color: 'var(--color-text)' }}>Date & Ride Estimate</h3>
                 </div>
                 <div className="space-y-3">
-                  <div>
-                    <p className="text-xs font-semibold mb-2" style={{ color: 'var(--color-text-muted)' }}>Preferred transport</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {TRANSPORT_OPTS.map(t => (
-                        <button key={t.id} onClick={() => setTransport(t.id)}
-                          className="flex items-center gap-2 p-3 rounded-xl border-2 text-left transition-all"
-                          style={transport === t.id
-                            ? { borderColor: 'var(--color-primary)', background: '#E6F4EF' }
-                            : { borderColor: 'var(--color-border)' }}>
-                          <span className="text-lg">{t.emoji}</span>
-                          <div>
-                            <p className="text-xs font-bold" style={{ color: 'var(--color-text)' }}>{t.label}</p>
-                            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{t.cost}</p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                   <div>
                     <p className="text-xs font-semibold mb-1.5" style={{ color: 'var(--color-text-muted)' }}>Travel date</p>
                     <input type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border-2 text-sm outline-none border-[var(--color-border)] focus:border-[var(--color-primary)]" />
                   </div>
+                  {route && selectedDest ? (
+                    <RideFares fares={route.fares} km={route.startKm} from={myLocation} to={selectedDest.name} />
+                  ) : (
+                    <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+                      Choose a starting point and a destination to see Uber and Pathao fare estimates.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -979,13 +919,14 @@ export default function TripPlanner() {
 
             {/* Results column */}
             <div className={step === 'results' ? 'lg:col-span-3' : 'lg:col-span-2'}>
-              {step === 'results' && selectedDest ? (
+              {step === 'results' && selectedDest && route ? (
                 <GeneratedItinerary
                   destination={selectedDest}
+                  route={route}
+                  start={myLocation}
                   prefs={prefs}
                   budget={budget}
                   duration={duration}
-                  transport={transport}
                   onReset={() => { setStep('form'); setSelectedDest(null); }}
                   onSave={handleSave}
                   onBook={setBookingGuide}
@@ -1188,7 +1129,7 @@ export default function TripPlanner() {
                                       {idx < day.stops.length - 1 && <div className="w-0.5 h-8 mt-1" style={{ background: '#E6F4EF' }} />}
                                     </div>
                                     <div className="flex-1 flex gap-3 rounded-xl p-3" style={{ background: 'var(--color-surface-2)' }}>
-                                      <img src={stop.placeImage} alt={stop.placeName} className="w-14 h-14 rounded-lg object-cover" />
+                                      <img src={placeImageFor(stop)} onError={onImgError} alt={stop.placeName} className="w-14 h-14 rounded-lg object-cover" />
                                       <div className="flex-1 min-w-0">
                                         <p className="font-semibold text-sm">{stop.placeName}</p>
                                         <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--color-text-muted)' }}>

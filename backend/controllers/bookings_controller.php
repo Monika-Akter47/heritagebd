@@ -13,7 +13,8 @@ function booking_hydrate(PDO $pdo, array $row): array {
         'status' => $row['status'], 'message' => $row['message'], 'totalPrice' => (float)$row['total_price'],
         'advancePercent' => (float)$row['advance_percent'], 'commissionPercent' => (float)$row['commission_percent'],
         'advanceAmount' => (float)$row['advance_amount'], 'balanceAmount' => (float)$row['balance_amount'],
-        'advanceStatus' => $row['advance_status'],
+        'advanceStatus' => $row['advance_status'], 'refundMethod' => $row['refund_method'] ?? null,
+        'refundTransactionId' => $row['refund_transaction_id'] ?? null, 'refundedAt' => $row['refunded_at'] ?? null,
         'advancePaymentMethod' => $row['advance_payment_method'] ?? null,
         'advancePayerPhone' => $row['advance_payer_phone'] ?? null, 'advanceTransactionId' => $row['advance_transaction_id'] ?? null,
         'groupSize' => (int)$row['group_size'], 'createdAt' => $row['created_at'],
@@ -255,8 +256,15 @@ function bookings_update(PDO $pdo, string $id): void {
         }
         settle_booking($pdo, $booking);
     } elseif (in_array($d['status'], ['rejected', 'cancelled'], true)) {
-        $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refunded' WHERE id = ? AND advance_status = 'held'")
-            ->execute([$id]);
+        // A tourist cancelling their own booking gets the advance back at once. When the guide (or an
+        // admin) cancels or rejects it, the advance waits until an admin sends it back.
+        $pending = !$isTourist && (float)$booking['advance_amount'] > 0;
+        $pdo->prepare('UPDATE guide_bookings SET advance_status = ? WHERE id = ? AND advance_status = \'held\'')
+            ->execute([$pending ? 'refund_pending' : 'refunded', $id]);
+        if ($pending) {
+            notify_admins($pdo, 'Refund needed',
+                "A guide booking was {$d['status']}. Send the tourist's advance back.", 'booking', '/admin?section=payments');
+        }
     }
     $pdo->commit();
 

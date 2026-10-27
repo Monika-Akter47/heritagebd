@@ -20,6 +20,58 @@ function Proof({ method, phone, txn }: { method: string | null; phone: string | 
   return <span className="font-mono text-xs">{phone}<br />{txn}</span>;
 }
 
+type Advance = AdminPayments['advances'][number];
+
+/** The admin records the advance sent back to the tourist (vendor or guide cancelled). */
+function RefundDialog({ advance, onClose, onDone }: { advance: Advance; onClose: () => void; onDone: () => void }) {
+  const [method, setMethod] = useState(advance.method === 'nagad' ? 'nagad' : advance.method === 'card' ? 'card' : 'bkash');
+  const [txn, setTxn] = useState('');
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true); setError('');
+    try {
+      await adminApi.refund(advance.flow as 'preorder' | 'guide_booking', advance.recordId, { method, transactionId: txn.trim() });
+      onDone();
+    } catch (err: any) {
+      setError(err?.message || 'The refund could not be recorded.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-label="Record refund">
+      <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5">
+        <h3 className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>Refund {taka(advance.advance)}</h3>
+        <p className="text-xs text-[var(--color-text-muted)]">
+          {FLOW_LABEL[advance.flow]} <span className="font-mono">{advance.ref}</span> to {advance.customerName}
+          {advance.payerPhone ? ` (${advance.payerPhone})` : advance.customerPhone ? ` (${advance.customerPhone})` : ''}.
+          Send the money first, then record it here.
+        </p>
+        <label className="block text-xs font-semibold">Sent by
+          <select value={method} onChange={e => setMethod(e.target.value)} className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-2 py-2 text-sm">
+            <option value="bkash">bKash</option><option value="nagad">Nagad</option><option value="card">Card</option>
+          </select>
+        </label>
+        <label className="block text-xs font-semibold">Refund TrxID
+          <input value={txn} onChange={e => setTxn(e.target.value)} required placeholder="e.g. 9BC4D7XQ2L"
+            className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 font-mono text-sm uppercase" />
+        </label>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+        <div className="flex justify-end gap-2 pt-1">
+          <button type="button" onClick={onClose} className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-xs font-semibold">Cancel</button>
+          <button type="submit" disabled={saving || !txn.trim()} className="rounded-lg bg-[#006A4E] px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">
+            {saving ? 'Saving…' : 'Mark refunded'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
   return (
     <div className="overflow-x-auto">
@@ -41,6 +93,7 @@ export default function PaymentsSection() {
   const [flow, setFlow] = useState('');
   const [status, setStatus] = useState('');
   const [query, setQuery] = useState('');
+  const [refunding, setRefunding] = useState<Advance | null>(null);
 
   const q = query.trim().toLowerCase();
   const matches = (...values: (string | null | undefined)[]) => !q || values.some(v => v?.toLowerCase().includes(q));
@@ -55,6 +108,16 @@ export default function PaymentsSection() {
 
   return (
     <div className="space-y-5">
+      {refunding && (
+        <RefundDialog advance={refunding} onClose={() => setRefunding(null)}
+          onDone={() => { setRefunding(null); void refetch(); }} />
+      )}
+      {t && t.advanceRefundPending > 0 && (
+        <button onClick={() => { setView('advances'); setFlow(''); setStatus('refund_pending'); }}
+          className="w-full rounded-2xl border border-red-200 bg-red-50 px-5 py-3 text-left text-sm font-semibold text-red-700">
+          {taka(t.advanceRefundPending)} waiting to be refunded to tourists (vendor or guide cancelled). Show them →
+        </button>
+      )}
       {t && (
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
@@ -62,6 +125,7 @@ export default function PaymentsSection() {
             { label: 'Held by Platform', value: taka(t.advanceHeld), note: 'released when the order completes', color: '#D4A017' },
             { label: 'Released to Partners', value: taka(t.advanceReleased), note: `commission earned ${taka(t.commissionEarned)}`, color: '#2563EB' },
             { label: 'Refunded', value: taka(t.advanceRefunded), note: 'cancelled orders and bookings', color: '#F42A41' },
+            { label: 'Refund Pending', value: taka(t.advanceRefundPending), note: 'vendor or guide cancelled; admin to send back', color: t.advanceRefundPending ? '#F42A41' : '#6B7280' },
             { label: 'Balances Paid to Partners', value: taka(t.balanceCollected), note: 'pickup payments and confirmed guide cash', color: '#059669' },
             { label: 'Awaiting Guide Confirmation', value: taka(t.balanceAwaitingConfirmation), note: 'reported by tourists', color: '#7C3AED' },
             { label: 'Wallet Payments Missing Proof', value: String(t.walletMissingProof), note: 'bKash/Nagad without number or TrxID', color: t.walletMissingProof ? '#F42A41' : '#6B7280' },
@@ -92,7 +156,7 @@ export default function PaymentsSection() {
           </select>
           <select value={status} onChange={e => setStatus(e.target.value)} aria-label="Filter by status" className="rounded-lg border border-[var(--color-border)] px-2 py-1.5 text-xs">
             <option value="">All statuses</option>
-            {(view === 'advances' ? ['held', 'released', 'refunded'] : ['confirmed', 'reported']).map(s => <option key={s} value={s}>{s}</option>)}
+            {(view === 'advances' ? ['held', 'released', 'refund_pending', 'refunded'] : ['confirmed', 'reported']).map(s => <option key={s} value={s}>{s}</option>)}
           </select>
           <button onClick={() => void refetch()} className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-semibold">Refresh</button>
         </div>
@@ -102,7 +166,7 @@ export default function PaymentsSection() {
         {!loading && !error && rows.length === 0 && <p className="p-6 text-sm text-[var(--color-text-muted)]">No payments match.</p>}
 
         {view === 'advances' && advances.length > 0 && (
-          <Table head={['Date', 'Flow / Ref', 'Customer', 'Partner', 'Total', 'Advance', 'Method', 'Payer / TrxID', 'Advance', 'Order status']}>
+          <Table head={['Date', 'Flow / Ref', 'Customer', 'Partner', 'Total', 'Advance', 'Method', 'Payer / TrxID', 'Advance', 'Order status', '']}>
             {advances.map(a => (
               <tr key={`${a.flow}-${a.recordId}`}>
                 <td className={td + ' whitespace-nowrap'}>{fmt(a.createdAt)}</td>
@@ -113,8 +177,18 @@ export default function PaymentsSection() {
                 <td className={td + ' font-semibold'}>{taka(a.advance)}</td>
                 <td className={td}>{methodLabel(a.method)}</td>
                 <td className={td}><Proof method={a.method} phone={a.payerPhone} txn={a.transactionId} /></td>
-                <td className={td}><StatusBadge status={a.advanceStatus} /></td>
+                <td className={td}>
+                  <StatusBadge status={a.advanceStatus} />
+                  {a.advanceStatus === 'refunded' && a.refundTransactionId && (
+                    <p className="mt-1 font-mono text-[11px] text-[var(--color-text-muted)]">{methodLabel(a.refundMethod)} {a.refundTransactionId}</p>
+                  )}
+                </td>
                 <td className={td}><StatusBadge status={a.status} /></td>
+                <td className={td}>
+                  {a.advanceStatus === 'refund_pending' && (
+                    <button onClick={() => setRefunding(a)} className="whitespace-nowrap rounded-lg bg-[#F42A41] px-3 py-1.5 text-xs font-semibold text-white">Refund</button>
+                  )}
+                </td>
               </tr>
             ))}
           </Table>

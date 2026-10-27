@@ -148,6 +148,7 @@ Items returned for an area carry `areaMatch: "local" | "nearby"`.
 | GET | `/admin/vendors`, `/admin/vendors/pending` | Vendors |
 | PUT | `/admin/vendors/{id}/verify` | `verified` / `rejected` |
 | GET / DELETE | `/admin/reviews[/{id}]` | Moderate reviews |
+| POST | `/admin/refunds/{preorder\|guide_booking}/{id}` | Record a refund for a `refund_pending` advance: `method` (`bkash`/`nagad`/`card`) and `transactionId` (6–20 letters/digits). 409 if nothing is pending |
 | POST / PUT / DELETE | `/admin/events[/{id}]` | Manage events |
 | POST / PUT / DELETE | `/admin/stories[/{id}]` | Manage stories |
 | PUT | `/admin/homepage-images` | Replace homepage imagery |

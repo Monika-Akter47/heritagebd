@@ -47,6 +47,7 @@ $routes = [
     ['GET',  '#^/api/earnings/me$#',                  'earnings_me'],
     ['GET',  '#^/api/admin/earnings$#',               'admin_earnings'],
     ['GET',  '#^/api/admin/payments$#',               'admin_payments'],
+    ['POST', '#^/api/admin/refunds/(preorder|guide_booking)/([\w-]+)$#', 'admin_refund'],
     ['GET',  '#^/api/admin/commission-settings$#',    'commission_settings_index'],
     ['PUT',  '#^/api/admin/commission-settings$#',    'commission_settings_update'],
     ['GET',  '#^/api/site-content/homepage-images$#', 'site_homepage_images'],

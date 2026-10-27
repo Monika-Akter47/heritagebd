@@ -23,6 +23,7 @@ const STATUS: Record<string, [string, Variant]> = {
   pickup_payment_pending: ['Awaiting Final Payment', 'orange'],
   picked_up: ['Picked Up · Awaiting Receipt', 'orange'],
   refunded: ['Refunded', 'gray'],
+  refund_pending: ['Refund pending', 'red'],
   // guide bookings
   pending: ['Pending', 'gold'],
   accepted: ['Accepted', 'blue'],

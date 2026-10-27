@@ -478,7 +478,7 @@ export type PaymentFlow = 'order' | 'preorder' | 'guide_booking';
 
 export interface AdminPayments {
   totals: {
-    advanceCollected: number; advanceHeld: number; advanceReleased: number; advanceRefunded: number;
+    advanceCollected: number; advanceHeld: number; advanceReleased: number; advanceRefunded: number; advanceRefundPending: number;
     balanceCollected: number; balanceAwaitingConfirmation: number; commissionEarned: number;
     /** bKash/Nagad advances recorded without a payer number or TrxID. */
     walletMissingProof: number;
@@ -487,7 +487,8 @@ export interface AdminPayments {
     flow: PaymentFlow; ref: string; recordId: string; createdAt: string; status: string;
     customerName: string; customerPhone: string | null; partnerName: string | null;
     total: number; advance: number; method: string | null; payerPhone: string | null; transactionId: string | null;
-    advanceStatus: 'held' | 'released' | 'refunded';
+    advanceStatus: 'held' | 'released' | 'refund_pending' | 'refunded';
+    refundMethod: string | null; refundTransactionId: string | null; refundedAt: string | null;
   }[];
   balances: {
     flow: Exclude<PaymentFlow, 'order'>; ref: string; recordId: string; paidAt: string;
@@ -500,6 +501,8 @@ export const adminApi = {
   stats: () => get('/admin/stats'),
   earnings: () => get('/admin/earnings'),
   payments: () => get<AdminPayments>('/admin/payments'),
+  refund: (flow: 'preorder' | 'guide_booking', id: string, data: { method: string; transactionId: string }) =>
+    post(`/admin/refunds/${flow}/${id}`, data),
   commissionSettings: () => get('/admin/commission-settings'),
   updateCommissionSettings: (settings: { flow: string; advancePercent: number; commissionPercent: number }[]) =>
     put('/admin/commission-settings', { settings }),

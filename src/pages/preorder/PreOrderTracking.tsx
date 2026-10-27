@@ -389,7 +389,11 @@ function CancelledView({ order }: { order: any }) {
         </h2>
         <p className="text-sm mt-2 mb-6" style={{ color: 'var(--color-text-muted)' }}>
           {`Your pre-order #${order.orderNumber} has been ${order.status === 'refunded' ? 'refunded' : 'cancelled'}.`}
-          {order.refundAmount != null && ` A refund of ৳${Number(order.refundAmount).toLocaleString()} of your ৳${Number(order.advancePaid).toLocaleString()} advance has been initiated.`}
+          {order.refundAmount != null && ((order as any).advanceStatus === 'refund_pending'
+            ? ` The vendor cancelled it. Your ৳${Number(order.refundAmount).toLocaleString()} advance will be sent back by HeritageBD; you'll get a notification with the TrxID.`
+            : (order as any).refundTransactionId
+            ? ` ৳${Number(order.refundAmount).toLocaleString()} was refunded (TrxID ${(order as any).refundTransactionId}).`
+            : ` A refund of ৳${Number(order.refundAmount).toLocaleString()} of your ৳${Number(order.advancePaid).toLocaleString()} advance has been initiated.`)}
         </p>
         <button onClick={() => navigate('/shop')} className="w-full py-4 rounded-2xl font-bold text-white" style={{ background: 'var(--color-primary)' }}>
           Browse More Products

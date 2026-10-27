@@ -249,19 +249,22 @@ function admin_payments(PDO $pdo): void {
                   (SELECT v.shop_name FROM order_items oi JOIN products p ON p.id = oi.product_id
                      JOIN vendors v ON v.user_id = p.vendor_id WHERE oi.order_id = o.id LIMIT 1) AS partner_name,
                   o.total_amount AS total, o.advance_amount AS advance, o.payment_method AS method,
-                  o.advance_payer_phone AS payer_phone, o.advance_transaction_id AS transaction_id, o.advance_status
+                  o.advance_payer_phone AS payer_phone, o.advance_transaction_id AS transaction_id, o.advance_status,
+                  NULL AS refund_method, NULL AS refund_transaction_id, NULL AS refunded_at
            FROM orders o JOIN users u ON u.id = o.user_id
            UNION ALL
            SELECT 'preorder', po.order_number, po.id, po.created_at, po.status,
                   u.name, u.phone, v.shop_name,
                   po.total_amount, po.advance_paid, po.advance_payment_method,
-                  po.advance_payer_phone, po.advance_transaction_id, po.advance_status
+                  po.advance_payer_phone, po.advance_transaction_id, po.advance_status,
+                  po.refund_method, po.refund_transaction_id, po.refunded_at
            FROM preorders po JOIN users u ON u.id = po.tourist_id JOIN vendors v ON v.user_id = po.vendor_id
            UNION ALL
            SELECT 'guide_booking', b.id, b.id, b.created_at, b.status,
                   u.name, u.phone, g.name,
                   b.total_price, b.advance_amount, b.advance_payment_method,
-                  b.advance_payer_phone, b.advance_transaction_id, b.advance_status
+                  b.advance_payer_phone, b.advance_transaction_id, b.advance_status,
+                  b.refund_method, b.refund_transaction_id, b.refunded_at
            FROM guide_bookings b JOIN users u ON u.id = b.tourist_id JOIN users g ON g.id = b.guide_id
          ) advances ORDER BY created_at DESC LIMIT 500"
     )->fetchAll();
@@ -283,12 +286,12 @@ function admin_payments(PDO $pdo): void {
          ) balances ORDER BY paid_at DESC LIMIT 500"
     )->fetchAll();
 
-    $totals = ['advanceCollected' => 0.0, 'advanceHeld' => 0.0, 'advanceReleased' => 0.0, 'advanceRefunded' => 0.0,
+    $totals = ['advanceCollected' => 0.0, 'advanceHeld' => 0.0, 'advanceReleased' => 0.0, 'advanceRefunded' => 0.0, 'advanceRefundPending' => 0.0,
                'balanceCollected' => 0.0, 'balanceAwaitingConfirmation' => 0.0, 'walletMissingProof' => 0];
     foreach ($advances as $row) {
         $amount = (float)$row['advance'];
         $totals['advanceCollected'] += $amount;
-        $key = ['held' => 'advanceHeld', 'released' => 'advanceReleased', 'refunded' => 'advanceRefunded'][$row['advance_status']] ?? null;
+        $key = ['held' => 'advanceHeld', 'released' => 'advanceReleased', 'refunded' => 'advanceRefunded', 'refund_pending' => 'advanceRefundPending'][$row['advance_status']] ?? null;
         if ($key) $totals[$key] += $amount;
         if (in_array($row['method'], ['bkash', 'nagad'], true) && (!$row['payer_phone'] || !$row['transaction_id'])) {
             $totals['walletMissingProof']++;
@@ -306,7 +309,8 @@ function admin_payments(PDO $pdo): void {
             'status' => $r['status'], 'customerName' => $r['customer_name'], 'customerPhone' => $r['customer_phone'],
             'partnerName' => $r['partner_name'], 'total' => (float)$r['total'], 'advance' => (float)$r['advance'],
             'method' => $r['method'], 'payerPhone' => $r['payer_phone'], 'transactionId' => $r['transaction_id'],
-            'advanceStatus' => $r['advance_status'],
+            'advanceStatus' => $r['advance_status'], 'refundMethod' => $r['refund_method'],
+            'refundTransactionId' => $r['refund_transaction_id'], 'refundedAt' => $r['refunded_at'],
         ], $advances),
         'balances' => array_map(fn($r) => [
             'flow' => $r['flow'], 'ref' => $r['ref'], 'recordId' => $r['record_id'], 'paidAt' => $r['paid_at'],
@@ -315,4 +319,60 @@ function admin_payments(PDO $pdo): void {
             'status' => $r['status'], 'recordedBy' => $r['recorded_by'],
         ], $balances),
     ]);
+}
+
+/**
+ * POST /admin/refunds/{preorder|guide_booking}/{id} — the admin records the advance sent back to the tourist
+ * after a vendor cancelled a paid pre-order or a guide cancelled or rejected a booking.
+ * Body: method (bkash | nagad | card) and transactionId of the refund.
+ */
+function admin_refund(PDO $pdo, string $flow, string $id): void {
+    $user = require_auth($pdo);
+    require_role($user, ['admin']);
+    $d = body();
+    $method = $d['method'] ?? '';
+    if (!is_string($method) || !in_array($method, ['bkash', 'nagad', 'card'], true)) {
+        json_error('Choose how the refund was sent: bKash, Nagad, or card.', 422);
+    }
+    $txn = strtoupper(trim((string)($d['transactionId'] ?? '')));
+    if (!preg_match('/^[A-Z0-9]{6,20}$/', $txn)) {
+        json_error('Enter the refund transaction ID (6–20 letters and digits).', 422);
+    }
+
+    $table = $flow === 'preorder' ? 'preorders' : 'guide_bookings';
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare("SELECT * FROM $table WHERE id = ? FOR UPDATE");
+    $stmt->execute([$id]);
+    $row = $stmt->fetch();
+    if (!$row) { $pdo->rollBack(); json_error('Not found.', 404); }
+    if ($row['advance_status'] !== 'refund_pending') {
+        $pdo->rollBack();
+        json_error('This advance is not waiting for a refund.', 409);
+    }
+    $now = date('Y-m-d H:i:s');
+    if ($flow === 'preorder') {
+        $pdo->prepare("UPDATE preorders SET advance_status = 'refunded', status = 'refunded', refund_amount = advance_paid,
+                         refund_method = ?, refund_transaction_id = ?, refunded_at = ? WHERE id = ?")
+            ->execute([$method, $txn, $now, $id]);
+        $amount = (float)$row['advance_paid'];
+        $label = "pre-order {$row['order_number']}";
+        $link = '/preorder/tracking/' . $id;
+        $partner = $row['vendor_id'];
+    } else {
+        $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refunded',
+                         refund_method = ?, refund_transaction_id = ?, refunded_at = ? WHERE id = ?")
+            ->execute([$method, $txn, $now, $id]);
+        $amount = (float)$row['advance_amount'];
+        $label = 'your guide booking';
+        $link = '/profile?tab=trips';
+        $partner = $row['guide_id'];
+    }
+    $pdo->commit();
+
+    $taka = number_format($amount, 2);
+    notify($pdo, $row['tourist_id'], 'Advance refunded',
+        "৳$taka for $label was sent back by " . strtoupper($method) . " (TrxID $txn).", $flow === 'preorder' ? 'order' : 'booking', $link);
+    notify($pdo, $partner, 'Advance refunded', "The tourist's advance for $label was refunded by the admin.", $flow === 'preorder' ? 'order' : 'booking');
+    json_ok(['flow' => $flow, 'id' => $id, 'advanceStatus' => 'refunded', 'amount' => $amount,
+             'refundMethod' => $method, 'refundTransactionId' => $txn, 'refundedAt' => $now]);
 }

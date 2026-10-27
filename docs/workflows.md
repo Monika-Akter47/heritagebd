@@ -37,6 +37,14 @@ be cancelled. `refunded` is defined but currently unreachable (see known issues)
 
 Tourist pays 30% online up front and 70% at pickup. Tourists can only set `arrived` or `cancelled`.
 
+Refunds: a tourist's own cancellation refunds the configured share at once (`advance_status = refunded`).
+When the vendor or an admin cancels a paid pre-order, the advance becomes `refund_pending`, admins are
+notified, and an admin records the refund (`POST /admin/refunds/preorder/{id}` with `method` and
+`transactionId`, from **Admin → Payments**); the order then becomes `refunded`. Guide bookings work the
+same way when the guide cancels or rejects (`POST /admin/refunds/guide_booking/{id}`).
+
+The vendor's list is ordered by pickup date, soonest first, with closed orders last.
+
 ## Guide bookings
 
 Source: `backend/controllers/bookings_controller.php`.

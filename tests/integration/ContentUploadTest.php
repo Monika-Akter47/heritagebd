@@ -133,4 +133,28 @@ final class ContentUploadTest extends ApiTestCase
         $this->assertSame($hero, $this->call('GET', '/site-content/homepage-images')['data']['heroImage']);
         $this->assertStatus(422, $this->call('PUT', '/admin/homepage-images', ['heroImage' => 'javascript:alert(1)'], $admin));
     }
+
+    /** TC-141 | FR-02 | Integration | EP | P1 | + */
+    public function test_TC_141_tourist_uploads_and_saves_a_profile_photo(): void
+    {
+        [$tourist] = $this->register('tourist');
+        $r = $this->upload('/profile-images', base64_decode(self::PNG), 'image/png', 'me.png', $tourist);
+        $this->assertStatus(201, $r);
+        $path = $r['data']['url'];
+        $this->assertMatchesRegularExpression('#^/api/profile-images/[a-f0-9]{32}$#', $path);
+
+        // The page sends the full URL; the server keeps only the path.
+        $saved = $this->call('PUT', '/auth/me', ['avatar' => 'https://heritagebd-flax.vercel.app' . $path], $tourist);
+        $this->assertStatus(200, $saved);
+        $this->assertSame($path, $saved['data']['user']['avatar']);
+    }
+
+    /** TC-142 | FR-02 | Integration | EP | P1 | − */
+    public function test_TC_142_avatar_cannot_point_at_an_outside_address(): void
+    {
+        [$tourist] = $this->register('tourist');
+        $this->assertStatus(422, $this->call('PUT', '/auth/me', ['avatar' => 'https://evil.example/tracker.png'], $tourist));
+        $this->assertStatus(422, $this->call('PUT', '/auth/me', ['avatar' => 'javascript:alert(1)'], $tourist));
+        $this->assertStatus(200, $this->call('PUT', '/auth/me', ['avatar' => ''], $tourist));   // removing the photo is fine
+    }
 }

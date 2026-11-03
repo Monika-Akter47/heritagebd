@@ -227,7 +227,8 @@ function product_image_show(PDO $pdo, string $id): void {
 
 function profile_image_upload(PDO $pdo): void {
     $user = require_auth($pdo);
-    require_role($user, ['vendor', 'guide']);
+    // Every signed-in role can have a profile photo; the file checks below apply to all of them.
+    require_role($user, ['tourist', 'vendor', 'guide', 'admin']);
     [, $mime, $extension] = validate_uploaded_file('file', 5 * 1024 * 1024, [
         'image/jpeg' => 'jpg',
         'image/png' => 'png',

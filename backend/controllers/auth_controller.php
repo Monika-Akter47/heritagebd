@@ -37,7 +37,8 @@ function auth_register(PDO $pdo): void {
         );
         $stmt->execute([
             $id, trim($data['name']), $email, $hash,
-            $data['phone'] ?? null, $data['avatar'] ?? null, $role, $verified, $status,
+            // No avatar at sign-up: the photo is uploaded right after, then saved through PUT /auth/me.
+            $data['phone'] ?? null, null, $role, $verified, $status,
         ]);
 
         if ($role === 'vendor') {
@@ -136,6 +137,15 @@ function auth_update_me(PDO $pdo): void {
     $params = [];
     if (isset($data['name']) && (!is_string($data['name']) || trim($data['name']) === '')) json_error('Name cannot be empty.', 422);
     if (isset($data['phone']) && $data['phone'] !== '' && !preg_match('/^[+0-9][0-9 \-]{6,19}$/', (string)$data['phone'])) json_error('Please enter a valid phone number.', 422);
+    // The avatar must be a photo uploaded through POST /profile-images (or empty to remove it), so an
+    // account cannot point its picture at an outside address. The page sends the full URL; keep the path.
+    if (isset($data['avatar'])) {
+        if (!is_string($data['avatar'])
+            || !preg_match('#^(?:https?://[^/s]+)?(/api/profile-images/[a-f0-9]{32})?$#', trim($data['avatar']), $m)) {
+            json_error('Upload the profile photo first, then save it.', 422);
+        }
+        $data['avatar'] = $m[1] ?? '';
+    }
     foreach (['name', 'phone', 'avatar'] as $f) {
         if (isset($data[$f])) { $fields[] = "$f = ?"; $params[] = is_string($data[$f]) ? trim($data[$f]) : $data[$f]; }
     }

@@ -143,7 +143,7 @@ export default function AccountSettings() {
         </h1>
         <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Manage your security, privacy, and notification preferences</p>
 
-        {(currentUser?.role === 'vendor' || currentUser?.role === 'guide') && (
+        {currentUser && (
           <section aria-labelledby="profile-photo-heading" className="mb-6 rounded-2xl border bg-white p-5" style={{ borderColor: 'var(--color-border)' }}>
             <h2 id="profile-photo-heading" className="mb-4 font-bold text-sm" style={{ color: 'var(--color-text)' }}>Profile Photo</h2>
             <ProfileImagePicker currentUrl={currentUser.avatar} onFileSelected={file => {

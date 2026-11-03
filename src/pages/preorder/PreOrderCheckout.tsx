@@ -14,6 +14,21 @@ function localDateString(date: Date) {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
+/** "2:00 PM" → "14:00" for <input type="time">. */
+function to24h(label: string) {
+  const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(label.trim());
+  if (!m) return '';
+  let h = Number(m[1]) % 12;
+  if (m[3].toUpperCase() === 'PM') h += 12;
+  return `${String(h).padStart(2, '0')}:${m[2]}`;
+}
+
+/** "14:00" → "2:00 PM", the format pickup times are stored in. */
+function to12h(value: string) {
+  const [h, min] = value.split(':').map(Number);
+  return `${h % 12 || 12}:${String(min).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+}
+
 export default function PreOrderCheckout() {
   const [searchParams] = useSearchParams();
   const productId = searchParams.get('product') || '';
@@ -225,9 +240,21 @@ export default function PreOrderCheckout() {
 
             {/* Pickup Time */}
             <div>
-              <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Expected Pickup Time</label>
+              <label htmlFor="pickup-time" className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Expected Pickup Time</label>
+              <div className="relative mb-2">
+                <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-muted)' }} />
+                <input
+                  id="pickup-time"
+                  type="time"
+                  value={to24h(pickupTime)}
+                  onChange={e => e.target.value && setPickupTime(to12h(e.target.value))}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border-2 outline-none text-sm font-medium"
+                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', background: 'white' }}
+                />
+              </div>
+              <p className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>When do you expect to reach the shop? The vendor prepares your order for this time.</p>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                {product.availableTimeSlots.map(slot => (
+                {(product.availableTimeSlots || []).map(slot => (
                   <button
                     key={slot}
                     onClick={() => setPickupTime(slot)}

@@ -24,7 +24,16 @@ function BookingPaymentPanel({ booking, payment, onChanged }: {
   const [proof, setProof] = useState<PaymentProof>(emptyPaymentProof);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [code, setCode] = useState('');
   const balance = Number(booking.balanceAmount || 0);
+  const codeInput = (
+    <label className="block text-xs font-semibold">
+      Tourist's payment code
+      <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} maxLength={6} placeholder="e.g. A1B2C3"
+        className="mt-1 block w-40 rounded-lg border border-[var(--color-border)] bg-white px-3 py-1.5 font-mono text-sm tracking-widest" />
+      <span className="mt-1 block font-normal text-[var(--color-text-muted)]">Cash only: ask the tourist for the code on their booking.</span>
+    </label>
+  );
 
   async function run(action: () => Promise<unknown>) {
     setBusy(true); setError('');
@@ -42,7 +51,10 @@ function BookingPaymentPanel({ booking, payment, onChanged }: {
   function record() {
     const proofError = validatePaymentProof(method, proof);
     if (proofError) { setError(proofError); return; }
-    void run(() => guidePaymentsApi.record(booking.id, method, { payerPhone: proof.phone, reference: proof.transactionId }));
+    if (method === 'cash' && code.trim().length !== 6) { setError("Enter the tourist's 6-character payment code."); return; }
+    void run(() => guidePaymentsApi.record(booking.id, method, {
+      payerPhone: proof.phone, reference: proof.transactionId, verificationCode: method === 'cash' ? code.trim() : undefined,
+    }));
   }
 
   const details = payment
@@ -63,8 +75,10 @@ function BookingPaymentPanel({ booking, payment, onChanged }: {
         <>
           <p className="font-semibold">{booking.touristName || 'The tourist'} reported paying ৳{Number(payment.amount).toLocaleString()}</p>
           <p className="text-xs text-[var(--color-text-muted)]">{details}</p>
+          {payment.method === 'cash' && <div className="mt-2">{codeInput}</div>}
           <div className="mt-2 flex flex-wrap gap-2">
-            <button disabled={busy} onClick={() => void run(() => guidePaymentsApi.confirm(payment.id))}
+            <button disabled={busy || (payment.method === 'cash' && code.trim().length !== 6)}
+              onClick={() => void run(() => guidePaymentsApi.confirm(payment.id, payment.method === 'cash' ? code.trim() : undefined))}
               className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
               {busy ? 'Saving…' : 'Confirm Received'}
             </button>
@@ -97,6 +111,7 @@ function BookingPaymentPanel({ booking, payment, onChanged }: {
             ))}
           </div>
           <PaymentProofFields method={method} value={proof} onChange={setProof} perspective="receiver" />
+          {method === 'cash' && codeInput}
           <div className="flex gap-2">
             <button disabled={busy} onClick={record} className="rounded-lg bg-[#006A4E] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
               {busy ? 'Saving…' : `Received ৳${(payment ? Number(payment.amount) : balance).toLocaleString()}`}

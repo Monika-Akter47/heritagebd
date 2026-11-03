@@ -8,6 +8,22 @@
 
 const GUIDE_PAYMENT_BOOKING_STATUSES = ['awaiting_confirmation', 'completed'];
 
+/**
+ * 6-character code the tourist reads out when paying the guide in cash, like the pre-order pickup code.
+ * Only the tourist is shown it, so a guide who types it proves the tourist was there and agreed.
+ */
+function booking_payment_code(string $bookingId): string {
+    $salt = getenv('DB_PASS') ?: 'heritagebd-guide-payment';
+    return strtoupper(substr(hash_hmac('sha256', 'guide-payment|' . $bookingId, $salt), 0, 6));
+}
+
+function guide_payment_require_code(array $d, string $bookingId): void {
+    $given = strtoupper(preg_replace('/[\s-]+/', '', (string)($d['verificationCode'] ?? '')));
+    if ($given === '' || !hash_equals(booking_payment_code($bookingId), $given)) {
+        json_error("That code does not match. Ask the tourist for the 6-character payment code shown on their booking.", 422);
+    }
+}
+
 function guide_payment_hydrate(array $row): array {
     return [
         'id' => $row['id'],
@@ -71,6 +87,8 @@ function guide_payments_report(PDO $pdo): void {
         ['payPayerPhone' => $d['payerPhone'] ?? '', 'payTransactionId' => $d['reference'] ?? ''],
         $d['method'], 'pay'
     );
+    // Cash leaves no wallet record, so the guide must type the tourist's payment code.
+    if ($byGuide && $d['method'] === 'cash') guide_payment_require_code($d, $d['bookingId']);
 
     $pdo->beginTransaction();
     try {
@@ -154,7 +172,12 @@ function guide_payments_confirm(PDO $pdo, string $id): void {
             $pdo->rollBack();
             json_error('Only a reported payment can be confirmed.', 409);
         }
-        $pdo->prepare("UPDATE guide_payments SET status = 'confirmed', confirmed_at = NOW() WHERE id = ?")
+        if ($payment['method'] === 'cash') {
+            $pdo->rollBack();
+            guide_payment_require_code(body(), $payment['booking_id']);
+            $pdo->beginTransaction();
+        }
+        $pdo->prepare("UPDATE guide_payments SET status = 'confirmed', confirmed_at = NOW() WHERE id = ? AND status = 'reported'")
             ->execute([$id]);
         $pdo->commit();
     } catch (Throwable $e) {

@@ -301,4 +301,29 @@ final class PreorderTest extends ApiTestCase
 
         $this->assertSame('completed', $this->call('GET', "/preorders/{$po['id']}", null, $vendor)['data']['status']);
     }
+
+    /** TC-137 | FR-35 | Integration | State transition | P1 | + */
+    public function test_TC_137_commission_is_split_when_the_vendor_verifies_the_pickup_code(): void
+    {
+        [$po, $vendor] = $this->preorderAt('arrived');
+        $settled = fn() => (int)self::db()->query("SELECT COUNT(*) FROM settlements WHERE flow = 'preorder' AND source_id = '{$po['id']}'")->fetchColumn();
+        $this->assertSame(0, $settled());                                  // advance still held by the platform
+
+        $r = $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'qr_verified', 'qrCode' => $po['qrCode']], $vendor);
+        $this->assertStatus(200, $r);
+        $this->assertSame(1, $settled());
+        $this->assertSame('released', $r['data']['advanceStatus']);
+        // Once split, the order can no longer be cancelled.
+        $this->assertStatus(422, $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'cancelled', 'cancellationReason' => 'x'], $vendor));
+    }
+
+    /** TC-138 | FR-27 | Integration | EP | P2 | − */
+    public function test_TC_138_pickup_time_must_be_a_clock_time(): void
+    {
+        [, , $productId] = $this->vendorWithPreorderProduct();
+        [$tourist] = $this->register('tourist');
+
+        $this->assertStatus(422, $this->createPreorder($productId, $tourist, ['pickupTime' => 'soon']));
+        $this->assertStatus(201, $this->createPreorder($productId, $tourist, ['pickupTime' => '4:45 PM']));
+    }
 }

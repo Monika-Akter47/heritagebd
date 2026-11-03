@@ -22,7 +22,7 @@ final class RefundTest extends ApiTestCase
     }
 
     /** TC-131 | FR-34 | Integration | State transition | P1 | + */
-    public function test_TC_131_vendor_cancelling_a_paid_preorder_waits_for_the_admin_to_refund_it(): void
+    public function test_TC_131_vendor_cancelling_a_paid_preorder_refunds_the_advance_at_once(): void
     {
         [$vendor, , $productId] = $this->vendorWithPreorderProduct();
         [$tourist] = $this->register('tourist');
@@ -31,21 +31,19 @@ final class RefundTest extends ApiTestCase
 
         $r = $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'cancelled', 'cancellationReason' => 'Out of stock'], $vendor);
         $this->assertStatus(200, $r);
-        $this->assertSame('refund_pending', $r['data']['advanceStatus']);
-        $this->assertContains('Refund needed', array_column($this->call('GET', '/notifications', null, $admin)['data'], 'title'));
-
-        $refund = $this->call('POST', "/admin/refunds/preorder/{$po['id']}", ['method' => 'bkash', 'transactionId' => 'rf7k2m9q1z'], $admin);
-        $this->assertStatus(200, $refund);
+        $this->assertSame('refunded', $r['data']['advanceStatus']);
+        $this->assertContains('Pre-order refunded', array_column($this->call('GET', '/notifications', null, $admin)['data'], 'title'));
 
         $after = $this->call('GET', "/preorders/{$po['id']}", null, $tourist)['data'];
-        $this->assertSame(['refunded', 'refunded', 'RF7K2M9Q1Z'], [$after['status'], $after['advanceStatus'], $after['refundTransactionId']]);
+        $this->assertSame(['cancelled', 'refunded'], [$after['status'], $after['advanceStatus']]);
         $this->assertSame((float)$po['advancePaid'], (float)$after['refundAmount']);
         $this->assertContains('Advance refunded', array_column($this->call('GET', '/notifications', null, $tourist)['data'], 'title'));
+        // Already refunded, so there is nothing left for the admin to send back by hand.
         $this->assertStatus(409, $this->call('POST', "/admin/refunds/preorder/{$po['id']}", ['method' => 'bkash', 'transactionId' => 'RF7K2M9Q1Z'], $admin));
     }
 
     /** TC-132 | FR-16 | Integration | State transition | P1 | + */
-    public function test_TC_132_guide_cancelling_a_booking_waits_for_the_admin_to_refund_the_advance(): void
+    public function test_TC_132_guide_cancelling_a_booking_refunds_the_advance_at_once(): void
     {
         [$tourist] = $this->register('tourist');
         $g = $this->bookableGuide();
@@ -56,11 +54,8 @@ final class RefundTest extends ApiTestCase
 
         $this->assertStatus(200, $this->call('PUT', "/bookings/{$booking['id']}", ['status' => 'cancelled'], $g[0]));
         $status = fn() => self::db()->query("SELECT advance_status FROM guide_bookings WHERE id = '{$booking['id']}'")->fetchColumn();
-        $this->assertSame('refund_pending', $status());
-
-        $this->assertStatus(200, $this->call('POST', "/admin/refunds/guide_booking/{$booking['id']}",
-            ['method' => 'nagad', 'transactionId' => 'NG55TRX0912'], $this->login(self::ADMIN)));
         $this->assertSame('refunded', $status());
+        $this->assertContains('Advance refunded', array_column($this->call('GET', '/notifications', null, $tourist)['data'], 'title'));
     }
 
     /** TC-133 | FR-34 | Integration | EP | P1 | − */
@@ -89,5 +84,19 @@ final class RefundTest extends ApiTestCase
         $r = $this->call('PUT', "/preorders/{$po['id']}", ['status' => 'cancelled', 'cancellationReason' => 'Changed plans'], $tourist);
 
         $this->assertSame('refunded', $r['data']['advanceStatus']);
+    }
+
+    /** TC-139 | FR-45 | Integration | EP | P1 | + */
+    public function test_TC_139_admin_sees_new_guide_bookings(): void
+    {
+        [$tourist] = $this->register('tourist');
+        $g = $this->bookableGuide();
+        $date = date('Y-m-d', strtotime('+4 days'));
+        $booking = $this->call('POST', '/bookings', ['guideId' => $g[1], 'tourType' => $g[2], 'startDate' => $date, 'endDate' => $date,
+            'groupSize' => 1, 'paymentMethod' => 'card'], $tourist)['data'];
+        $admin = $this->login(self::ADMIN);
+
+        $this->assertContains($booking['id'], array_column($this->call('GET', '/bookings', null, $admin)['data'], 'id'));
+        $this->assertContains('New guide booking', array_column($this->call('GET', '/notifications', null, $admin)['data'], 'title'));
     }
 }

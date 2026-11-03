@@ -308,10 +308,12 @@ function orders_update(PDO $pdo, string $id): void {
         settle_order($pdo, $currentOrder);
     } elseif ($d['status'] === 'cancelled') {
         $pdo->prepare("UPDATE orders SET advance_status = 'refunded' WHERE id = ? AND advance_status = 'held'")->execute([$id]);
+        // Correlated subquery instead of UPDATE ... JOIN, which PostgreSQL rejects (it failed the whole cancel).
         $pdo->prepare(
-            'UPDATE products p JOIN order_items oi ON oi.product_id = p.id
-             SET p.stock = p.stock + oi.quantity WHERE oi.order_id = ?'
-        )->execute([$id]);
+            'UPDATE products SET stock = stock + (
+                SELECT COALESCE(SUM(oi.quantity), 0) FROM order_items oi WHERE oi.order_id = ? AND oi.product_id = products.id)
+             WHERE id IN (SELECT product_id FROM order_items WHERE order_id = ?)'
+        )->execute([$id, $id]);
     }
     $pdo->commit();
 

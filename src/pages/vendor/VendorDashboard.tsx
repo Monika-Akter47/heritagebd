@@ -30,6 +30,15 @@ const ORDER_TRANSITIONS: Record<string, string[]> = {
   out_for_delivery: ['delivered'],
 };
 
+/** Sort key "YYYY-MM-DD HH:MM" from a pickup date and a "2:00 PM" time. */
+function pickupSortKey(order: PreOrder) {
+  const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(order.pickupTime || '');
+  const hours = m ? (Number(m[1]) % 12) + (m[3].toUpperCase() === 'PM' ? 12 : 0) : 99;
+  return `${order.pickupDate} ${String(hours).padStart(2, '0')}:${m ? m[2] : '00'}`;
+}
+
+type PreOrderSort = 'pickup_asc' | 'pickup_desc' | 'newest';
+
 export default function VendorDashboard() {
   const { currentUser } = useApp();
   const navigate = useNavigate();
@@ -49,6 +58,7 @@ export default function VendorDashboard() {
   const [scanCode, setScanCode] = useState('');
   const [scanError, setScanError] = useState('');
   const [deliveryDates, setDeliveryDates] = useState<Record<string, string>>({});
+  const [preOrderSort, setPreOrderSort] = useState<PreOrderSort>('pickup_asc');
 
   const { data: vendorPreOrders, loading: preOrdersLoading, error: preOrdersError, refetch: refetchPreOrders } = useApiData<PreOrder[]>(
     () => (currentUser?.role === 'vendor' ? preordersApi.list() : Promise.resolve([])),
@@ -562,11 +572,24 @@ export default function VendorDashboard() {
               </div>
             )}
 
+            <div className="flex items-center justify-end gap-2">
+              <label htmlFor="preorder-sort" className="text-sm font-medium text-[var(--color-text-muted)]">Sort by</label>
+              <select id="preorder-sort" value={preOrderSort} onChange={e => setPreOrderSort(e.target.value as PreOrderSort)}
+                className="rounded-lg border border-[var(--color-border)] bg-white px-3 py-2 text-sm">
+                <option value="pickup_asc">Pickup time: earliest first</option>
+                <option value="pickup_desc">Pickup time: latest first</option>
+                <option value="newest">Newest orders first</option>
+              </select>
+            </div>
+
             {/* Today's pre-orders */}
             <div className="grid gap-4">
               {preOrdersLoading && <p className="rounded-xl bg-white p-8 text-center text-sm text-[var(--color-text-muted)]" aria-live="polite">Loading Ready to Pick orders…</p>}
               {!preOrdersLoading && !preOrdersError && vendorPreOrders.length === 0 && <p className="rounded-xl bg-white p-8 text-center text-sm text-[var(--color-text-muted)]">No Ready to Pick orders yet. Orders for your eligible products will appear here.</p>}
-              {vendorPreOrders.map(order => {
+              {[...vendorPreOrders].sort((a, b) => preOrderSort === 'newest'
+                ? String(b.createdAt).localeCompare(String(a.createdAt))
+                : pickupSortKey(a).localeCompare(pickupSortKey(b)) * (preOrderSort === 'pickup_desc' ? -1 : 1)
+              ).map(order => {
                 const cfg = preOrderStatusConfig[order.status];
                 const isSelected = selectedPreOrder === order.id;
                 return (
@@ -591,7 +614,7 @@ export default function VendorDashboard() {
 
                           <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                             <div className="flex items-center gap-1" style={{ color: 'var(--color-text-muted)' }}>
-                              <Clock size={11} /> Pickup: {order.pickupTime}
+                              <Clock size={11} /> Pickup: {order.pickupDate} · {order.pickupTime}
                             </div>
                             <div className="flex items-center gap-1" style={{ color: 'var(--color-text-muted)' }}>
                               <MapPin size={11} /> {order.destination}

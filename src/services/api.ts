@@ -349,9 +349,10 @@ export interface GuidePayment {
 export const guidePaymentsApi = {
   list: () => get<GuidePayment[]>('/guide-payments'),
   /** Tourist: report paying the balance. Guide: record receiving it (confirmed at once). */
-  record: (bookingId: string, method: 'cash' | 'bkash' | 'nagad', proof: { payerPhone?: string; reference?: string } = {}) =>
+  record: (bookingId: string, method: 'cash' | 'bkash' | 'nagad', proof: { payerPhone?: string; reference?: string; verificationCode?: string } = {}) =>
     post<GuidePayment>('/guide-payments', { bookingId, method, ...proof }),
-  confirm: (id: string) => put<GuidePayment>(`/guide-payments/${id}/confirm`, {}),
+  /** Cash payments need the 6-character code the tourist reads out. */
+  confirm: (id: string, verificationCode?: string) => put<GuidePayment>(`/guide-payments/${id}/confirm`, { verificationCode }),
 };
 
 export interface PaymentTerms {
@@ -481,7 +482,7 @@ export interface AdminPayments {
     advanceCollected: number; advanceHeld: number; advanceReleased: number; advanceRefunded: number; advanceRefundPending: number;
     balanceCollected: number; balanceAwaitingConfirmation: number; commissionEarned: number;
     /** bKash/Nagad advances recorded without a payer number or TrxID. */
-    walletMissingProof: number;
+    walletMissingProof: number; cancellationFees?: number; platformBalance?: number;
   };
   advances: {
     flow: PaymentFlow; ref: string; recordId: string; createdAt: string; status: string;

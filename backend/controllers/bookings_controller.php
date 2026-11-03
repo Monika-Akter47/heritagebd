@@ -1,6 +1,6 @@
 <?php
 
-function booking_hydrate(PDO $pdo, array $row): array {
+function booking_hydrate(PDO $pdo, array $row, ?array $viewer = null): array {
     $dest = $pdo->prepare('SELECT place_name FROM guide_booking_destinations WHERE booking_id = ?');
     $dest->execute([$row['id']]);
     $who = $pdo->prepare('SELECT t.name tname, t.avatar tavatar, g.name gname FROM users t, users g WHERE t.id = ? AND g.id = ?');
@@ -19,6 +19,8 @@ function booking_hydrate(PDO $pdo, array $row): array {
         'advancePayerPhone' => $row['advance_payer_phone'] ?? null, 'advanceTransactionId' => $row['advance_transaction_id'] ?? null,
         'groupSize' => (int)$row['group_size'], 'createdAt' => $row['created_at'],
         'destinations' => array_column($dest->fetchAll(), 'place_name'),
+        // Only the tourist sees the code they read out to the guide when paying the balance in cash.
+        'paymentCode' => $viewer && $viewer['id'] === $row['tourist_id'] ? booking_payment_code($row['id']) : null,
     ];
 }
 
@@ -126,10 +128,13 @@ function bookings_create(PDO $pdo): void {
 
     notify($pdo, guide_owner_user_id($pdo, $d['guideId']), 'New tour booking request',
         $user['name'] . ' requested a ' . $d['tourType'] . ' booking.', 'booking', '/guide-dashboard#bookings');
+    notify_admins($pdo, 'New guide booking',
+        $user['name'] . ' booked a ' . $d['tourType'] . " tour ({$d['startDate']} to {$d['endDate']}); advance held by the platform.",
+        'booking', '/admin?section=bookings');
 
     $stmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE id = ?');
     $stmt->execute([$id]);
-    json_ok(booking_hydrate($pdo, $stmt->fetch()), 201);
+    json_ok(booking_hydrate($pdo, $stmt->fetch(), $user), 201);
 }
 
 function guide_owner_user_id(PDO $pdo, string $guideId): string {
@@ -138,15 +143,15 @@ function guide_owner_user_id(PDO $pdo, string $guideId): string {
 
 function bookings_index(PDO $pdo): void {
     $user = require_auth($pdo);
+    // No placeholder in the admin query: PostgreSQL cannot type a bare "? IS NOT NULL" parameter.
     if ($user['role'] === 'admin') {
-        $stmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE ? IS NOT NULL ORDER BY created_at DESC LIMIT 300');
-    } elseif ($user['role'] === 'guide') {
-        $stmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE guide_id = ? ORDER BY created_at DESC');
+        $stmt = $pdo->query('SELECT * FROM guide_bookings ORDER BY created_at DESC LIMIT 300');
     } else {
-        $stmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE tourist_id = ? ORDER BY created_at DESC');
+        $column = $user['role'] === 'guide' ? 'guide_id' : 'tourist_id';
+        $stmt = $pdo->prepare("SELECT * FROM guide_bookings WHERE $column = ? ORDER BY created_at DESC");
+        $stmt->execute([$user['id']]);
     }
-    $stmt->execute([$user['id']]);
-    json_ok(array_map(fn($r) => booking_hydrate($pdo, $r), $stmt->fetchAll()));
+    json_ok(array_map(fn($r) => booking_hydrate($pdo, $r, $user), $stmt->fetchAll()));
 }
 
 function bookings_update(PDO $pdo, string $id): void {
@@ -256,14 +261,17 @@ function bookings_update(PDO $pdo, string $id): void {
         }
         settle_booking($pdo, $booking);
     } elseif (in_array($d['status'], ['rejected', 'cancelled'], true)) {
-        // A tourist cancelling their own booking gets the advance back at once. When the guide (or an
-        // admin) cancels or rejects it, the advance waits until an admin sends it back.
-        $pending = !$isTourist && (float)$booking['advance_amount'] > 0;
-        $pdo->prepare('UPDATE guide_bookings SET advance_status = ? WHERE id = ? AND advance_status = \'held\'')
-            ->execute([$pending ? 'refund_pending' : 'refunded', $id]);
-        if ($pending) {
-            notify_admins($pdo, 'Refund needed',
-                "A guide booking was {$d['status']}. Send the tourist's advance back.", 'booking', '/admin?section=payments');
+        // Whoever cancels or rejects, the full advance goes back to the tourist straight away, by the method
+        // it was paid with, and leaves the platform's held balance.
+        $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refunded', refund_method = advance_payment_method,
+                         refunded_at = ? WHERE id = ? AND advance_status = 'held'")
+            ->execute([date('Y-m-d H:i:s'), $id]);
+        if ((float)$booking['advance_amount'] > 0) {
+            $refundNote = '৳' . number_format((float)$booking['advance_amount'], 2) . ' advance refunded to the tourist.';
+            notify($pdo, $booking['tourist_id'], 'Advance refunded',
+                "Your guide booking was {$d['status']}. $refundNote", 'booking', '/profile?tab=trips');
+            notify_admins($pdo, 'Guide booking refunded', "A guide booking was {$d['status']}. $refundNote",
+                'booking', '/admin?section=payments');
         }
     }
     $pdo->commit();
@@ -280,5 +288,5 @@ function bookings_update(PDO $pdo, string $id): void {
 
     $stmt = $pdo->prepare('SELECT * FROM guide_bookings WHERE id = ?');
     $stmt->execute([$id]);
-    json_ok(booking_hydrate($pdo, $stmt->fetch()));
+    json_ok(booking_hydrate($pdo, $stmt->fetch(), $user));
 }

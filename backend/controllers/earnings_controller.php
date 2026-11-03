@@ -139,7 +139,7 @@ function admin_earnings(PDO $pdo): void {
     $refunded = (float)$pdo->query(
         "SELECT COALESCE(SUM(amount),0) FROM (
            SELECT advance_amount amount FROM orders WHERE advance_status = 'refunded'
-           UNION ALL SELECT advance_paid amount FROM preorders WHERE advance_status = 'refunded'
+           UNION ALL SELECT COALESCE(refund_amount, advance_paid) amount FROM preorders WHERE advance_status = 'refunded'
            UNION ALL SELECT advance_amount amount FROM guide_bookings WHERE advance_status = 'refunded'
          ) refunds"
     )->fetchColumn();
@@ -250,21 +250,21 @@ function admin_payments(PDO $pdo): void {
                      JOIN vendors v ON v.user_id = p.vendor_id WHERE oi.order_id = o.id LIMIT 1) AS partner_name,
                   o.total_amount AS total, o.advance_amount AS advance, o.payment_method AS method,
                   o.advance_payer_phone AS payer_phone, o.advance_transaction_id AS transaction_id, o.advance_status,
-                  NULL AS refund_method, NULL AS refund_transaction_id, NULL AS refunded_at
+                  NULL AS refund_method, NULL AS refund_transaction_id, NULL AS refunded_at, o.advance_amount AS refund
            FROM orders o JOIN users u ON u.id = o.user_id
            UNION ALL
            SELECT 'preorder', po.order_number, po.id, po.created_at, po.status,
                   u.name, u.phone, v.shop_name,
                   po.total_amount, po.advance_paid, po.advance_payment_method,
                   po.advance_payer_phone, po.advance_transaction_id, po.advance_status,
-                  po.refund_method, po.refund_transaction_id, po.refunded_at
+                  po.refund_method, po.refund_transaction_id, po.refunded_at, COALESCE(po.refund_amount, po.advance_paid)
            FROM preorders po JOIN users u ON u.id = po.tourist_id JOIN vendors v ON v.user_id = po.vendor_id
            UNION ALL
            SELECT 'guide_booking', b.id, b.id, b.created_at, b.status,
                   u.name, u.phone, g.name,
                   b.total_price, b.advance_amount, b.advance_payment_method,
                   b.advance_payer_phone, b.advance_transaction_id, b.advance_status,
-                  b.refund_method, b.refund_transaction_id, b.refunded_at
+                  b.refund_method, b.refund_transaction_id, b.refunded_at, b.advance_amount
            FROM guide_bookings b JOIN users u ON u.id = b.tourist_id JOIN users g ON g.id = b.guide_id
          ) advances ORDER BY created_at DESC LIMIT 500"
     )->fetchAll();
@@ -287,12 +287,19 @@ function admin_payments(PDO $pdo): void {
     )->fetchAll();
 
     $totals = ['advanceCollected' => 0.0, 'advanceHeld' => 0.0, 'advanceReleased' => 0.0, 'advanceRefunded' => 0.0, 'advanceRefundPending' => 0.0,
-               'balanceCollected' => 0.0, 'balanceAwaitingConfirmation' => 0.0, 'walletMissingProof' => 0];
+               'balanceCollected' => 0.0, 'balanceAwaitingConfirmation' => 0.0, 'walletMissingProof' => 0, 'cancellationFees' => 0.0];
     foreach ($advances as $row) {
         $amount = (float)$row['advance'];
         $totals['advanceCollected'] += $amount;
         $key = ['held' => 'advanceHeld', 'released' => 'advanceReleased', 'refunded' => 'advanceRefunded', 'refund_pending' => 'advanceRefundPending'][$row['advance_status']] ?? null;
-        if ($key) $totals[$key] += $amount;
+        if ($row['advance_status'] === 'refunded') {
+            // A tourist's own pre-order cancellation refunds only part of the advance; the platform keeps the rest.
+            $refund = min($amount, (float)$row['refund']);
+            $totals['advanceRefunded'] += $refund;
+            $totals['cancellationFees'] += $amount - $refund;
+        } elseif ($key) {
+            $totals[$key] += $amount;
+        }
         if (in_array($row['method'], ['bkash', 'nagad'], true) && (!$row['payer_phone'] || !$row['transaction_id'])) {
             $totals['walletMissingProof']++;
         }
@@ -301,6 +308,8 @@ function admin_payments(PDO $pdo): void {
         $totals[$row['status'] === 'confirmed' ? 'balanceCollected' : 'balanceAwaitingConfirmation'] += (float)$row['amount'];
     }
     $totals['commissionEarned'] = (float)$pdo->query('SELECT COALESCE(SUM(commission_amount),0) FROM settlements')->fetchColumn();
+    // Money the platform holds now: advances not yet released or refunded, plus its own commission and fees.
+    $totals['platformBalance'] = $totals['advanceHeld'] + $totals['advanceRefundPending'] + $totals['commissionEarned'] + $totals['cancellationFees'];
 
     json_ok([
         'totals' => $totals,

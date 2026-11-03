@@ -104,17 +104,22 @@ export default function Navbar() {
                   >
                     <Bell size={18} />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 bg-[#F42A41] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {unreadCount}
+                      <span className="absolute top-0.5 right-0.5 min-w-4 h-4 px-1 bg-[#F42A41] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </button>
                   {notifOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-[var(--color-border)] overflow-hidden z-50">
-                      <div className="px-4 py-3 border-b border-[var(--color-border)]">
+                    // Phones: full width under the navbar (the bell is not at the screen edge, so a
+                    // right-anchored w-80 panel ran off the left side). Larger screens: dropdown.
+                    <div className="fixed inset-x-3 top-[4.25rem] sm:absolute sm:inset-x-auto sm:top-auto sm:right-0 sm:mt-2 sm:w-80 bg-white rounded-2xl shadow-xl border border-[var(--color-border)] overflow-hidden z-50">
+                      <div className="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between">
                         <h3 className="font-semibold text-sm">Notifications</h3>
+                        <button onClick={() => setNotifOpen(false)} aria-label="Close notifications" className="p-1 rounded-md text-[var(--color-text-muted)] hover:bg-gray-100 sm:hidden">
+                          <X size={16} />
+                        </button>
                       </div>
-                      <div className="max-h-80 overflow-y-auto">
+                      <div className="max-h-[70vh] sm:max-h-80 overflow-y-auto">
                         {notifications.slice(0, 5).map(n => (
                           <Link key={n.id} to={n.link || '#'} onClick={() => {
                             markNotificationRead(n.id);

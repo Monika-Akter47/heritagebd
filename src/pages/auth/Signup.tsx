@@ -5,7 +5,7 @@ import {
   Eye, EyeOff, AlertCircle, Upload, Camera
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { documentsApi } from '../../services/api';
+import { authApi, documentsApi, profileImagesApi } from '../../services/api';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -105,7 +105,19 @@ const ROLES = [
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export default function Signup() {
-  const { register } = useApp();
+  const { register, updateCurrentUser } = useApp();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  function chooseAvatar(file: File | undefined) {
+    if (!file) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) {
+      setSignupError('Profile photo must be a JPG, PNG or WebP image up to 5MB.');
+      return;
+    }
+    setSignupError('');
+    setAvatarFile(file);
+    setField('avatar', URL.createObjectURL(file));
+  }
   const [signupError, setSignupError] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -160,9 +172,18 @@ export default function Signup() {
         email: form.email,
         password: form.password,
         phone: form.phone,
-        avatar: form.avatar || undefined,
         role,
       });
+      // The photo needs a signed-in user to upload, so it follows account creation; a failure is not fatal.
+      if (avatarFile) {
+        try {
+          const { url } = await profileImagesApi.upload(avatarFile);
+          const { user } = await authApi.updateMe({ avatar: url });
+          updateCurrentUser(user);
+        } catch (avatarError) {
+          console.error('Account created, but the profile photo upload failed.', avatarError);
+        }
+      }
       if (role === 'tourist') {
         try {
           await documentsApi.upload(touristDocument!, 'identity');
@@ -290,7 +311,9 @@ export default function Signup() {
             <div className="space-y-4">
               {/* Avatar */}
               <div className="flex items-center gap-4">
-                <div className="relative">
+                <label htmlFor="signup-avatar" className="relative cursor-pointer" aria-label="Choose a profile photo">
+                  <input id="signup-avatar" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only"
+                    onChange={e => chooseAvatar(e.target.files?.[0])} />
                   <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2" style={{ borderColor: 'var(--color-border)' }}>
                     {form.avatar
                       ? <img src={form.avatar} alt="Avatar" className="w-full h-full object-cover" />
@@ -299,7 +322,7 @@ export default function Signup() {
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer" style={{ background: 'var(--color-primary)' }}>
                     <Upload size={11} className="text-white" />
                   </div>
-                </div>
+                </label>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>Profile Photo</p>
                   <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Optional · JPG, PNG up to 5MB</p>

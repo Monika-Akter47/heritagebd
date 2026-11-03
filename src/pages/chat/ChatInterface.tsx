@@ -6,6 +6,13 @@ import { useApp } from '../../context/AppContext';
 import { Link, useLocation } from 'react-router-dom';
 import type { Message } from '../../types';
 
+/** Photo, or the first letter of the name when the user has not uploaded one. */
+function Avatar({ src, name, size }: { src?: string | null; name?: string; size: string }) {
+  return src
+    ? <img src={src} alt={name || ''} className={`${size} rounded-full object-cover shrink-0`} />
+    : <div className={`${size} flex shrink-0 items-center justify-center rounded-full bg-[#006A4E] font-bold text-white`} aria-label={name}>{(name || '?')[0].toUpperCase()}</div>;
+}
+
 export default function ChatInterface() {
   const { currentUser } = useApp();
   const location = useLocation();
@@ -40,6 +47,12 @@ export default function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Participants come back in no fixed order, so find the one who is not the signed-in user.
+  const other = (conv: any) => {
+    const i = (conv.participants || []).findIndex((id: string) => id !== currentUser?.id);
+    return { name: conv.participantNames?.[i], avatar: conv.participantAvatars?.[i] };
+  };
 
   const selectConversation = (conv: any) => {
     setSelectedConv(conv);
@@ -101,12 +114,12 @@ export default function ChatInterface() {
               className={`w-full flex items-center gap-3 p-4 border-b border-[var(--color-border-light)] text-left hover:bg-gray-50 transition-colors ${selectedConv.id === conv.id ? 'bg-[#006A4E]/5 border-l-4 border-l-[#006A4E]' : ''}`}
             >
               <div className="relative">
-                <img src={conv.participantAvatars[1]} alt={conv.participantNames[1]} className="w-12 h-12 rounded-full object-cover" />
+                <Avatar src={other(conv).avatar} name={other(conv).name} size="w-12 h-12" />
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
-                  <p className="font-semibold text-sm truncate">{conv.participantNames[1]}</p>
+                  <p className="font-semibold text-sm truncate">{other(conv).name}</p>
                   <span className="text-xs text-[var(--color-text-muted)] shrink-0">
                     {formatTime(conv.lastMessageAt)}
                   </span>
@@ -129,11 +142,11 @@ export default function ChatInterface() {
         <div className="bg-white border-b border-[var(--color-border)] px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <img src={selectedConv.participantAvatars[1]} alt="" className="w-10 h-10 rounded-full object-cover" />
+              <Avatar src={other(selectedConv).avatar} name={other(selectedConv).name} size="w-10 h-10" />
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
             </div>
             <div>
-              <p className="font-semibold text-sm">{selectedConv.participantNames[1]}</p>
+              <p className="font-semibold text-sm">{other(selectedConv).name}</p>
               <p className="text-xs text-green-600">Online</p>
             </div>
           </div>
@@ -149,7 +162,7 @@ export default function ChatInterface() {
             return (
               <div key={msg.id} className={`flex gap-3 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
                 {!isMe && (
-                  <img src={msg.senderAvatar} alt={msg.senderName} className="w-8 h-8 rounded-full object-cover shrink-0" />
+                  <Avatar src={msg.senderAvatar} name={msg.senderName} size="w-8 h-8" />
                 )}
                 <div className={`max-w-[70%] ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
                   <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
@@ -168,7 +181,7 @@ export default function ChatInterface() {
           })}
           {typing && (
             <div className="flex gap-3">
-              <img src={selectedConv.participantAvatars[1]} alt="" className="w-8 h-8 rounded-full object-cover" />
+              <Avatar src={other(selectedConv).avatar} name={other(selectedConv).name} size="w-8 h-8" />
               <div className="bg-white border border-[var(--color-border)] rounded-2xl rounded-tl-sm px-4 py-3">
                 <div className="flex gap-1">
                   {[0, 1, 2].map(i => (

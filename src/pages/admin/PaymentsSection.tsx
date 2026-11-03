@@ -121,10 +121,11 @@ export default function PaymentsSection() {
       {t && (
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
+            { label: 'Platform Balance', value: taka(t.platformBalance ?? 0), note: 'held advances + commission − refunds', color: '#0F766E' },
             { label: 'Advances Collected', value: taka(t.advanceCollected), note: 'all online advances', color: '#006A4E' },
             { label: 'Held by Platform', value: taka(t.advanceHeld), note: 'released when the order completes', color: '#D4A017' },
             { label: 'Released to Partners', value: taka(t.advanceReleased), note: `commission earned ${taka(t.commissionEarned)}`, color: '#2563EB' },
-            { label: 'Refunded', value: taka(t.advanceRefunded), note: 'cancelled orders and bookings', color: '#F42A41' },
+            { label: 'Refunded', value: taka(t.advanceRefunded), note: `cancelled orders and bookings; fees kept ${taka(t.cancellationFees ?? 0)}`, color: '#F42A41' },
             { label: 'Refund Pending', value: taka(t.advanceRefundPending), note: 'vendor or guide cancelled; admin to send back', color: t.advanceRefundPending ? '#F42A41' : '#6B7280' },
             { label: 'Balances Paid to Partners', value: taka(t.balanceCollected), note: 'pickup payments and confirmed guide cash', color: '#059669' },
             { label: 'Awaiting Guide Confirmation', value: taka(t.balanceAwaitingConfirmation), note: 'reported by tourists', color: '#7C3AED' },

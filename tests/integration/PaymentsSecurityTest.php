@@ -24,6 +24,13 @@ final class PaymentsSecurityTest extends ApiTestCase
         return [$id, $tourist, $guide, (float)$r['data']['balanceAmount']];
     }
 
+    private function paymentCode(string $bookingId, string $tourist): string
+    {
+        $mine = array_column($this->call('GET', '/bookings', null, $tourist)['data'], 'paymentCode', 'id');
+        $this->assertMatchesRegularExpression('/^[A-F0-9]{6}$/', (string)($mine[$bookingId] ?? ''));
+        return $mine[$bookingId];
+    }
+
     /** TC-108 | FR-16 | Integration | State transition | P1 | + */
     public function test_TC_108_tourist_reports_cash_and_guide_confirms_it(): void
     {
@@ -34,7 +41,9 @@ final class PaymentsSecurityTest extends ApiTestCase
         $this->assertSame('reported', $reported['data']['status']);
         $this->assertEquals($balance, $reported['data']['amount']);          // the balance, not the full tour price
 
-        $confirmed = $this->call('PUT', "/guide-payments/{$reported['data']['id']}/confirm", [], $guide);
+        // Cash needs the tourist's payment code: a wrong one is refused, the one on the tourist's booking works.
+        $this->assertStatus(422, $this->call('PUT', "/guide-payments/{$reported['data']['id']}/confirm", ['verificationCode' => 'ZZZZZZ'], $guide));
+        $confirmed = $this->call('PUT', "/guide-payments/{$reported['data']['id']}/confirm", ['verificationCode' => $this->paymentCode($bookingId, $tourist)], $guide);
         $this->assertStatus(200, $confirmed);
         $this->assertSame('confirmed', $confirmed['data']['status']);
     }
@@ -63,7 +72,8 @@ final class PaymentsSecurityTest extends ApiTestCase
 
         $this->assertStatus(422, $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'nagad'], $tourist));   // no number/TrxID
         $this->assertStatus(404, $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'cash'], $stranger)); // not their booking
-        $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'cash'], $guide);
+        $this->assertStatus(422, $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'cash'], $guide)); // cash without the tourist's code
+        $this->assertStatus(201, $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'cash', 'verificationCode' => $this->paymentCode($bookingId, $tourist)], $guide));
         $this->assertStatus(409, $this->call('POST', '/guide-payments', ['bookingId' => $bookingId, 'method' => 'cash'], $tourist)); // already confirmed
     }
 

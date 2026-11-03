@@ -113,6 +113,10 @@ function preorders_create(PDO $pdo): void {
     require_role($user, ['tourist']);
     $d = body();
     require_fields($d, ['productId', 'pickupDate', 'pickupTime', 'quantity']);
+    // The tourist's expected pickup time, stored as "2:00 PM" so vendors can sort by it.
+    if (!is_string($d['pickupTime']) || !preg_match('/^(1[0-2]|[1-9]):[0-5]\d (AM|PM)$/', $d['pickupTime'])) {
+        json_error('Choose your expected pickup time, for example 2:30 PM.', 422);
+    }
 
     $pdo->beginTransaction();
     $p = $pdo->prepare(
@@ -236,8 +240,9 @@ const PREORDER_TRANSITIONS = [
     'preparing'              => ['ready_for_pickup', 'cancelled'],
     'ready_for_pickup'       => ['arrived', 'cancelled'],
     'arrived'                => ['qr_verified', 'cancelled'],
-    'qr_verified'            => ['pickup_payment_pending', 'cancelled'],
-    'pickup_payment_pending' => ['picked_up', 'cancelled'],
+    // Once the pickup code is verified the commission is split, so the order can no longer be cancelled.
+    'qr_verified'            => ['pickup_payment_pending'],
+    'pickup_payment_pending' => ['picked_up'],
     'picked_up'              => ['completed'],
     'completed'              => [],
     'cancelled'              => [],
@@ -371,17 +376,22 @@ function preorders_update(PDO $pdo, string $id): void {
         }
         $params[] = $id;
         $pdo->prepare('UPDATE preorders SET ' . implode(', ', $fields) . ' WHERE id = ?')->execute($params);
-        if (($d['status'] ?? null) === 'completed') {
+        // The advance stays on the platform until the vendor verifies the tourist's pickup code; then the
+        // commission is split off and the rest released to the vendor (settle_preorder runs only once).
+        if (in_array($d['status'] ?? null, ['qr_verified', 'completed'], true)) {
             settle_preorder($pdo, $lockedOrder);
         } elseif (in_array($d['status'] ?? null, ['cancelled', 'refunded'], true)) {
-            // A tourist's own cancellation refunds the configured share straight away. When the vendor
-            // (or an admin) cancels a paid pre-order, the advance waits until an admin sends it back.
-            $pending = $d['status'] === 'cancelled' && $user['role'] !== 'tourist' && (float)$existing['advance_paid'] > 0;
-            $pdo->prepare('UPDATE preorders SET advance_status = ? WHERE id = ? AND advance_status = \'held\'')
-                ->execute([$pending ? 'refund_pending' : 'refunded', $id]);
-            if ($pending) {
-                notify_admins($pdo, 'Refund needed',
-                    "Pre-order {$existing['order_number']} was cancelled by the vendor. Send the tourist's advance back.",
+            // The refund (the configured share for a tourist's own cancellation, all of it otherwise) goes back
+            // straight away by the method the advance was paid with, and leaves the platform's held balance.
+            $pdo->prepare("UPDATE preorders SET advance_status = 'refunded', refund_method = advance_payment_method,
+                             refunded_at = ? WHERE id = ? AND advance_status = 'held'")
+                ->execute([date('Y-m-d H:i:s'), $id]);
+            $refund = (float)$pdo->query('SELECT COALESCE(refund_amount, advance_paid) FROM preorders WHERE id = ' . $pdo->quote($id))->fetchColumn();
+            if ($refund > 0) {
+                $refundNote = "৳" . number_format($refund, 2) . " of the advance refunded to the tourist.";
+                notify($pdo, $existing['tourist_id'], 'Advance refunded',
+                    "Pre-order {$existing['order_number']} was cancelled. $refundNote", 'order', '/preorder/tracking/' . $id);
+                notify_admins($pdo, 'Pre-order refunded', "Pre-order {$existing['order_number']} was cancelled. $refundNote",
                     'order', '/admin?section=payments');
             }
         }

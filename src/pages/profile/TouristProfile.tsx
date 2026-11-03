@@ -42,6 +42,12 @@ function GuideBalancePayment({ booking, payment, onChanged }: { booking: any; pa
 
   return (
     <div className="mt-4 border-t border-[var(--color-border)] pt-4 text-sm">
+      {booking.paymentCode && (
+        <p className="mb-3 rounded-lg bg-[#E6F4EF] px-3 py-2 text-xs text-[#004D38]">
+          Paying in cash? Tell the guide this payment code so they can confirm it:{' '}
+          <span className="font-mono text-base font-bold tracking-widest">{booking.paymentCode}</span>
+        </p>
+      )}
       {payment?.status === 'reported' ? (
         <p className="text-[var(--color-text-muted)]">
           You marked ৳{Number(payment.amount).toLocaleString()} as paid ({methodLabel(payment.method)}). Waiting for the guide to confirm.
@@ -226,12 +232,17 @@ function TouristProfileContent({ currentUser, logout, activeTab, setActiveTab, d
       {/* Profile header */}
       <div className="bg-gradient-to-r from-[#006A4E] to-[#004D38] py-16 px-4">
         <div className="max-w-5xl mx-auto flex items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/30 bg-white/10">
-            {currentUser.avatar ? (
-              <img src={currentUser.avatar} alt={currentUser.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">{currentUser.name?.[0] || '?'}</div>
-            )}
+          <div className="flex flex-col items-center gap-1">
+            <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/30 bg-white/10">
+              {currentUser.avatar ? (
+                <img src={currentUser.avatar} alt={currentUser.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">{currentUser.name?.[0] || '?'}</div>
+              )}
+            </div>
+            <Link to="/settings" className="text-xs font-semibold text-white/90 underline">
+              {currentUser.avatar ? 'Change photo' : 'Add photo'}
+            </Link>
           </div>
           <div className="text-white">
             <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>{currentUser.name}</h1>

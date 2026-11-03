@@ -47,7 +47,11 @@ docs/**/*.pdf
 CLAUDE.md
 AGENTS.md
 .mcp.json
-.figma/
+.figma/*
+# vite.config.ts imports the site title and description from this file, so the build needs it.
+!.figma/make/
+.figma/make/*
+!.figma/make/site.json
 
 # --- Editors and OS ---
 .vscode/*

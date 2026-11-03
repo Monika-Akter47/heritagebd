@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="42" failures="0" errors="0" time="0.3612799">
-    <testsuite name="tests/frontend/payments.test.tsx" timestamp="2026-11-03T06:18:54.612Z" hostname="DESKTOP-H89FAL4" tests="16" failures="0" errors="0" skipped="0" time="0.1334563">
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F01 accepts a complete bKash proof, including +880 numbers" time="0.0072112">
+<testsuites name="vitest tests" tests="42" failures="0" errors="0" time="0.1606197">
+    <testsuite name="tests/frontend/payments.test.tsx" timestamp="2026-11-03T07:18:35.903Z" hostname="DESKTOP-H89FAL4" tests="16" failures="0" errors="0" skipped="0" time="0.070307">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F01 accepts a complete bKash proof, including +880 numbers" time="0.0040861">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F02 asks for the number, then the TrxID, naming the wallet" time="0.0015088">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F02 asks for the number, then the TrxID, naming the wallet" time="0.0010987">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 0171234567 valid=false" time="0.000814">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 0171234567 valid=false" time="0.0006967">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01712345678 valid=true" time="0.0006358">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01712345678 valid=true" time="0.0002616">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 017123456789 valid=false" time="0.0006391">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 017123456789 valid=false" time="0.0002276">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01212345678 valid=false" time="0.0005282">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01212345678 valid=false" time="0.0003139">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01312345678 valid=true" time="0.0006232">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F03 phone 01312345678 valid=true" time="0.0002782">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID ABCDE valid=false" time="0.0007287">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID ABCDE valid=false" time="0.0003306">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID ABCDEF valid=true" time="0.0008184">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID ABCDEF valid=true" time="0.0004347">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAA valid=true" time="0.0007362">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAA valid=true" time="0.0004505">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAAA valid=false" time="0.0004212">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AAAAAAAAAAAAAAAAAAAAA valid=false" time="0.0002663">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AB-123 valid=false" time="0.0003591">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F04 TrxID AB-123 valid=false" time="0.0001971">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F05 card and cash need no proof" time="0.0007425">
+        <testcase classname="tests/frontend/payments.test.tsx" name="validatePaymentProof &gt; TC-F05 card and cash need no proof" time="0.0002854">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F06 shows number and TrxID inputs with the amount only for wallets" time="0.1046862">
+        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F06 shows number and TrxID inputs with the amount only for wallets" time="0.053273">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F07 vendor view asks for the customer&apos;s number and has no send instruction" time="0.0026016">
+        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F07 vendor view asks for the customer&apos;s number and has no send instruction" time="0.001916">
         </testcase>
-        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F08 labels every payment method" time="0.0024165">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/frontend/status.test.tsx" timestamp="2026-11-03T06:18:54.628Z" hostname="DESKTOP-H89FAL4" tests="23" failures="0" errors="0" skipped="0" time="0.0539356">
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status confirmed has a readable label" time="0.0076165">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status advance_paid has a readable label" time="0.0008473">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status vendor_accepted has a readable label" time="0.0006512">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status preparing has a readable label" time="0.0007974">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status ready_for_pickup has a readable label" time="0.0009756">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status arrived has a readable label" time="0.0007316">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status qr_verified has a readable label" time="0.0005816">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status pickup_payment_pending has a readable label" time="0.00067">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status picked_up has a readable label" time="0.0006807">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status completed has a readable label" time="0.0010937">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status cancelled has a readable label" time="0.0005257">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status refunded has a readable label" time="0.0003839">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status placed has a readable label and colour" time="0.0028138">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status confirmed has a readable label and colour" time="0.0005541">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status preparing has a readable label and colour" time="0.0003892">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status shipped has a readable label and colour" time="0.0006026">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status out_for_delivery has a readable label and colour" time="0.0005015">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status delivered has a readable label and colour" time="0.0004855">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status completed has a readable label and colour" time="0.0002626">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status cancelled has a readable label and colour" time="0.0003346">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F11 unknown or empty status degrades gracefully" time="0.0006212">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F12 terminal states use success / danger colours" time="0.0003209">
-        </testcase>
-        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F13 badge renders the label and a custom label override" time="0.0240847">
+        <testcase classname="tests/frontend/payments.test.tsx" name="PaymentProofFields &gt; TC-F08 labels every payment method" time="0.0016964">
         </testcase>
     </testsuite>
-    <testsuite name="tests/frontend/tripRoute.test.ts" timestamp="2026-11-03T06:18:54.645Z" hostname="DESKTOP-H89FAL4" tests="3" failures="0" errors="0" skipped="0" time="0.173888">
-        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-135 measures road distance as 1.3 times the straight line" time="0.012773">
+    <testsuite name="tests/frontend/status.test.tsx" timestamp="2026-11-03T07:18:35.913Z" hostname="DESKTOP-H89FAL4" tests="23" failures="0" errors="0" skipped="0" time="0.0310839">
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status confirmed has a readable label" time="0.0050533">
         </testcase>
-        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-136 offers bikes up to 60 km, recommends the cheapest ride and never goes below the minimum" time="0.0027377">
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status advance_paid has a readable label" time="0.0005848">
         </testcase>
-        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-137 builds the itinerary from real places, each with its own photo" time="0.1478987">
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status vendor_accepted has a readable label" time="0.000521">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status preparing has a readable label" time="0.0004357">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status ready_for_pickup has a readable label" time="0.0006247">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status arrived has a readable label" time="0.0004757">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status qr_verified has a readable label" time="0.0004253">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status pickup_payment_pending has a readable label" time="0.0004036">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status picked_up has a readable label" time="0.0005649">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status completed has a readable label" time="0.0006622">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status cancelled has a readable label" time="0.000391">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F09 pre-order status refunded has a readable label" time="0.0002039">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status placed has a readable label and colour" time="0.0014877">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status confirmed has a readable label and colour" time="0.0005213">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status preparing has a readable label and colour" time="0.0003462">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status shipped has a readable label and colour" time="0.0002815">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status out_for_delivery has a readable label and colour" time="0.0001746">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status delivered has a readable label and colour" time="0.0001596">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status completed has a readable label and colour" time="0.0001908">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F10 delivery status cancelled has a readable label and colour" time="0.0001908">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F11 unknown or empty status degrades gracefully" time="0.0003502">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F12 terminal states use success / danger colours" time="0.0002012">
+        </testcase>
+        <testcase classname="tests/frontend/status.test.tsx" name="statusLabel &gt; TC-F13 badge renders the label and a custom label override" time="0.0131675">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/frontend/tripRoute.test.ts" timestamp="2026-11-03T07:18:35.922Z" hostname="DESKTOP-H89FAL4" tests="3" failures="0" errors="0" skipped="0" time="0.0592288">
+        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-135 measures road distance as 1.3 times the straight line" time="0.003972">
+        </testcase>
+        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-136 offers bikes up to 60 km, recommends the cheapest ride and never goes below the minimum" time="0.0013116">
+        </testcase>
+        <testcase classname="tests/frontend/tripRoute.test.ts" name="trip planner fares and route &gt; TC-137 builds the itinerary from real places, each with its own photo" time="0.0494835">
         </testcase>
     </testsuite>
 </testsuites>

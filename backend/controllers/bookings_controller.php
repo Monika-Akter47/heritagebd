@@ -261,17 +261,19 @@ function bookings_update(PDO $pdo, string $id): void {
         }
         settle_booking($pdo, $booking);
     } elseif (in_array($d['status'], ['rejected', 'cancelled'], true)) {
-        // Whoever cancels or rejects, the full advance goes back to the tourist straight away, by the method
-        // it was paid with, and leaves the platform's held balance.
-        $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refunded', refund_method = advance_payment_method,
-                         refunded_at = ? WHERE id = ? AND advance_status = 'held'")
-            ->execute([date('Y-m-d H:i:s'), $id]);
-        if ((float)$booking['advance_amount'] > 0) {
-            $refundNote = '৳' . number_format((float)$booking['advance_amount'], 2) . ' advance refunded to the tourist.';
-            notify($pdo, $booking['tourist_id'], 'Advance refunded',
-                "Your guide booking was {$d['status']}. $refundNote", 'booking', '/profile?tab=trips');
-            notify_admins($pdo, 'Guide booking refunded', "A guide booking was {$d['status']}. $refundNote",
-                'booking', '/admin?section=payments');
+        // A tourist cancelling their own booking gets the advance back at once. When the guide (or an
+        // admin) cancels or rejects it, the advance waits as 'refund_pending' until an admin sends it back.
+        $pending = !$isTourist && (float)$booking['advance_amount'] > 0;
+        if ($pending) {
+            $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refund_pending' WHERE id = ? AND advance_status = 'held'")
+                ->execute([$id]);
+            notify_admins($pdo, 'Refund needed',
+                "A guide booking was {$d['status']}. Send the tourist's ৳" . number_format((float)$booking['advance_amount'], 2)
+                . ' advance back.', 'booking', '/admin?section=payments');
+        } else {
+            $pdo->prepare("UPDATE guide_bookings SET advance_status = 'refunded', refund_method = advance_payment_method,
+                             refunded_at = ? WHERE id = ? AND advance_status = 'held'")
+                ->execute([date('Y-m-d H:i:s'), $id]);
         }
     }
     $pdo->commit();

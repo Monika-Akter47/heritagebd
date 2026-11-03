@@ -502,7 +502,7 @@ export const adminApi = {
   stats: () => get('/admin/stats'),
   earnings: () => get('/admin/earnings'),
   payments: () => get<AdminPayments>('/admin/payments'),
-  refund: (flow: 'preorder' | 'guide_booking', id: string, data: { method: string; transactionId: string }) =>
+  refund: (flow: PaymentFlow, id: string, data: { method: string; transactionId: string }) =>
     post(`/admin/refunds/${flow}/${id}`, data),
   commissionSettings: () => get('/admin/commission-settings'),
   updateCommissionSettings: (settings: { flow: string; advancePercent: number; commissionPercent: number }[]) =>

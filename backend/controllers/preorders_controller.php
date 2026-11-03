@@ -381,18 +381,20 @@ function preorders_update(PDO $pdo, string $id): void {
         if (in_array($d['status'] ?? null, ['qr_verified', 'completed'], true)) {
             settle_preorder($pdo, $lockedOrder);
         } elseif (in_array($d['status'] ?? null, ['cancelled', 'refunded'], true)) {
-            // The refund (the configured share for a tourist's own cancellation, all of it otherwise) goes back
-            // straight away by the method the advance was paid with, and leaves the platform's held balance.
-            $pdo->prepare("UPDATE preorders SET advance_status = 'refunded', refund_method = advance_payment_method,
-                             refunded_at = ? WHERE id = ? AND advance_status = 'held'")
-                ->execute([date('Y-m-d H:i:s'), $id]);
-            $refund = (float)$pdo->query('SELECT COALESCE(refund_amount, advance_paid) FROM preorders WHERE id = ' . $pdo->quote($id))->fetchColumn();
-            if ($refund > 0) {
-                $refundNote = "৳" . number_format($refund, 2) . " of the advance refunded to the tourist.";
-                notify($pdo, $existing['tourist_id'], 'Advance refunded',
-                    "Pre-order {$existing['order_number']} was cancelled. $refundNote", 'order', '/preorder/tracking/' . $id);
-                notify_admins($pdo, 'Pre-order refunded', "Pre-order {$existing['order_number']} was cancelled. $refundNote",
+            // A tourist's own cancellation refunds the configured share straight away. When the vendor (or an
+            // admin) cancels a paid pre-order, the advance waits as 'refund_pending' until an admin sends it back.
+            $pending = $d['status'] === 'cancelled' && $user['role'] !== 'tourist' && (float)$existing['advance_paid'] > 0;
+            if ($pending) {
+                $pdo->prepare("UPDATE preorders SET advance_status = 'refund_pending' WHERE id = ? AND advance_status = 'held'")
+                    ->execute([$id]);
+                notify_admins($pdo, 'Refund needed',
+                    "Pre-order {$existing['order_number']} was cancelled by the vendor. Send the tourist's ৳"
+                    . number_format((float)$existing['advance_paid'], 2) . ' advance back.',
                     'order', '/admin?section=payments');
+            } else {
+                $pdo->prepare("UPDATE preorders SET advance_status = 'refunded', refund_method = advance_payment_method,
+                                 refunded_at = ? WHERE id = ? AND advance_status = 'held'")
+                    ->execute([date('Y-m-d H:i:s'), $id]);
             }
         }
         if (($d['status'] ?? null) === 'cancelled') {

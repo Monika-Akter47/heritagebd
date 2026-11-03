@@ -307,7 +307,16 @@ function orders_update(PDO $pdo, string $id): void {
     if ($d['status'] === 'completed') {
         settle_order($pdo, $currentOrder);
     } elseif ($d['status'] === 'cancelled') {
-        $pdo->prepare("UPDATE orders SET advance_status = 'refunded' WHERE id = ? AND advance_status = 'held'")->execute([$id]);
+        // Only the vendor or an admin can cancel an order, so a paid advance waits as 'refund_pending'
+        // until an admin records sending it back (POST /admin/refunds/order/{id}).
+        $pending = (float)$currentOrder['advance_amount'] > 0;
+        $pdo->prepare('UPDATE orders SET advance_status = ? WHERE id = ? AND advance_status = \'held\'')
+            ->execute([$pending ? 'refund_pending' : 'refunded', $id]);
+        if ($pending) {
+            notify_admins($pdo, 'Refund needed',
+                "Order $id was cancelled. Send the tourist's ৳" . number_format((float)$currentOrder['advance_amount'], 2) . ' advance back.',
+                'order', '/admin?section=payments');
+        }
         // Correlated subquery instead of UPDATE ... JOIN, which PostgreSQL rejects (it failed the whole cancel).
         $pdo->prepare(
             'UPDATE products SET stock = stock + (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { adminApi, type AdminPayments } from '../../services/api';
+import { adminApi, type AdminPayments, type PaymentFlow } from '../../services/api';
 import { useApiData } from '../../hooks/useApiData';
 import Badge from '../../components/ui/Badge';
 import StatusBadge from "../../components/ui/StatusBadge";
@@ -33,7 +33,7 @@ function RefundDialog({ advance, onClose, onDone }: { advance: Advance; onClose:
     e.preventDefault();
     setSaving(true); setError('');
     try {
-      await adminApi.refund(advance.flow as 'preorder' | 'guide_booking', advance.recordId, { method, transactionId: txn.trim() });
+      await adminApi.refund(advance.flow as PaymentFlow, advance.recordId, { method, transactionId: txn.trim() });
       onDone();
     } catch (err: any) {
       setError(err?.message || 'The refund could not be recorded.');

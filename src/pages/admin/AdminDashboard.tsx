@@ -715,13 +715,14 @@ export default function AdminDashboard() {
               {financeError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">Could not load financial reports: {financeError}</p>}
               {financeLoading && <p className="text-sm text-[var(--color-text-muted)]">Loading settlement reports…</p>}
               {!financeLoading && finance && <>
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                   {[
                     ['Gross Settled', finance.totals.grossSettled],
                     ['Platform Commission', finance.totals.adminProfit],
                     ['Partner Earnings', finance.totals.partnersEarned],
                     ['Advances Held', finance.totals.advanceHeld],
                     ['Advances Refunded', finance.totals.advanceRefunded],
+                    ['Refund Pending', finance.totals.advanceRefundPending ?? 0],
                   ].map(([label, amount]) => (
                     <div key={String(label)} className="rounded-2xl border bg-white p-4" style={{ borderColor: 'var(--color-border)' }}>
                       <p className="text-xs font-semibold uppercase text-[var(--color-text-muted)]">{label}</p>

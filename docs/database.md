@@ -83,6 +83,7 @@ includes everything. Upgrades need these in `backend/database/migrations/`:
 | `007_local_demo_images.sql` | Points every `images.unsplash.com` image at its local copy in `uploads/products` (deleted photos → placeholder). Safe to re-run |
 | `010_admin_refunds.sql` | `refund_pending` advance status and `refund_method`, `refund_transaction_id`, `refunded_at` on `preorders` and `guide_bookings`. Supabase: `postgres/003_admin_refunds.sql` |
 | `011_order_refunds.sql` | The same `refund_pending` status and refund columns on marketplace `orders`. Supabase: `postgres/004_order_refunds.sql` |
+| (Supabase only) | `postgres/005_payment_details.sql`: the Supabase version of `009_payment_details.sql` (payer number, TrxID, `recorded_by`), which was never written for PostgreSQL. Without it the admin Payments page fails. |
 | `006_local_foods.sql` | Creates `local_foods` with the 32 reference foods. Safe to re-run (`IF NOT EXISTS`, `INSERT IGNORE`) |
 
 ### Checking an existing database

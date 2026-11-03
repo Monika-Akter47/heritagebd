@@ -167,7 +167,7 @@ export default function PaymentsSection() {
         {!loading && !error && rows.length === 0 && <p className="p-6 text-sm text-[var(--color-text-muted)]">No payments match.</p>}
 
         {view === 'advances' && advances.length > 0 && (
-          <Table head={['Date', 'Flow / Ref', 'Customer', 'Partner', 'Total', 'Advance', 'Method', 'Payer / TrxID', 'Advance', 'Order status', '']}>
+          <Table head={['Date', 'Flow / Ref', 'Customer', 'Partner', 'Total', 'Advance', 'Method', 'Payer / TrxID', 'Advance status', 'Order status', '']}>
             {advances.map(a => (
               <tr key={`${a.flow}-${a.recordId}`}>
                 <td className={td + ' whitespace-nowrap'}>{fmt(a.createdAt)}</td>

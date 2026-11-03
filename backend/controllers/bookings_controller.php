@@ -25,6 +25,7 @@ function booking_hydrate(PDO $pdo, array $row, ?array $viewer = null): array {
 }
 
 function bookings_create(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['tourist']);
     $d = body();
@@ -155,6 +156,7 @@ function bookings_index(PDO $pdo): void {
 }
 
 function bookings_update(PDO $pdo, string $id): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     $d = body();
     require_fields($d, ['status']);

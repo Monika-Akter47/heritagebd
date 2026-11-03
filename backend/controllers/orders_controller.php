@@ -63,6 +63,7 @@ function notify_order_admins(PDO $pdo, string $title, string $message): void {
 }
 
 function orders_create(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['tourist']);
     $d = body();
@@ -216,6 +217,7 @@ function orders_show(PDO $pdo, string $id): void {
 }
 
 function orders_update(PDO $pdo, string $id): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['tourist', 'vendor', 'admin']);
     $d = body();

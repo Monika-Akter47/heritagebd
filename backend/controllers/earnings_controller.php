@@ -121,6 +121,7 @@ function earnings_months(PDO $pdo, string $where, array $params, string $field):
 }
 
 function admin_earnings(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['admin']);
     $totals = $pdo->query(
@@ -246,6 +247,7 @@ function commission_settings_update(PDO $pdo): void {
  * Wallet rows carry the payer number and TrxID so they can be matched against the bKash/Nagad statement.
  */
 function admin_payments(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['admin']);
 
@@ -343,6 +345,7 @@ function admin_payments(PDO $pdo): void {
  * Body: method (bkash | nagad | card) and transactionId of the refund.
  */
 function admin_refund(PDO $pdo, string $flow, string $id): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['admin']);
     $d = body();

@@ -109,6 +109,7 @@ function preorders_settings_update(PDO $pdo): void {
 }
 
 function preorders_create(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['tourist']);
     $d = body();
@@ -267,6 +268,7 @@ const PREORDER_TRANSITION_ROLES = [
 ];
 
 function preorders_update(PDO $pdo, string $id): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     $stmt = $pdo->prepare('SELECT * FROM preorders WHERE id = ?');
     $stmt->execute([$id]);

@@ -17,6 +17,7 @@ require_once __DIR__ . '/helpers/throttle.php';
 require_once __DIR__ . '/helpers/notify.php';
 require_once __DIR__ . '/helpers/payments.php';
 require_once __DIR__ . '/helpers/earnings.php';
+require_once __DIR__ . '/helpers/schema.php';
 require_once __DIR__ . '/helpers/areas.php';
 
 foreach (glob(__DIR__ . '/controllers/*.php') as $file) {

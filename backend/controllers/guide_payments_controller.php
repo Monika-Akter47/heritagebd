@@ -73,6 +73,7 @@ function guide_payments_index(PDO $pdo): void {
 
 /** POST /guide-payments — the tourist reports the payment, or the guide records it as received. */
 function guide_payments_report(PDO $pdo): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['tourist', 'guide']);
     $byGuide = $user['role'] === 'guide';
@@ -155,6 +156,7 @@ function guide_payments_report(PDO $pdo): void {
 }
 
 function guide_payments_confirm(PDO $pdo, string $id): void {
+    ensure_payment_schema($pdo);
     $user = require_auth($pdo);
     require_role($user, ['guide']);
 
